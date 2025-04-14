@@ -5,13 +5,12 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand/v2"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"strconv"
-	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -19,12 +18,12 @@ import (
 
 // dog represents a dog record returned from Fetch Rewards' API.
 type dog struct {
-	Age     uint8  `json:"age"`
-	Breed   string `json:"breed"`
-	ID      string `json:"id"`
-	Image   string `json:"img"`
-	Name    string `json:"name"`
-	ZipCode string `json:"zip_code"`
+	Age       uint8  `json:"age"`
+	Breed     string `json:"breed"`
+	ID        string `json:"id"`
+	ImageLink string `json:"img"`
+	Name      string `json:"name"`
+	ZipCode   string `json:"zip_code"`
 }
 
 // searchResponse represents a response from Fetch Rewards' API.
@@ -65,7 +64,8 @@ func createDatabase() (*sql.DB, error) {
 
 // login returns a pointer to http.Client that has been populated with
 // "fetch-access-token." An error is returned if the request fails.
-// Be aware that this token invalidates after an hour.
+// Be aware that this token invalidates after an hour. Refresh is not
+// implemented because the entire run generally takes under 15 minutes.
 func login() (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -124,16 +124,13 @@ func getBreeds(client *http.Client) ([]string, error) {
 // getDogIDs returns a slice of dog ids for a specific breed.
 // An error is returned if the request fails.
 func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
-	parameters := url.Values{
-		"breeds": []string{breed},
-		"from":   []string{strconv.Itoa(from)},
-		"size":   []string{"100"},
-	}
 	request, err := http.NewRequest(
 		"GET",
-		strings.Join(
-			[]string{baseURL, "/dogs/search?", parameters.Encode()},
-			"",
+		fmt.Sprintf(
+			"%s/dogs/search?breeds=%s&from=%d&size=100",
+			baseURL,
+			url.QueryEscape(breed),
+			from,
 		),
 		nil,
 	)
@@ -230,7 +227,7 @@ func insertDogs(database *sql.DB, dogs []dog) error {
 	defer statement.Close()
 	for _, dog := range dogs {
 		_, err := statement.Exec(
-			dog.Age, dog.Breed, dog.ID, dog.Image, dog.Name, dog.ZipCode,
+			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
 		)
 		if err != nil {
 			return err
@@ -245,44 +242,47 @@ func insertDogs(database *sql.DB, dogs []dog) error {
 	return nil
 }
 
-// main sets up the database by getting the data from Fetch Rewards' API.
-// Note the database file is not closed manually because it is unnecessary
-// according to the documentation. Another thing is that token refresh is not
-// handled because the entire run generally takes under 15 minutes.
-func main() {
+// run sets up the database by getting the data from Fetch Rewards' API.
+// An error is returned if the process fails. Note the database file is
+// not closed manually because it is unnecessary according to documentation.
+func run() error {
 	log.Println("database creation began")
 	database, err := createDatabase()
 	if err != nil {
-		log.Fatalln("creating database failed:", err)
+		return fmt.Errorf("creating database failed: %w", err)
 	}
 
 	client, err := login()
 	if err != nil {
-		log.Fatalln("login failed:", err)
+		return fmt.Errorf("login failed: %w", err)
 	}
 
 	breeds, err := getBreeds(client)
 	if err != nil {
-		log.Fatalln("getBreeds failed:", err)
+		return fmt.Errorf("getBreeds failed: %w", err)
 	}
 
 	for _, breed := range breeds {
 		log.Println("getDogs started for", breed)
 		dogs, err := getDogs(client, breed)
 		if err != nil {
-			log.Fatalf("getDogs for %s failed: %v\n", breed, err)
+			return fmt.Errorf("getDogs for %s failed: %w", breed, err)
 		}
 
 		log.Println("record insertion started for", breed)
 		err = insertDogs(database, dogs)
 		if err != nil {
-			log.Fatalf("inserting %s failed: %v\n", breed, err)
+			return fmt.Errorf("inserting %s failed: %w", breed, err)
 		}
 	}
 	log.Println("completed")
+	return nil
 }
 
-// init includes the date and time for each message.
-func init() {
+// main logs the date and time for each message and prints any errors.
+func main() {
 	log.SetFlags(log.LstdFlags)
+	if err := run(); err != nil {
+		log.Println("populating database failed:", err)
+	}
 }
