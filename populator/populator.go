@@ -19,9 +19,9 @@ import (
 
 // dog represents a dog record returned from Fetch Rewards' API.
 type dog struct {
-	Age     int    `json:"age"`
+	Age     uint8  `json:"age"`
 	Breed   string `json:"breed"`
-	Id      string `json:"id"`
+	ID      string `json:"id"`
 	Image   string `json:"img"`
 	Name    string `json:"name"`
 	ZipCode string `json:"zip_code"`
@@ -29,10 +29,10 @@ type dog struct {
 
 // searchResponse represents a response from Fetch Rewards' API.
 type searchResponse struct {
-	Next     string   `json:"next,omitempty"`
-	Previous string   `json:"prev,omitempty"`
+	Next     string   `json:"-"`
+	Previous string   `json:"-"`
 	Result   []string `json:"resultIds"`
-	Total    int      `json:"total"`
+	Total    uint16   `json:"-"`
 }
 
 // baseURL points to the address of Fetch Rewards' API.
@@ -42,7 +42,7 @@ const baseURL string = "https://frontend-take-home-service.fetch.com"
 // and creates a table named "Dog." It returns the database and
 // an error if any occurs.
 func createDatabase() (*sql.DB, error) {
-	database, err := sql.Open("sqlite", "./dogs.db")
+	database, err := sql.Open("sqlite", "dogs.db")
 	if err != nil {
 		return nil, err
 	}
@@ -63,10 +63,10 @@ func createDatabase() (*sql.DB, error) {
 	return database, nil
 }
 
-// login returns a cookiejar.Jar that has been populated with
+// login returns a pointer to http.Client that has been populated with
 // "fetch-access-token." An error is returned if the request fails.
 // Be aware that this token invalidates after an hour.
-func login() (*cookiejar.Jar, error) {
+func login() (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
@@ -91,13 +91,12 @@ func login() (*cookiejar.Jar, error) {
 	}
 	defer response.Body.Close()
 
-	return jar, nil
+	return client, nil
 }
 
-// getBreeds returns a list of dog breeds from Fetch Rewards' API.
-// It expects the cookie jar already have the "fetch-access-token."
+// getBreeds returns a sequence of dog breeds from Fetch Rewards' API.
 // An error is returned if the request fails.
-func getBreeds(jar *cookiejar.Jar) ([]string, error) {
+func getBreeds(client *http.Client) ([]string, error) {
 	request, err := http.NewRequest(
 		"GET",
 		baseURL+"/dogs/breeds",
@@ -108,7 +107,6 @@ func getBreeds(jar *cookiejar.Jar) ([]string, error) {
 	}
 	request.Header.Set("Credentials", "include")
 
-	client := &http.Client{Jar: jar}
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
@@ -123,9 +121,9 @@ func getBreeds(jar *cookiejar.Jar) ([]string, error) {
 	return breeds, nil
 }
 
-// getDogIDs returns a list of dog ids for a specific breed.
+// getDogIDs returns a slice of dog ids for a specific breed.
 // An error is returned if the request fails.
-func getDogIDs(jar *cookiejar.Jar, breed string, from int) ([]string, error) {
+func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 	parameters := url.Values{
 		"breeds": []string{breed},
 		"from":   []string{strconv.Itoa(from)},
@@ -144,7 +142,6 @@ func getDogIDs(jar *cookiejar.Jar, breed string, from int) ([]string, error) {
 	}
 	request.Header.Set("Credentials", "include")
 
-	client := &http.Client{Jar: jar}
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
@@ -161,7 +158,7 @@ func getDogIDs(jar *cookiejar.Jar, breed string, from int) ([]string, error) {
 
 // getDogInfo retrieves information about each dog from Fetch Rewards.
 // It returns a slice of dog structs and an error if the request fails.
-func getDogInfo(jar *cookiejar.Jar, dogIDs []string) ([]dog, error) {
+func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	ids, err := json.Marshal(dogIDs)
 	if err != nil {
 		return nil, err
@@ -178,7 +175,6 @@ func getDogInfo(jar *cookiejar.Jar, dogIDs []string) ([]dog, error) {
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Credentials", "include")
 
-	client := &http.Client{Jar: jar}
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
@@ -195,11 +191,11 @@ func getDogInfo(jar *cookiejar.Jar, dogIDs []string) ([]dog, error) {
 
 // getDogs retrieves all the dogs for a specific breed from Fetch Rewards.
 // It returns a slice of dog structs and an error if any occurs.
-func getDogs(jar *cookiejar.Jar, breed string) ([]dog, error) {
+func getDogs(client *http.Client, breed string) ([]dog, error) {
 	result := make([]dog, 0, 300)
 	from := 0
 	for {
-		dogIDs, err := getDogIDs(jar, breed, from)
+		dogIDs, err := getDogIDs(client, breed, from)
 		if err != nil {
 			return nil, err
 		}
@@ -207,7 +203,7 @@ func getDogs(jar *cookiejar.Jar, breed string) ([]dog, error) {
 			break
 		}
 
-		data, err := getDogInfo(jar, dogIDs)
+		data, err := getDogInfo(client, dogIDs)
 		if err != nil {
 			return nil, err
 		}
@@ -219,8 +215,8 @@ func getDogs(jar *cookiejar.Jar, breed string) ([]dog, error) {
 	return result, nil
 }
 
-// insertDogs takes a list of dogs and inserts them in batches into the
-// database. Any errors while inserting are returned.
+// insertDogs batch appends a sequence of dogs into the database.
+// Any errors while inserting are returned.
 func insertDogs(database *sql.DB, dogs []dog) error {
 	context, err := database.Begin()
 	if err != nil {
@@ -234,7 +230,7 @@ func insertDogs(database *sql.DB, dogs []dog) error {
 	defer statement.Close()
 	for _, dog := range dogs {
 		_, err := statement.Exec(
-			dog.Age, dog.Breed, dog.Id, dog.Image, dog.Name, dog.ZipCode,
+			dog.Age, dog.Breed, dog.ID, dog.Image, dog.Name, dog.ZipCode,
 		)
 		if err != nil {
 			return err
@@ -260,22 +256,23 @@ func main() {
 		log.Fatalln("creating database failed:", err)
 	}
 
-	jar, err := login()
+	client, err := login()
 	if err != nil {
 		log.Fatalln("login failed:", err)
 	}
 
-	breeds, err := getBreeds(jar)
+	breeds, err := getBreeds(client)
 	if err != nil {
 		log.Fatalln("getBreeds failed:", err)
 	}
 
 	for _, breed := range breeds {
 		log.Println("getDogs started for", breed)
-		dogs, err := getDogs(jar, breed)
+		dogs, err := getDogs(client, breed)
 		if err != nil {
 			log.Fatalf("getDogs for %s failed: %v\n", breed, err)
 		}
+
 		log.Println("record insertion started for", breed)
 		err = insertDogs(database, dogs)
 		if err != nil {

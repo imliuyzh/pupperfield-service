@@ -1,7 +1,7 @@
 all: clean build run
 
 build: populator.go
-	CGO_ENABLED=0 go build -o populator -ldflags "-extldflags=-static"
+	CGO_ENABLED=0 go build -o populator -ldflags "-extldflags=-static -s -w"
 
 .PHONY: clean
 clean:
