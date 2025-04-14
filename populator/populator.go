@@ -219,19 +219,19 @@ func getDogs(jar *cookiejar.Jar, breed string) ([]dog, error) {
 	return result, nil
 }
 
-// insertDogs takes a list of dogs and inserts them into the database.
-// Any errors while inserting are returned.
+// insertDogs takes a list of dogs and inserts them in batches into the
+// database. Any errors while inserting are returned.
 func insertDogs(database *sql.DB, dogs []dog) error {
 	context, err := database.Begin()
 	if err != nil {
 		return err
 	}
+
 	statement, err := context.Prepare(
 		"INSERT INTO Dog (age, breed, id, image_link, name, zip_code) " +
 			"VALUES (?, ?, ?, ?, ?, ?);",
 	)
 	defer statement.Close()
-
 	for _, dog := range dogs {
 		_, err := statement.Exec(
 			dog.Age, dog.Breed, dog.Id, dog.Image, dog.Name, dog.ZipCode,
