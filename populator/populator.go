@@ -187,7 +187,8 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 }
 
 // getDogs retrieves all the dogs for a specific breed from Fetch Rewards.
-// It returns a slice of dog structs and an error if any occurs.
+// It returns a slice of dog structs and an error if any occurs. Note that
+// there is a pause of up to 3 seconds between each request loop.
 func getDogs(client *http.Client, breed string) ([]dog, error) {
 	result := make([]dog, 0, 300)
 	from := 0
