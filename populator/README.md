@@ -14,7 +14,7 @@ The login token expires after an hour. Populator does not handle it because runn
 
 ## Schema
 
-SQLite will accept any type of data for the fields despite the data type parameters in the `CREATE TABLE` statement. As a result, `CHECK` constraints are needed for each field declared.
+Populator will create a table with the schema below. SQLite will accept any type of data for the fields despite the data type parameters in the `CREATE TABLE` statement. As a result, `CHECK` constraints are needed for each field declared.
 
 ```sql
 CREATE TABLE Dog (
