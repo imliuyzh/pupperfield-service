@@ -114,8 +114,7 @@ func getBreeds(client *http.Client) ([]string, error) {
 	defer response.Body.Close()
 
 	var breeds []string
-	err = json.NewDecoder(response.Body).Decode(&breeds)
-	if err != nil {
+	if err = json.NewDecoder(response.Body).Decode(&breeds); err != nil {
 		return nil, err
 	}
 	return breeds, nil
@@ -146,8 +145,7 @@ func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 	defer response.Body.Close()
 
 	var info searchResponse
-	err = json.NewDecoder(response.Body).Decode(&info)
-	if err != nil {
+	if err = json.NewDecoder(response.Body).Decode(&info); err != nil {
 		return nil, err
 	}
 	return info.Result, nil
@@ -179,8 +177,7 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	defer response.Body.Close()
 
 	var dogs []dog
-	err = json.NewDecoder(response.Body).Decode(&dogs)
-	if err != nil {
+	if err = json.NewDecoder(response.Body).Decode(&dogs); err != nil {
 		return nil, err
 	}
 	return dogs, nil
@@ -225,7 +222,11 @@ func insertDogs(database *sql.DB, dogs []dog) error {
 		"INSERT INTO Dog (age, breed, id, image_link, name, zip_code) " +
 			"VALUES (?, ?, ?, ?, ?, ?);",
 	)
+	if err != nil {
+		return err
+	}
 	defer statement.Close()
+
 	for _, dog := range dogs {
 		_, err := statement.Exec(
 			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
@@ -234,12 +235,9 @@ func insertDogs(database *sql.DB, dogs []dog) error {
 			return err
 		}
 	}
-
-	err = context.Commit()
-	if err != nil {
+	if err = context.Commit(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -271,8 +269,7 @@ func run() error {
 		}
 
 		log.Println("record insertion started for", breed)
-		err = insertDogs(database, dogs)
-		if err != nil {
+		if err = insertDogs(database, dogs); err != nil {
 			return fmt.Errorf("inserting %s failed: %w", breed, err)
 		}
 	}
