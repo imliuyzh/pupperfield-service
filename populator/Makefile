@@ -1,6 +1,6 @@
-.PHONY: all build clean lint run
+.PHONY: all build clean lint populate
 
-all: clean build run
+all: clean build populate
 
 build: lint
 	CGO_ENABLED=0 go build -o populator -ldflags "-extldflags=-static -s -w"
@@ -12,5 +12,5 @@ lint:
 	go fmt
 	go vet
 
-run:
+populate:
 	./populator
