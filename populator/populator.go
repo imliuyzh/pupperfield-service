@@ -47,14 +47,14 @@ func createDatabase() (*sql.DB, error) {
 	}
 	_, err = database.Exec(
 		`CREATE TABLE Dog (
-			age INTEGER NOT NULL CHECK (typeof(age) = 'integer'),
-			breed TEXT NOT NULL CHECK (typeof(breed) = 'text'),
-			id TEXT NOT NULL CHECK (typeof(id) = 'text'),
-			image_link TEXT NOT NULL CHECK (typeof(image_link) = 'text'),
-			name TEXT NOT NULL CHECK (typeof(name) = 'text'),
-			zip_code TEXT NOT NULL CHECK (typeof(zip_code) = 'text'),
+			age INTEGER NOT NULL,
+			breed TEXT NOT NULL,
+			id TEXT NOT NULL,
+			image_link TEXT NOT NULL,
+			name TEXT NOT NULL,
+			zip_code TEXT NOT NULL,
 			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-		)`,
+		) STRICT;`,
 	)
 	if err != nil {
 		return nil, err
@@ -273,7 +273,7 @@ func run() error {
 			return fmt.Errorf("inserting %s failed: %w", breed, err)
 		}
 	}
-	log.Println("completed")
+	log.Println("database creation completed")
 	return nil
 }
 
