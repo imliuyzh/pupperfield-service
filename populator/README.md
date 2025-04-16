@@ -10,8 +10,6 @@ Please make sure you have `make` and Go (v1.24+) installed on your system.
    - The database file is named `dogs.db` and is stored in the current working directory.
 2. When you are done, move the database file out of the folder and run `make clean` to remove the binary.
 
-The login token expires after an hour. Populator does not handle it because running it should not take more than an hour to do so.
-
 ## Schema
 
 Populator will create a table with the schema below.
