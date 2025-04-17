@@ -1,4 +1,5 @@
-// Populator gets Fetch Rewards' API data and stores it in a SQLite database.
+// Populator is a spider that crawls Fetch Rewards' API and stores its data in
+// a SQLite database file.
 package main
 
 import (
