@@ -1,4 +1,4 @@
-module pupperfield.com/collector
+module pupperfield.com/populator
 
 go 1.24.2
 

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -183,10 +184,10 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	return dogs, nil
 }
 
-// getDogs retrieves all the dogs for a specific breed from Fetch Rewards.
-// It returns a slice of dog structs and an error if any occurs. Note that
-// there is a pause of up to 3 seconds between each request loop.
-func getDogs(client *http.Client, breed string) ([]dog, error) {
+// getDogsByBreed retrieves all the dogs for a specific breed from Fetch
+// Rewards. It returns a slice of dog structs and an error if any occurs.
+// Note that there is a pause of up to 3 seconds between each request loop.
+func getDogsByBreed(client *http.Client, breed string) ([]dog, error) {
 	result := make([]dog, 0, 300)
 	from := 0
 	for {
@@ -210,47 +211,50 @@ func getDogs(client *http.Client, breed string) ([]dog, error) {
 	return result, nil
 }
 
-// insertDogs batch appends a sequence of dogs into the database.
-// Any errors while inserting are returned.
-func insertDogs(database *sql.DB, dogs []dog) error {
-	context, err := database.Begin()
-	if err != nil {
-		return err
-	}
-
-	statement, err := context.Prepare(
-		"INSERT INTO Dog (age, breed, id, image_link, name, zip_code) " +
-			"VALUES (?, ?, ?, ?, ?, ?);",
-	)
-	if err != nil {
-		return err
-	}
-	defer statement.Close()
-
-	for _, dog := range dogs {
-		_, err := statement.Exec(
+// insertDogsByBreed builds a query to put the dogs into the database.
+// If any error occurs, it will be returned.
+func insertDogsByBreed(database *sql.DB, dogs []dog) error {
+	var query strings.Builder
+	query.WriteString("INSERT INTO Dog VALUES ")
+	for index, dog := range dogs {
+		query.WriteString(fmt.Sprintf(
+			`(%d, "%s", "%s", "%s", "%s", "%s")`,
 			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
-		)
-		if err != nil {
-			return err
+		))
+		if index < len(dogs)-1 {
+			query.WriteString(", ")
 		}
 	}
-	if err = context.Commit(); err != nil {
+	if _, err := database.Exec(query.String()); err != nil {
 		return err
 	}
 	return nil
 }
 
-// run sets up the database by getting the data from Fetch Rewards' API.
-// An error is returned if the process fails. Note the database file is
-// not closed manually because it is unnecessary according to documentation.
-func run() error {
-	log.Println("database creation began")
-	database, err := createDatabase()
-	if err != nil {
-		return fmt.Errorf("creating database failed: %w", err)
+// getAndInsertDogs fetches data by dog breed and puts them into the database.
+// It returns an error if the process fails.
+func getAndInsertDogs(
+	client *http.Client,
+	database *sql.DB,
+	breeds []string,
+) error {
+	for _, breed := range breeds {
+		log.Println("getDogsByBreed started for", breed)
+		dogs, err := getDogsByBreed(client, breed)
+		if err != nil {
+			return fmt.Errorf("getDogsByBreed for %s failed: %w", breed, err)
+		}
+		log.Println("insertDogsByBreed started for", breed)
+		if err = insertDogsByBreed(database, dogs); err != nil {
+			return fmt.Errorf("insertDogsByBreed %s failed: %w", breed, err)
+		}
 	}
+	return nil
+}
 
+// run gets the data from Fetch Rewards' API to set up the database.
+// An error is returned if the process fails.
+func run() error {
 	client, err := login()
 	if err != nil {
 		return fmt.Errorf("login failed: %w", err)
@@ -261,23 +265,22 @@ func run() error {
 		return fmt.Errorf("getBreeds failed: %w", err)
 	}
 
-	for _, breed := range breeds {
-		log.Println("getDogs started for", breed)
-		dogs, err := getDogs(client, breed)
-		if err != nil {
-			return fmt.Errorf("getDogs for %s failed: %w", breed, err)
-		}
-
-		log.Println("record insertion started for", breed)
-		if err = insertDogs(database, dogs); err != nil {
-			return fmt.Errorf("inserting %s failed: %w", breed, err)
-		}
+	// Note the database is not manually closed because it is unnecessary
+	// according to documentation.
+	log.Println("database creation began")
+	database, err := createDatabase()
+	if err != nil {
+		return fmt.Errorf("creating database failed: %w", err)
+	}
+	if err = getAndInsertDogs(client, database, breeds); err != nil {
+		return fmt.Errorf("getAndInsertDogs failed: %w", err)
 	}
 	log.Println("database creation completed")
+
 	return nil
 }
 
-// main logs the date and time for each message and prints any errors.
+// main logs the date and time for each message and prints any error.
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
