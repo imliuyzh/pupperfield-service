@@ -13,4 +13,4 @@ lint:
 	go vet
 
 populate:
-	./populator
+	@./populator

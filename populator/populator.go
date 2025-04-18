@@ -3,7 +3,6 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -77,7 +76,7 @@ func login() (*http.Client, error) {
 	request, err := http.NewRequest(
 		"POST",
 		baseURL+"/auth/login",
-		bytes.NewBuffer([]byte(`{"name":"temp","email":"temp@email.com"}`)),
+		strings.NewReader(`{"name":"temp","email":"temp@email.com"}`),
 	)
 	if err != nil {
 		return nil, err
@@ -92,6 +91,9 @@ func login() (*http.Client, error) {
 		return nil, err
 	}
 	defer response.Body.Close()
+	if code := response.StatusCode; code != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code %d", code)
+	}
 
 	return client, nil
 }
@@ -114,6 +116,9 @@ func getBreeds(client *http.Client) ([]string, error) {
 		return nil, err
 	}
 	defer response.Body.Close()
+	if code := response.StatusCode; code < 200 || code >= 300 {
+		return nil, fmt.Errorf("unexpected status code %d", code)
+	}
 
 	var breeds []string
 	if err = json.NewDecoder(response.Body).Decode(&breeds); err != nil {
@@ -145,6 +150,9 @@ func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 		return nil, err
 	}
 	defer response.Body.Close()
+	if code := response.StatusCode; code < 200 || code >= 300 {
+		return nil, fmt.Errorf("unexpected status code %d", code)
+	}
 
 	var info searchResponse
 	if err = json.NewDecoder(response.Body).Decode(&info); err != nil {
@@ -164,7 +172,7 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	request, err := http.NewRequest(
 		"POST",
 		baseURL+"/dogs",
-		bytes.NewBuffer(ids),
+		strings.NewReader(string(ids)),
 	)
 	if err != nil {
 		return nil, err
@@ -177,6 +185,9 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 		return nil, err
 	}
 	defer response.Body.Close()
+	if code := response.StatusCode; code < 200 || code >= 300 {
+		return nil, fmt.Errorf("unexpected status code %d", code)
+	}
 
 	var dogs []dog
 	if err = json.NewDecoder(response.Body).Decode(&dogs); err != nil {
@@ -194,7 +205,7 @@ func getDogsByBreed(client *http.Client, breed string) ([]dog, error) {
 	for {
 		dogIDs, err := getDogIDs(client, breed, from)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("getDogIDs failed: %w", err)
 		}
 		if len(dogIDs) <= 0 {
 			break
@@ -202,7 +213,7 @@ func getDogsByBreed(client *http.Client, breed string) ([]dog, error) {
 
 		data, err := getDogInfo(client, dogIDs)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("getDogInfo failed: %w", err)
 		}
 		result = append(result, data...)
 
@@ -281,7 +292,8 @@ func run() error {
 	return nil
 }
 
-// main logs the date and time for each message and prints any error.
+// main logs the date and time for each message and displays any error
+// in the console.
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
