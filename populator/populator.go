@@ -127,16 +127,14 @@ func getBreeds(client *http.Client) ([]string, error) {
 	return breeds, nil
 }
 
-// getDogIDs returns a slice of dog ids for a specific breed.
+// getDogIDs returns a slice of IDs for dogs of a specific breed.
 // An error is returned if the request fails.
 func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 	request, err := http.NewRequest(
 		"GET",
 		fmt.Sprintf(
 			"%s/dogs/search?breeds=%s&from=%d&size=100",
-			baseURL,
-			url.QueryEscape(breed),
-			from,
+			baseURL, url.QueryEscape(breed), from,
 		),
 		nil,
 	)
@@ -288,7 +286,6 @@ func run() error {
 		return fmt.Errorf("getAndInsertDogs failed: %w", err)
 	}
 	log.Println("database creation completed")
-
 	return nil
 }
 
