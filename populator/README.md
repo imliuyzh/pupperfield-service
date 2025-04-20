@@ -7,8 +7,7 @@ Populator is a tool for creating the initial data for the back end. It fetches d
 Please make sure you have `make` and Go (v1.24+) installed on your system.
 
 1. Run `make` to build and run the program.
-   - The database file is named `dogs.db` and is stored in the current working directory.
-2. When you are done, move the database file out of the folder and run `make clean` to remove the binary.
+2. When you are done, move the database file `dogs.db` to `/src/main/resources/database` and run `make clean` to remove the compiled binary.
 
 ## Schema
 
