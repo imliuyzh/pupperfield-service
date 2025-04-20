@@ -38,31 +38,6 @@ type searchResponse struct {
 // baseURL points to the address of Fetch Rewards' API.
 const baseURL string = "https://frontend-take-home-service.fetch.com"
 
-// createDatabase initializes a database file named "dogs.db"
-// and creates a table named "Dog." It returns the database and
-// an error if any occurs.
-func createDatabase() (*sql.DB, error) {
-	database, err := sql.Open("sqlite", "dogs.db")
-	if err != nil {
-		return nil, err
-	}
-	_, err = database.Exec(
-		`CREATE TABLE Dog (
-			age INTEGER NOT NULL,
-			breed TEXT NOT NULL,
-			id TEXT NOT NULL,
-			image_link TEXT NOT NULL,
-			name TEXT NOT NULL,
-			zip_code TEXT NOT NULL,
-			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-		) STRICT;`,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return database, nil
-}
-
 // login returns a pointer to http.Client that has been populated with
 // "fetch-access-token." An error is returned if the request fails.
 // Be aware that this token invalidates after an hour. Refresh is not
@@ -194,6 +169,31 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	return dogs, nil
 }
 
+// createDatabase initializes a database file named "dogs.db"
+// and creates a table named "Dog." It returns the database and
+// an error if any occurs.
+func createDatabase() (*sql.DB, error) {
+	database, err := sql.Open("sqlite", "dogs.db")
+	if err != nil {
+		return nil, err
+	}
+	_, err = database.Exec(
+		`CREATE TABLE Dog (
+			age INTEGER NOT NULL,
+			breed TEXT NOT NULL,
+			id TEXT NOT NULL,
+			image_link TEXT NOT NULL,
+			name TEXT NOT NULL,
+			zip_code TEXT NOT NULL,
+			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
+		) STRICT;`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return database, nil
+}
+
 // getDogsByBreed retrieves all the dogs for a specific breed from Fetch
 // Rewards. It returns a slice of dog structs and an error if any occurs.
 // Note that there is a pause of up to 3 seconds between each request loop.
@@ -294,6 +294,6 @@ func run() error {
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
-		log.Println("populating database failed:", err)
+		log.Fatalln("populating database failed:", err)
 	}
 }
