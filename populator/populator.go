@@ -102,6 +102,31 @@ func getBreeds(client *http.Client) ([]string, error) {
 	return breeds, nil
 }
 
+// createDatabase initializes a database file named "dogs.db"
+// and creates a table named "Dog." It returns the database and
+// an error if any occurs.
+func createDatabase() (*sql.DB, error) {
+	database, err := sql.Open("sqlite", "dogs.db")
+	if err != nil {
+		return nil, err
+	}
+	_, err = database.Exec(
+		`CREATE TABLE Dog (
+			age INTEGER NOT NULL,
+			breed TEXT NOT NULL,
+			id TEXT NOT NULL,
+			image_link TEXT NOT NULL,
+			name TEXT NOT NULL,
+			zip_code TEXT NOT NULL,
+			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
+		) STRICT;`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return database, nil
+}
+
 // getDogIDs returns a slice of IDs for dogs of a specific breed.
 // An error is returned if the request fails.
 func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
@@ -167,31 +192,6 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 		return nil, err
 	}
 	return dogs, nil
-}
-
-// createDatabase initializes a database file named "dogs.db"
-// and creates a table named "Dog." It returns the database and
-// an error if any occurs.
-func createDatabase() (*sql.DB, error) {
-	database, err := sql.Open("sqlite", "dogs.db")
-	if err != nil {
-		return nil, err
-	}
-	_, err = database.Exec(
-		`CREATE TABLE Dog (
-			age INTEGER NOT NULL,
-			breed TEXT NOT NULL,
-			id TEXT NOT NULL,
-			image_link TEXT NOT NULL,
-			name TEXT NOT NULL,
-			zip_code TEXT NOT NULL,
-			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-		) STRICT;`,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return database, nil
 }
 
 // getDogsByBreed retrieves all the dogs for a specific breed from Fetch
