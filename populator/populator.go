@@ -294,6 +294,6 @@ func run() error {
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
-		log.Fatalln("populating database failed:", err)
+		log.Fatalln(err)
 	}
 }
