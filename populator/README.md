@@ -1,6 +1,6 @@
 # Populator
 
-Populator is a tool for creating the initial data for the back end. It fetches data from Fetch Rewards' API and stores it in a SQLite database.
+Populator is a tool to create the initial data for Pupperfield's back end service. It takes data from Fetch Rewards' API and stores it in a SQLite database.
 
 ## Getting Started
 
