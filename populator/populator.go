@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"math/rand/v2"
 	"net/http"
@@ -38,39 +39,62 @@ type searchResponse struct {
 // baseURL points to the address of Fetch Rewards' API.
 const baseURL string = "https://frontend-take-home-service.fetch.com"
 
-// login returns a pointer to http.Client that has been populated with
-// "fetch-access-token." An error is returned if the request fails.
-// Be aware that this token invalidates after an hour. Refresh is not
-// implemented because the entire run generally takes under 15 minutes.
-func login() (*http.Client, error) {
+// createClient returns a pointer to http.Client along with a cookie jar in it.
+// An error is returned if the request fails.
+func createClient() (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
+	return &http.Client{Jar: jar}, nil
+}
 
+// sendRequest returns the response body as a byte slice. An error is
+// returned if the request fails, the status code is not between 200
+// and 299, or the body cannot be read.
+func sendRequest(
+	client *http.Client,
+	request *http.Request,
+) ([]byte, error) {
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	if code := response.StatusCode; code < 200 || code > 299 {
+		return nil, fmt.Errorf("unexpected status code %d", code)
+	}
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"unexpected error while reading response body: %w", err,
+		)
+	}
+	return body, nil
+}
+
+// login returns a pointer to http.Client that has been populated with
+// "fetch-access-token." An error is returned if the request fails.
+// Be aware that this token invalidates after an hour. Refresh is not
+// implemented because the entire run generally takes under 15 minutes.
+func login(client *http.Client) error {
 	request, err := http.NewRequest(
 		"POST",
 		baseURL+"/auth/login",
 		strings.NewReader(`{"name":"temp","email":"temp@email.com"}`),
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Credentials", "include")
 
-	client := &http.Client{Jar: jar}
-	response, err := client.Do(request)
-	if err != nil {
-		return nil, err
+	if _, err := sendRequest(client, request); err != nil {
+		return err
 	}
-	defer response.Body.Close()
-	if code := response.StatusCode; code != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code %d", code)
-	}
-
-	return client, nil
+	return nil
 }
 
 // getBreeds returns a sequence of dog breeds from Fetch Rewards' API.
@@ -86,17 +110,13 @@ func getBreeds(client *http.Client) ([]string, error) {
 	}
 	request.Header.Set("Credentials", "include")
 
-	response, err := client.Do(request)
+	response, err := sendRequest(client, request)
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
-	if code := response.StatusCode; code < 200 || code >= 300 {
-		return nil, fmt.Errorf("unexpected status code %d", code)
-	}
 
 	var breeds []string
-	if err = json.NewDecoder(response.Body).Decode(&breeds); err != nil {
+	if err := json.Unmarshal(response, &breeds); err != nil {
 		return nil, err
 	}
 	return breeds, nil
@@ -143,17 +163,13 @@ func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 	}
 	request.Header.Set("Credentials", "include")
 
-	response, err := client.Do(request)
+	response, err := sendRequest(client, request)
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
-	if code := response.StatusCode; code < 200 || code >= 300 {
-		return nil, fmt.Errorf("unexpected status code %d", code)
-	}
 
 	var info searchResponse
-	if err = json.NewDecoder(response.Body).Decode(&info); err != nil {
+	if err := json.Unmarshal(response, &info); err != nil {
 		return nil, err
 	}
 	return info.Result, nil
@@ -178,17 +194,13 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Credentials", "include")
 
-	response, err := client.Do(request)
+	response, err := sendRequest(client, request)
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
-	if code := response.StatusCode; code < 200 || code >= 300 {
-		return nil, fmt.Errorf("unexpected status code %d", code)
-	}
 
 	var dogs []dog
-	if err = json.NewDecoder(response.Body).Decode(&dogs); err != nil {
+	if err := json.Unmarshal(response, &dogs); err != nil {
 		return nil, err
 	}
 	return dogs, nil
@@ -265,8 +277,12 @@ func getAndInsertDogs(
 // run gets the data from Fetch Rewards' API to set up the database.
 // An error is returned if the process fails.
 func run() error {
-	client, err := login()
+	client, err := createClient()
 	if err != nil {
+		return fmt.Errorf("createClient failed: %w", err)
+	}
+
+	if err = login(client); err != nil {
 		return fmt.Errorf("login failed: %w", err)
 	}
 
