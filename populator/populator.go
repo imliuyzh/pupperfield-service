@@ -69,7 +69,7 @@ func sendRequest(
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unexpected error while getting response body: %w", err,
+			"unexpected error when getting response body: %w", err,
 		)
 	}
 	return body, nil
@@ -217,6 +217,7 @@ func getDogsByBreed(client *http.Client, breed string) ([]dog, error) {
 		if err != nil {
 			return nil, fmt.Errorf("getDogIDs failed: %w", err)
 		}
+
 		if len(dogIDs) <= 0 {
 			break
 		}
@@ -233,24 +234,33 @@ func getDogsByBreed(client *http.Client, breed string) ([]dog, error) {
 	return result, nil
 }
 
-// insertDogsByBreed builds a query to put the dogs into the database.
-// If any error occurs, it will be returned.
+// insertDogsByBreed puts the dogs passed in into the database in one
+// transaction. It returns an error when there is one.
 func insertDogsByBreed(database *sql.DB, dogs []dog) error {
-	var query strings.Builder
-	query.WriteString("INSERT INTO Dog VALUES ")
-	for index, dog := range dogs {
-		query.WriteString(fmt.Sprintf(
-			`(%d, "%s", "%s", "%s", "%s", "%s")`,
-			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
-		))
-		if index < len(dogs)-1 {
-			query.WriteString(", ")
-		}
-	}
-	if _, err := database.Exec(query.String()); err != nil {
+	transaction, err := database.Begin()
+	if err != nil {
 		return err
 	}
-	return nil
+
+	statement, err := transaction.Prepare(
+		"INSERT INTO Dog (age, breed, id, image_link, name, zip_code) " +
+			"VALUES (?, ?, ?, ?, ?, ?);",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	for _, dog := range dogs {
+		_, err := statement.Exec(
+			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	return transaction.Commit()
 }
 
 // getAndInsertDogs fetches data by dog breed and puts them into the database.
@@ -266,6 +276,7 @@ func getAndInsertDogs(
 		if err != nil {
 			return fmt.Errorf("getDogsByBreed for %s failed: %w", breed, err)
 		}
+
 		log.Println("insertDogsByBreed started for", breed)
 		if err = insertDogsByBreed(database, dogs); err != nil {
 			return fmt.Errorf("insertDogsByBreed %s failed: %w", breed, err)
@@ -293,7 +304,6 @@ func run() error {
 
 	// Note the database is not manually closed because it is unnecessary
 	// according to documentation.
-	log.Println("database creation began")
 	database, err := createDatabase()
 	if err != nil {
 		return fmt.Errorf("creating database failed: %w", err)
@@ -301,7 +311,7 @@ func run() error {
 	if err = getAndInsertDogs(client, database, breeds); err != nil {
 		return fmt.Errorf("getAndInsertDogs failed: %w", err)
 	}
-	log.Println("database creation completed")
+
 	return nil
 }
 
