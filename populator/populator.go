@@ -69,7 +69,7 @@ func sendRequest(
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"unexpected error while reading response body: %w", err,
+			"unexpected error while getting response body: %w", err,
 		)
 	}
 	return body, nil
@@ -116,7 +116,7 @@ func getBreeds(client *http.Client) ([]string, error) {
 	}
 
 	var breeds []string
-	if err := json.Unmarshal(response, &breeds); err != nil {
+	if err = json.Unmarshal(response, &breeds); err != nil {
 		return nil, err
 	}
 	return breeds, nil
@@ -169,7 +169,7 @@ func getDogIDs(client *http.Client, breed string, from int) ([]string, error) {
 	}
 
 	var info searchResponse
-	if err := json.Unmarshal(response, &info); err != nil {
+	if err = json.Unmarshal(response, &info); err != nil {
 		return nil, err
 	}
 	return info.Result, nil
@@ -200,7 +200,7 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	}
 
 	var dogs []dog
-	if err := json.Unmarshal(response, &dogs); err != nil {
+	if err = json.Unmarshal(response, &dogs); err != nil {
 		return nil, err
 	}
 	return dogs, nil
