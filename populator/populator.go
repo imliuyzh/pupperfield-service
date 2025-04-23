@@ -75,7 +75,7 @@ func sendRequest(
 	return body, nil
 }
 
-// login returns a pointer to http.Client that has been populated with
+// login creates an entry in the client's cookie jar that has the name
 // "fetch-access-token." An error is returned if the request fails.
 // Be aware that this token invalidates after an hour. Refresh is not
 // implemented because the entire run generally takes under 15 minutes.
@@ -305,8 +305,7 @@ func run() error {
 	return nil
 }
 
-// main logs the date and time for each message and displays any error
-// in the console.
+// main displays each message with date and time in the console.
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
