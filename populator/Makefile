@@ -11,6 +11,11 @@ clean:
 lint:
 	go fmt
 	go vet
+	go tool staticcheck
+	go tool govulncheck
+
+list-outdated:
+	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all
 
 populate:
 	@./populator
