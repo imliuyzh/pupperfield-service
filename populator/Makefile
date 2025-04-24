@@ -1,4 +1,4 @@
-.PHONY: all build clean lint list-outdated populate
+.PHONY: all build clean lint outdated populate
 
 all: clean build populate
 
@@ -14,7 +14,7 @@ lint:
 	go tool staticcheck
 	go tool govulncheck
 
-list-outdated:
+outdated:
 	go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all
 
 populate:
