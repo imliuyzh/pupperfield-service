@@ -1,4 +1,4 @@
-.PHONY: all build clean lint populate
+.PHONY: all build clean lint list-outdated populate
 
 all: clean build populate
 
