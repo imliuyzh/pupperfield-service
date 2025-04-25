@@ -1,5 +1,4 @@
-// Populator is a spider that crawls Fetch Rewards' API and stores its data in
-// a SQLite database file.
+// Populator crawls Fetch Rewards' API and stores its data in a SQLite file.
 package main
 
 import (
@@ -52,10 +51,7 @@ func createClient() (*http.Client, error) {
 // sendRequest returns the response body as a byte slice. An error is
 // returned if the request fails, the status code is not between 200
 // and 299, or the body cannot be read.
-func sendRequest(
-	client *http.Client,
-	request *http.Request,
-) ([]byte, error) {
+func sendRequest(client *http.Client, request *http.Request) ([]byte, error) {
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
@@ -68,9 +64,7 @@ func sendRequest(
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, fmt.Errorf(
-			"unexpected error when getting response body: %w", err,
-		)
+		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 	return body, nil
 }
