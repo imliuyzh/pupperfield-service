@@ -300,7 +300,7 @@ func run() error {
 	// according to documentation.
 	database, err := createDatabase()
 	if err != nil {
-		return fmt.Errorf("creating database failed: %w", err)
+		return fmt.Errorf("createDatabase failed: %w", err)
 	}
 	if err = getAndInsertDogs(client, database, breeds); err != nil {
 		return fmt.Errorf("getAndInsertDogs failed: %w", err)
