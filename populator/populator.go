@@ -85,10 +85,8 @@ func login(client *http.Client) error {
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Credentials", "include")
 
-	if _, err := sendRequest(client, request); err != nil {
-		return err
-	}
-	return nil
+	_, err = sendRequest(client, request)
+	return err
 }
 
 // getBreeds returns a sequence of dog breeds from Fetch Rewards' API.
@@ -110,15 +108,12 @@ func getBreeds(client *http.Client) ([]string, error) {
 	}
 
 	var breeds []string
-	if err = json.Unmarshal(response, &breeds); err != nil {
-		return nil, err
-	}
-	return breeds, nil
+	err = json.Unmarshal(response, &breeds)
+	return breeds, err
 }
 
-// createDatabase initializes a database file named "dogs.db"
-// and creates a table named "Dog." It returns the database and
-// an error if any occurs.
+// createDatabase initializes the database file "dogs.db" with a schema
+// (see README.md). It returns the database and an error if any occurs.
 func createDatabase() (*sql.DB, error) {
 	database, err := sql.Open("sqlite", "dogs.db")
 	if err != nil {
@@ -135,10 +130,7 @@ func createDatabase() (*sql.DB, error) {
 			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
 		) STRICT;`,
 	)
-	if err != nil {
-		return nil, err
-	}
-	return database, nil
+	return database, err
 }
 
 // getDogIDs returns a slice of IDs for dogs of a specific breed.
@@ -194,10 +186,8 @@ func getDogInfo(client *http.Client, dogIDs []string) ([]dog, error) {
 	}
 
 	var dogs []dog
-	if err = json.Unmarshal(response, &dogs); err != nil {
-		return nil, err
-	}
-	return dogs, nil
+	err = json.Unmarshal(response, &dogs)
+	return dogs, err
 }
 
 // getDogsByBreed retrieves all the dogs for a specific breed from Fetch
@@ -309,7 +299,7 @@ func run() error {
 	return nil
 }
 
-// main displays each message with date and time in the console.
+// main displays date and time with each message and executes the main logic.
 func main() {
 	log.SetFlags(log.LstdFlags)
 	if err := run(); err != nil {
