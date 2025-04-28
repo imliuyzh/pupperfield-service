@@ -128,7 +128,7 @@ func createDatabase() (*sql.DB, error) {
 			name TEXT NOT NULL,
 			zip_code TEXT NOT NULL,
 			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-		) STRICT;`,
+		) STRICT, WITHOUT ROWID;`,
 	)
 	return database, err
 }
