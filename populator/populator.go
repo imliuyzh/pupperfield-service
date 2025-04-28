@@ -227,8 +227,8 @@ func insertDogsByBreed(database *sql.DB, dogs []dog) error {
 	}
 
 	statement, err := transaction.Prepare(
-		"INSERT INTO Dog (age, breed, id, image_link, name, zip_code) " +
-			"VALUES (?, ?, ?, ?, ?, ?);",
+		`INSERT INTO Dog (age, breed, id, image_link, name, zip_code)
+			VALUES (?, ?, ?, ?, ?, ?);`,
 	)
 	if err != nil {
 		return err
