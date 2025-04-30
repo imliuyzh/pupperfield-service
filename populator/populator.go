@@ -89,6 +89,27 @@ func login(client *http.Client) error {
 	return err
 }
 
+// createDatabase initializes the database file "dogs.db" with a schema
+// (see README.md). It returns the database and an error if any occurs.
+func createDatabase() (*sql.DB, error) {
+	database, err := sql.Open("sqlite", "dogs.db")
+	if err != nil {
+		return nil, err
+	}
+	_, err = database.Exec(
+		`CREATE TABLE Dog (
+			age INTEGER NOT NULL,
+			breed TEXT NOT NULL,
+			id TEXT NOT NULL,
+			image_link TEXT NOT NULL,
+			name TEXT NOT NULL,
+			zip_code TEXT NOT NULL,
+			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
+		) STRICT, WITHOUT ROWID;`,
+	)
+	return database, err
+}
+
 // getBreeds returns a sequence of dog breeds from Fetch Rewards' API.
 // An error is returned if the request fails.
 func getBreeds(client *http.Client) ([]string, error) {
@@ -110,27 +131,6 @@ func getBreeds(client *http.Client) ([]string, error) {
 	var breeds []string
 	err = json.Unmarshal(response, &breeds)
 	return breeds, err
-}
-
-// createDatabase initializes the database file "dogs.db" with a schema
-// (see README.md). It returns the database and an error if any occurs.
-func createDatabase() (*sql.DB, error) {
-	database, err := sql.Open("sqlite", "dogs.db")
-	if err != nil {
-		return nil, err
-	}
-	_, err = database.Exec(
-		`CREATE TABLE Dog (
-			age INTEGER NOT NULL,
-			breed TEXT NOT NULL,
-			id TEXT NOT NULL,
-			image_link TEXT NOT NULL,
-			name TEXT NOT NULL,
-			zip_code TEXT NOT NULL,
-			CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-		) STRICT, WITHOUT ROWID;`,
-	)
-	return database, err
 }
 
 // getDogIDs returns a slice of IDs for dogs of a specific breed.
@@ -249,11 +249,11 @@ func insertDogsByBreed(database *sql.DB, dogs []dog) error {
 
 // getAndInsertDogs fetches data by dog breed and puts them into the database.
 // It returns an error if the process fails.
-func getAndInsertDogs(
-	client *http.Client,
-	database *sql.DB,
-	breeds []string,
-) error {
+func getAndInsertDogs(client *http.Client, database *sql.DB) error {
+	breeds, err := getBreeds(client)
+	if err != nil {
+		return fmt.Errorf("getBreeds failed: %w", err)
+	}
 	for _, breed := range breeds {
 		log.Println("getDogsByBreed started for", breed)
 		dogs, err := getDogsByBreed(client, breed)
@@ -281,18 +281,13 @@ func run() error {
 		return fmt.Errorf("login failed: %w", err)
 	}
 
-	breeds, err := getBreeds(client)
-	if err != nil {
-		return fmt.Errorf("getBreeds failed: %w", err)
-	}
-
 	// Note the database is not manually closed because it is unnecessary
 	// according to documentation.
 	database, err := createDatabase()
 	if err != nil {
 		return fmt.Errorf("createDatabase failed: %w", err)
 	}
-	if err = getAndInsertDogs(client, database, breeds); err != nil {
+	if err = getAndInsertDogs(client, database); err != nil {
 		return fmt.Errorf("getAndInsertDogs failed: %w", err)
 	}
 
