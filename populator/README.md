@@ -22,5 +22,5 @@ CREATE TABLE Dog (
    name TEXT NOT NULL,
    zip_code TEXT NOT NULL,
    CONSTRAINT DogPrimaryKey PRIMARY KEY (id)
-) STRICT;
+) STRICT, WITHOUT ROWID;
 ```
