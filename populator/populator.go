@@ -260,7 +260,6 @@ func getAndInsertDogs(client *http.Client, database *sql.DB) error {
 		if err != nil {
 			return fmt.Errorf("getDogsByBreed for %s failed: %w", breed, err)
 		}
-
 		log.Println("insertDogsByBreed started for", breed)
 		if err = insertDogsByBreed(database, dogs); err != nil {
 			return fmt.Errorf("insertDogsByBreed %s failed: %w", breed, err)
