@@ -60,6 +60,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             "%s: %s %s",
             reason, request.getMethod(), request.getRequestURL().toString()
         ));
-        throw new AuthException("Unauthorized due to missing token");
+        throw new AuthException(reason);
     }
 }

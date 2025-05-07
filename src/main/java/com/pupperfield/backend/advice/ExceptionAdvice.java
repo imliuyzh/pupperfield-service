@@ -21,9 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExceptionAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<String> httpMessageConverterExceptionHandler(
-        HttpMessageConversionException exception
-    ) {
+    public ResponseEntity<String> httpMessageConverterExceptionHandler
+            (HttpMessageConversionException exception) {
         logException(exception);
         return new ResponseEntity<>(
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -33,9 +32,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> authExceptionHandler(
-        AuthException exception
-    ) {
+    public ResponseEntity<String> authExceptionHandler
+            (AuthException exception) {
         logException(exception);
         return new ResponseEntity<>(
             HttpStatus.UNAUTHORIZED.getReasonPhrase(),
@@ -45,9 +43,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<String> nohandlerFoundExceptionHandler(
-        NoHandlerFoundException exception
-    ) {
+    public ResponseEntity<String> nohandlerFoundExceptionHandler
+            (NoHandlerFoundException exception) {
         logException(exception);
         return new ResponseEntity<>(
             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -57,9 +54,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<String> httpMethodNotSupportedExceptionHandler(
-        HttpRequestMethodNotSupportedException exception
-    ) {
+    public ResponseEntity<String> httpMethodNotSupportedExceptionHandler
+            (HttpRequestMethodNotSupportedException exception) {
         logException(exception);
         return new ResponseEntity<>(
             HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
@@ -69,9 +65,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<InvalidRequestResponseDto>
-        invalidRequestExceptionHandler(
-            MethodArgumentNotValidException exception) {
+    public ResponseEntity<InvalidRequestResponseDto> validationExceptionHandler
+            (MethodArgumentNotValidException exception) {
         logException(exception);
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(

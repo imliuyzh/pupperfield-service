@@ -25,9 +25,8 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-        @RequestBody @Validated LoginDto loginDto
-    ) {
+    public ResponseEntity<String> login
+            (@RequestBody @Validated LoginDto loginDto) {
         var cookie = createCookie(tokenService.generate(
             loginDto.getEmail(), loginDto.getName()
         ));
