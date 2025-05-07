@@ -1,0 +1,14 @@
+debug: true
+
+logging:
+    level:
+        org:
+            springframework:
+                web: trace
+        web: trace
+
+spring:
+    jpa:
+        show-sql: true
+    mvc:
+        log-request-details: true

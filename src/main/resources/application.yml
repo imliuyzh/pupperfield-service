@@ -1,0 +1,26 @@
+logging:
+    file:
+        name: pupperfield.log
+
+server:
+    compression:
+        enabled: true
+        min-response-size: 1024
+    port: 8080
+    servlet:
+        session:
+            timeout: 60m
+
+spring:
+    application:
+        name: pupperfield
+    datasource:
+        driver-class-name: org.sqlite.JDBC
+        url: jdbc:sqlite:src/main/resources/database/dogs.db
+    jpa:
+        database-platform: org.hibernate.community.dialect.SQLiteDialect
+        hibernate:
+            ddl-auto: validate
+    threads:
+        virtual:
+            enabled: true
