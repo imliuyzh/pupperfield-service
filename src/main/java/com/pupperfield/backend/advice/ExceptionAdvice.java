@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.validation.method.MethodValidationResult;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExceptionAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<String> failedHtttpMessageConvertionHandler
+    public ResponseEntity<String> failedHttpMessageConvertionHandler
             (HttpMessageConversionException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
@@ -68,6 +69,17 @@ public class ExceptionAdvice {
         );
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<String> invalidMediaTypeHandler
+            (HttpMediaTypeNotSupportedException exception) {
+        log.info(ExceptionUtils.getStackTrace(exception));
+        return new ResponseEntity<>(
+            HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
+            null,
+            HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler1
             (MethodArgumentNotValidException exception) {
@@ -106,10 +118,8 @@ public class ExceptionAdvice {
         MethodValidationException.class
     })
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler3
-            (RuntimeException rawException) {
-        log.info(ExceptionUtils.getStackTrace(rawException));
-        MethodValidationResult exception =
-            (MethodValidationResult) rawException;
+            (MethodValidationResult exception) {
+        log.info(ExceptionUtils.getStackTrace((RuntimeException) exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
                 HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
