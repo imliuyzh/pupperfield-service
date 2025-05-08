@@ -19,24 +19,6 @@ interface Dog {
 }
 ```
 
-We also provide endpoints for fetching location data, which should be useful if you’d like to implement filtering dogs by location. Here is the Typescript interface for the Location objects returned by our API:
-
-```typescript
-interface Location {
-    zip_code: string
-    latitude: number
-    longitude: number
-    city: string
-    state: string
-    county: string
-}
-
-interface Coordinates {
-    lat: number;
-    lon: number;
-}
-```
-
 ### Authentication
 
 You will need to hit the login endpoint in order to access other endpoints. A successful request to the login endpoint will return an auth cookie included in the set-cookie response header. It’s an HttpOnly cookie, so you will not be able to access this value from any Javascript code (nor should you need to). Your browser will automatically send this cookie with all successive credentialed requests to the API. Note that you will need to pass a config option in order to send credentials (cookies) with each request. Some documentation to help you with this:
@@ -100,6 +82,8 @@ Additionally, the following query parameters can be used to configure the search
   * results can be sorted by the following fields: breed, name, and age
   * ex: sort=breed:asc
 
+Results should be sorted alphabetically by breed by default. Users should be able to modify this sort to be ascending or descending.
+
 #### Return Value
 
 Returns an object with the following properties:
@@ -150,85 +134,5 @@ This endpoint will select a single ID from the provided list of dog IDs. This ID
 ```typescript
 interface Match {
     match: string
-}
-```
-
-### POST /locations
-
-#### Body Parameters
-
-The body of this request should be an array of no more than 100 ZIP codes.
-
-#### Example
-
-```typescript
-// API Request Function
-...
-body: string[]
-...
-```
-
-#### Return Value
-
-Returns an array of Location objects.
-
-### POST /locations/search
-
-#### Body Parameters
-
-The following body parameters can be supplied to filter the search results. All are optional; if none are provided, the search will match all locations.
-
-* city - the full or partial name of a city
-* states - an array of two-letter state/territory abbreviations
-* geoBoundingBox - an object defining a geographic bounding box:
-  * This object must contain one of the following combinations of properties:
-    * top, left, bottom, right
-    * bottom_left, top_right
-    * bottom_right, top_left
-  * bottom_left, top_right, bottom_right, top_left should have the following data:
-    * lat - latitude
-    * lon - longitude
-* top, left, bottom, right should be numbers corresponding to higher latitude, left-most longitude, lower latitude and right-most longitude respectively.
-
-Additionally, the following body parameters can be used to configure the search:
-
-* size - the number of results to return; defaults to 25 if omitted
-* from - a cursor to be used when paginating results (optional)
-
-The maximum total number of ZIP codes that will be matched by a single query is 10,000.
-
-#### Example
-
-```typescript
-// API Request Function
-...
-body: {
-    city?: string,
-    states?: string[],
-    geoBoundingBox?: {
-        top?: number,
-        left?: number,
-        bottom?: number,
-        right?: number,
-        bottom_left?: Coordinates,
-        top_left?: Coordinates
-    },
-    size?: number,
-    from?: number
-}
-...
-```
-
-#### Return Value
-
-Returns an object with the following properties:
-
-* results - an array of Location objects
-* total - the total number of results for the query (not just the current page)
-
-```typescript
-{
-    results: Location[],
-    total: number
 }
 ```
