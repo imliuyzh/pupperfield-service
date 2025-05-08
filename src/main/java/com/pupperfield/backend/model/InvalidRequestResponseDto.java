@@ -8,6 +8,6 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class InvalidRequestResponseDto {
-    private String reason;
+    private String error;
     private List<String> detail;
 }

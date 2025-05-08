@@ -7,7 +7,7 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Value
-public class LoginDto {
+public class LoginRequestDto {
     @Email
     @NotBlank
     private String email;

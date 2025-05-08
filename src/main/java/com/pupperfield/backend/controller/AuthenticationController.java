@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pupperfield.backend.model.LoginDto;
+import com.pupperfield.backend.model.LoginRequestDto;
 import com.pupperfield.backend.service.TokenService;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +26,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login
-            (@RequestBody @Validated LoginDto loginDto) {
+            (@RequestBody @Validated LoginRequestDto user) {
         var cookie = createCookie(tokenService.generate(
-            loginDto.getEmail(), loginDto.getName()
+            user.getEmail(), user.getName()
         ));
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, cookie.toString())
