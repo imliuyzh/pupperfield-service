@@ -10,8 +10,10 @@ server:
         enabled: true
         min-response-size: 1024
     error:
-        include-message: always
+        include-exception: false
+        include-message: never
         include-path: never
+        include-stacktrace: never
         whitelabel:
             enabled: false
     http2:

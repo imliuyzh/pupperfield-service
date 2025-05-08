@@ -3,6 +3,13 @@ logging:
         sql: trace
         web: trace
 
+server:
+    error:
+        include-exception: true
+        include-message: always
+        include-path: always
+        include-stacktrace: always
+
 spring:
     jpa:
         show-sql: true
