@@ -23,13 +23,6 @@ server:
 spring:
     application:
         name: pupperfield
-    datasource:
-        driver-class-name: org.sqlite.JDBC
-        url: jdbc:sqlite:src/main/resources/database/dogs.db
-    jpa:
-        database-platform: org.hibernate.community.dialect.SQLiteDialect
-        hibernate:
-            ddl-auto: validate
     main:
         banner-mode: off
     threads:
