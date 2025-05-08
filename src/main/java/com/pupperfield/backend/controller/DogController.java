@@ -31,8 +31,13 @@ public class DogController {
     }
 
     @PostMapping()
-    public Collection<Dog> getDogInfo(@RequestBody List<String> ids) {
-        return dogRepository.findByIdIn(ids);
+    public Collection<Dog> getDogInfo(
+        @NotNull
+        @RequestBody
+        @Size(min = 1, max = 100)
+        List<String> idList
+    ) {
+        return dogRepository.findByIdIn(idList);
     }
 
     @PostMapping("/match")
