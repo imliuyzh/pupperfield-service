@@ -31,8 +31,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     ) throws AuthException, IOException {
         if (request.getMethod().equals(HttpMethod.OPTIONS.name()) == false) {
             if (request.getCookies() == null) {
-                fail(request, response, "Unauthorized due to missing cookie");
-                return false;
+                throw new AuthException(String.format(
+                    "Unauthorized due to missing cookie: %s %s",
+                    request.getMethod(), request.getRequestURL().toString()
+                ));
             }
 
             String token = null;
@@ -44,22 +46,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 }
             }
             if (token == null || tokenService.isValid(token) == false) {
-                fail(request, response, "Unauthorized due to invalid token");
-                return false;
+                throw new AuthException(String.format(
+                    "Unauthorized due to invalid token: %s %s",
+                    request.getMethod(), request.getRequestURL().toString()
+                ));
             }
         }
         return true;
-    }
-
-    private void fail(
-        @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull String reason
-    ) throws AuthException {
-        log.info(String.format(
-            "%s: %s %s",
-            reason, request.getMethod(), request.getRequestURL().toString()
-        ));
-        throw new AuthException(reason);
     }
 }

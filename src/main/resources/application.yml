@@ -1,6 +1,9 @@
 logging:
     file:
         name: pupperfield.log
+    logback:
+        rollingpolicy:
+            max-history: 31
 
 server:
     compression:
@@ -14,9 +17,6 @@ server:
     http2:
         enabled: true
     port: 8080
-    servlet:
-        session:
-            timeout: 60m
 
 spring:
     application:
@@ -28,6 +28,8 @@ spring:
         database-platform: org.hibernate.community.dialect.SQLiteDialect
         hibernate:
             ddl-auto: validate
+    main:
+        banner-mode: off
     threads:
         virtual:
             enabled: true

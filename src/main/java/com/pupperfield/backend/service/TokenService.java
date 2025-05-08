@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class TokenService {
-    private final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
+    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
     public String generate(String email, String name) {
         return Jwts.builder()

@@ -1,7 +1,5 @@
 package com.pupperfield.backend.advice;
 
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
     public ResponseEntity<String> httpMessageConverterExceptionHandler
             (HttpMessageConversionException exception) {
-        logException(exception);
+        log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
             null,
@@ -34,7 +32,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<String> authExceptionHandler
             (AuthException exception) {
-        logException(exception);
+        log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.UNAUTHORIZED.getReasonPhrase(),
             null,
@@ -45,7 +43,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<String> nohandlerFoundExceptionHandler
             (NoHandlerFoundException exception) {
-        logException(exception);
+        log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.NOT_FOUND.getReasonPhrase(),
             null,
@@ -56,7 +54,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<String> httpMethodNotSupportedExceptionHandler
             (HttpRequestMethodNotSupportedException exception) {
-        logException(exception);
+        log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
             null,
@@ -67,7 +65,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<InvalidRequestResponseDto> validationExceptionHandler
             (MethodArgumentNotValidException exception) {
-        logException(exception);
+        log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
                 HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
@@ -77,7 +75,7 @@ public class ExceptionAdvice {
                     .map(error -> String.format(
                         "%s %s", error.getField(), error.getDefaultMessage()
                     ))
-                    .collect(Collectors.toList())
+                    .toList()
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
         );
@@ -85,19 +83,11 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exceptionHandler(Exception exception) {
-        logException(exception);
+        log.error(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
             null,
             HttpStatus.INTERNAL_SERVER_ERROR.value()
         );
-    }
-
-    private void logException(Exception exception) {
-        log.error(String.format(
-            "%s: %s",
-            exception.getMessage(),
-            ExceptionUtils.getStackTrace(exception)
-        ));
     }
 }

@@ -1,10 +1,6 @@
-debug: true
-
 logging:
     level:
-        org:
-            springframework:
-                web: trace
+        sql: trace
         web: trace
 
 spring:
