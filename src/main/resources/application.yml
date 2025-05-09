@@ -23,10 +23,6 @@ server:
 spring:
     application:
         name: pupperfield
-    datasource:
-        hikari:
-            jdbc-url: jdbc:sqlite:src/main/resources/database/dogs.db
-            read-only: true
     jpa:
         open-in-view: false
     main:
