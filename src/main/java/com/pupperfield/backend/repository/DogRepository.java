@@ -1,6 +1,7 @@
 package com.pupperfield.backend.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,8 +11,8 @@ import com.pupperfield.backend.entity.Dog;
 
 @Repository
 public interface DogRepository extends JpaRepository<Dog, String> {
+    Collection<Dog> findByIdIn(List<String> idList);
+    
     @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed ASC")
     Collection<String> getBreeds();
-
-    Collection<Dog> findByIdIn(Collection<String> ids);
 }

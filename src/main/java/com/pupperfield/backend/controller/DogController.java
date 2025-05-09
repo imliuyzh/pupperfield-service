@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pupperfield.backend.entity.Dog;
+import com.pupperfield.backend.model.DogSearchRequestDto;
+import com.pupperfield.backend.model.DogSearchResponseDto;
 import com.pupperfield.backend.repository.DogRepository;
 
 import jakarta.validation.constraints.NotNull;
@@ -30,8 +33,8 @@ public class DogController {
         return dogRepository.getBreeds();
     }
 
-    @PostMapping()
-    public Collection<Dog> getDogInfo(
+    @PostMapping("")
+    public Collection<Dog> list(
         @NotNull
         @RequestBody
         @Size(min = 1, max = 100)
@@ -40,13 +43,20 @@ public class DogController {
         return dogRepository.findByIdIn(idList);
     }
 
+    @GetMapping("/search")
+    public DogSearchResponseDto search
+            (@RequestParam DogSearchRequestDto parameters) {
+        var response = DogSearchResponseDto.builder();
+        return response.build();
+    }
+
     @PostMapping("/match")
     public Map<String, String> match(
         @NotNull
         @RequestBody
         @Size(min = 1)
-        List<String> matches
+        List<String> idList
     ) {
-        return Map.of("match", matches.get(RANDOM.nextInt(matches.size())));
+        return Map.of("match", idList.get(RANDOM.nextInt(idList.size())));
     }
 }

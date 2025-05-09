@@ -23,6 +23,8 @@ server:
 spring:
     application:
         name: pupperfield
+    jpa:
+        open-in-view: false
     main:
         banner-mode: off
     threads:
