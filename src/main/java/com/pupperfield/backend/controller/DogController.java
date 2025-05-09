@@ -25,15 +25,16 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/dogs")
 @RestController
 public class DogController {
-    private DogService dogService;
     private static final SecureRandom RANDOM = new SecureRandom();
+
+    private DogService dogService;
 
     @GetMapping("/breeds")
     public Collection<String> getBreeds() {
         return dogService.getBreeds();
     }
 
-    @PostMapping("")
+    @PostMapping
     public Collection<DogDto> list(
         @NotNull
         @RequestBody
