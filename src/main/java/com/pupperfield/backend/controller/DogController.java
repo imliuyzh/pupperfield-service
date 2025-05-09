@@ -2,6 +2,8 @@ package com.pupperfield.backend.controller;
 
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +42,14 @@ public class DogController {
         @Size(min = 1, max = 100)
         List<String> idList
     ) {
-        return dogRepository.findByIdIn(idList);
+        var indexMap = new HashMap<String, Integer>();
+        for (int i = 0; i < idList.size(); i++) {
+            indexMap.put(idList.get(i), i);
+        }
+        return dogRepository.findAllById(idList)
+            .stream()
+            .sorted(Comparator.comparingInt(dog -> indexMap.get(dog.getId())))
+            .toList();
     }
 
     @GetMapping("/search")
