@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Configuration
 public class DatabaseConfig {
-    @Bean
+    @Bean("dataSource")
     HikariDataSource dataSource() {
         var config = new HikariConfig();
         config.setJdbcUrl("jdbc:sqlite:src/main/resources/database/dogs.db");
