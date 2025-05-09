@@ -8,14 +8,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Builder
-@Data
 @Entity
+@EqualsAndHashCode
+@Getter
 @NoArgsConstructor
+@Setter
 @Table(name = "Dog")
 public class Dog {
     @Column(nullable = false, updatable = false)
