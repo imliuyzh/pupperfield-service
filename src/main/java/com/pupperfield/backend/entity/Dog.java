@@ -35,7 +35,7 @@ public class Dog {
     
     @Column(name = "image_link", nullable = false, updatable = false)
     @NotBlank
-    private String img;
+    private String imageLink;
     
     @Column(nullable = false, updatable = false)
     @NotBlank

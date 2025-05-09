@@ -18,7 +18,11 @@ public class DogDto {
     private int age;
 
     @NotBlank
-    private String breed, id, img, name;
+    private String breed, id, name;
+
+    @JsonProperty("img")
+    @NotBlank
+    private String imageLink;
 
     @JsonProperty("zip_code")
     @NotBlank
