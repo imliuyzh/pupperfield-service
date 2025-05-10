@@ -2,7 +2,6 @@ package com.pupperfield.backend.interceptor;
 
 import java.io.IOException;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 @Component
-@Order(1)
 @Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
     private TokenService tokenService;
@@ -30,17 +28,18 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         @NonNull Object handler
     ) throws AuthException, IOException {
         if (request.getMethod().equals(HttpMethod.OPTIONS.name()) == false) {
-            if (request.getCookies() == null) {
+            var cookies = request.getCookies();
+            if (cookies == null) {
                 throw new AuthException(String.format(
                     "Unauthorized due to missing cookie: %s %s",
                     request.getMethod(), request.getRequestURL().toString()
                 ));
             }
 
-            String token = null;
-            for (var cookie : request.getCookies()) {
-                if (cookie.getName()
-                        .equals(AuthenticationController.COOKIE_NAME)) {
+            String token = null,
+                tokenName = AuthenticationController.COOKIE_NAME;
+            for (var cookie : cookies) {
+                if (cookie.getName().equals(tokenName)) {
                     token = cookie.getValue();
                     break;
                 }
