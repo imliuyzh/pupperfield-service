@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.pupperfield.backend.mapper.DogMapper;
@@ -21,10 +22,12 @@ public class DogService {
     private DogMapper dogMapper;
     private DogRepository dogRepository;
 
+    @Cacheable("breeds")
     public Collection<String> getBreeds() {
         return dogRepository.getBreeds();
     }
 
+    @Cacheable("lists")
     public Collection<DogDto> listDogs(List<String> idList) {
         var indexMap = new HashMap<String, Integer>();
         for (int i = 0; i < idList.size(); i++) {
