@@ -10,6 +10,6 @@ import com.pupperfield.backend.entity.Dog;
 
 @Repository
 public interface DogRepository extends JpaRepository<Dog, String> {
-    @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed ASC")
+    @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed")
     Collection<String> getBreeds();
 }

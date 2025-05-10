@@ -133,7 +133,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> exceptionHandler(Exception exception) {
+    public ResponseEntity<String> baseExceptionHandler(Exception exception) {
         log.error(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
