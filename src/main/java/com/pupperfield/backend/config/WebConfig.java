@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.pupperfield.backend.interceptor.AuthorizationInterceptor;
+import com.pupperfield.backend.interceptor.AuthInterceptor;
 
 import lombok.AllArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-    private AuthorizationInterceptor authorizationInterceptor;
+    private AuthInterceptor authInterceptor;
 
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
-        registry.addInterceptor(authorizationInterceptor)
+        registry.addInterceptor(authInterceptor)
             .addPathPatterns("/**") 
             .excludePathPatterns("/auth/login", "/status");
     }

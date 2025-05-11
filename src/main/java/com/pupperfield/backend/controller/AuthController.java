@@ -19,7 +19,7 @@ import com.pupperfield.backend.service.TokenService;
 @AllArgsConstructor
 @RequestMapping("/auth")
 @RestController
-public class AuthenticationController {
+public class AuthController {
     public static final String COOKIE_NAME = "fetch-access-token";
 
     private TokenService tokenService;

@@ -7,19 +7,17 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.pupperfield.backend.controller.AuthenticationController;
+import com.pupperfield.backend.controller.AuthController;
 import com.pupperfield.backend.service.TokenService;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 @Component
-@Slf4j
-public class AuthorizationInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
     private TokenService tokenService;
 
     public boolean preHandle(
@@ -37,7 +35,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             }
 
             String token = null,
-                tokenName = AuthenticationController.COOKIE_NAME;
+                tokenName = AuthController.COOKIE_NAME;
             for (var cookie : cookies) {
                 if (cookie.getName().equals(tokenName)) {
                     token = cookie.getValue();

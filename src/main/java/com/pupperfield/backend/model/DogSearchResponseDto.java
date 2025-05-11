@@ -2,6 +2,7 @@ package com.pupperfield.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DogSearchResponseDto {
     private String next;
     
@@ -18,5 +20,5 @@ public class DogSearchResponseDto {
     private String previous;
 
     private List<String> resultIds;
-    private int total;
+    private Long total;
 }

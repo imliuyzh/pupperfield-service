@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DogDto {
     @PositiveOrZero
-    private int age;
+    private long age;
 
     @NotBlank
     private String breed, id, name;

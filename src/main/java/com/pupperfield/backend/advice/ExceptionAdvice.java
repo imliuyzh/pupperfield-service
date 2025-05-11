@@ -1,6 +1,7 @@
 package com.pupperfield.backend.advice;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> failedAuthorizationHandler
+    public ResponseEntity<String> failedAuthHandler
             (AuthException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
@@ -93,7 +94,7 @@ public class ExceptionAdvice {
                     .map(error -> String.format(
                         "%s %s", error.getField(), error.getDefaultMessage()
                     ))
-                    .toList()
+                    .collect(Collectors.toSet())
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
         );
@@ -126,7 +127,7 @@ public class ExceptionAdvice {
                 exception.getAllErrors()
                     .stream()
                     .map(error -> error.getDefaultMessage())
-                    .toList()
+                    .collect(Collectors.toSet())
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
         );

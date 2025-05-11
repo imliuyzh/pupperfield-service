@@ -1,6 +1,6 @@
 package com.pupperfield.backend.model;
 
-import java.util.List;
+import java.util.Collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -9,5 +9,5 @@ import lombok.Value;
 @Value
 public class InvalidRequestResponseDto {
     private String error;
-    private List<String> detail;
+    private Collection<String> detail;
 }
