@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,49 +41,60 @@ public class DogController {
 
     @PostMapping
     public List<DogDto> list(
-        @NotNull
+        @NotNull(message = "body must not be null")
         @RequestBody
-        @Size(min = 1, max = 100)
-        List<@NotBlank @Valid String> idList
+        @Size(
+            max = 100,
+            message = "body must have 1 to 100 dog IDs",
+            min = 1
+        )
+        List<
+            @NotBlank(message = "a dog ID must not be empty")
+            @Valid 
+            String
+        > idList
     ) {
         return dogService.listDogs(idList);
     }
 
-    @Cacheable(
-        key = "#breeds + '_' + #from + '_' + #maxAge + '_' + #minAge + '_' "
-            + "+ #size + '_' + #sort + '_' + #zipCodes",
-        value = "searches"
-    )
     @GetMapping("/search")
     public DogSearchResponseDto search(
         @RequestParam(required = false)
-        List<@NotBlank @Valid String> breeds,
+        List<
+            @NotBlank(message = "a breed must not be empty")
+            @Valid
+            String
+        > breeds,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "from must be positive or zero")
         @RequestParam(
             defaultValue = "0",
             required = false
         )
         Integer from,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "ageMax must be positive or zero")
         @RequestParam(name = "ageMax", required = false)
         Integer maxAge,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "ageMin must be positive or zero")
         @RequestParam(name = "ageMin", required = false)
         Integer minAge,
 
         HttpServletRequest request,
 
-        @Positive
+        @Positive(message = "size must be positive")
         @RequestParam(
             defaultValue = "25",
             required = false
         )
         Integer size,
 
-        @Pattern(regexp = "^(age|breed|name):(asc|desc)$")
+        @Pattern(
+            message = "sort must be age:asc, age:desc, breed:asc, breed:desc,"
+                + " name:asc, or name:desc",
+            regexp = "^(age|breed|name):(asc|desc)$"
+        )
         @RequestParam(
             defaultValue = "breed:asc",
             required = false
@@ -92,13 +102,17 @@ public class DogController {
         String sort,
 
         @RequestParam(required = false)
-        List<@NotBlank @Valid String> zipCodes
+        List<
+            @NotBlank(message = "a zip code must not be empty")
+            @Valid
+            String
+        > zipCodes
     ) {
-        var outcome = dogService.findDogs(
+        var outcome = dogService.searchDogs(
             breeds, from, maxAge, minAge, size, sort, zipCodes
         );
         var response = DogSearchResponseDto.builder()
-            .resultIds(outcome.getFirst().toList())
+            .resultIds(outcome.getFirst())
             .total(outcome.getSecond());
         if (from - size >= 0) {
             response.previous(buildNavigation(from - size, request));
@@ -111,10 +125,14 @@ public class DogController {
 
     @PostMapping("/match")
     public Map<String, String> match(
-        @NotNull
+        @NotNull(message = "body must not be null")
         @RequestBody
-        @Size(min = 1)
-        List<@NotBlank @Valid String> idList
+        @Size(message = "body must not be empty", min = 1)
+        List<
+            @NotBlank(message = "a dog ID must not be empty")
+            @Valid
+            String
+        > idList
     ) {
         return Map.of("match", idList.get(RANDOM.nextInt(idList.size())));
     }
@@ -124,12 +142,17 @@ public class DogController {
         HttpServletRequest request
     ) {
         var tokens = request.getQueryString().split("&");
-        for (int index = 0; index < tokens.length; index++) {
+        var fromExists = false;
+        for (var index = 0; index < tokens.length; index++) {
             if (tokens[index].startsWith("from=")) {
                 tokens[index] = String.format("from=%d", from);
+                fromExists = true;
                 break;
             }
         }
-        return String.format("/dogs/search?%s", String.join("&", tokens));
+        return String.format(
+            fromExists ? "/dogs/search?%s" : "/dogs/search?%s&from=" + from,
+            String.join("&", tokens)
+        );
     }
 }

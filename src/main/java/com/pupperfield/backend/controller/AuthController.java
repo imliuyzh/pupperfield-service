@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import com.pupperfield.backend.model.LoginRequestDto;
 import com.pupperfield.backend.service.TokenService;
 
+import static org.apache.commons.lang3.BooleanUtils.toInteger;
+
 @AllArgsConstructor
 @RequestMapping("/auth")
 @RestController
@@ -45,7 +47,7 @@ public class AuthController {
     private ResponseCookie createCookie(String value) {
         return ResponseCookie.from(COOKIE_NAME)
             .httpOnly(true)
-            .maxAge(Duration.ofHours(value != null ? 1 : 0))
+            .maxAge(Duration.ofHours(toInteger(value != null)))
             .path("/")
             .sameSite("none")
             .secure(true)

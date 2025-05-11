@@ -8,10 +8,10 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class LoginRequestDto {
-    @Email
-    @NotBlank
+    @Email(message = "email is not valid")
+    @NotBlank(message = "email must not be empty")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "name must not be empty")
     private String name;
 }

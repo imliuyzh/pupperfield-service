@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
@@ -45,37 +44,18 @@ public class DogService {
             .toList();
     }
 
-    public Pair<Stream<String>, Long> findDogs(
+    @Cacheable(
+        key = "#breeds + '_' + #from + '_' + #maxAge + '_' + #minAge + '_' + "
+            + "#size + '_' + #sort + '_' + #zipCodes",
+        value = "searches"
+    )
+    public Pair<List<String>, Long> searchDogs(
         List<String> breeds,
         Integer from,
         Integer maxAge,
         Integer minAge,
         Integer size,
         String sort,
-        List<String> zipCodes
-    ) {
-        String[] sortInfo = sort.split(":");
-        var sortOrder = Sort.by(new Order(
-            sortInfo[1].equals("asc")
-                ? Sort.Direction.ASC : Sort.Direction.DESC,
-            sortInfo[0]
-        ));
-
-        Specification<Dog> conditions = buildConditions(
-            breeds, maxAge, minAge, zipCodes
-        );
-        Stream<String> dogStream = dogRepository.findAll(conditions, sortOrder)
-            .stream()
-            .skip(from)
-            .limit(size)
-            .map(Dog::getId);
-        return Pair.of(dogStream, dogRepository.count(conditions));
-    }
-
-    private Specification<Dog> buildConditions(
-        List<String> breeds,
-        Integer maxAge,
-        Integer minAge,
         List<String> zipCodes
     ) {
         Specification<Dog> conditions = Specification.where(null);
@@ -91,6 +71,22 @@ public class DogService {
         if (zipCodes != null && zipCodes.isEmpty() == false) {
             conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));
         }
-        return conditions;
+
+        var sortInfo = sort.split(":");
+        var sortOrder = Sort.by(new Order(
+            sortInfo[1].equals("asc")
+                ? Sort.Direction.ASC : Sort.Direction.DESC,
+            sortInfo[0]
+        ));
+
+        return Pair.of(
+            dogRepository.findAll(conditions, sortOrder)
+                .stream()
+                .skip(from)
+                .limit(size)
+                .map(Dog::getId)
+                .toList(),
+            dogRepository.count(conditions)
+        );
     }
 }

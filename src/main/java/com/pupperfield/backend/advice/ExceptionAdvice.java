@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
@@ -91,9 +92,7 @@ public class ExceptionAdvice {
                 exception.getBindingResult()
                     .getFieldErrors()
                     .stream()
-                    .map(error -> String.format(
-                        "%s %s", error.getField(), error.getDefaultMessage()
-                    ))
+                    .map(error -> error.getDefaultMessage())
                     .collect(Collectors.toSet())
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
@@ -129,6 +128,25 @@ public class ExceptionAdvice {
                     .map(error -> error.getDefaultMessage())
                     .collect(Collectors.toSet())
             ),
+            HttpStatus.UNPROCESSABLE_ENTITY
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> failedValidationHandler4
+            (MethodArgumentTypeMismatchException exception) {
+        log.info(ExceptionUtils.getStackTrace(exception));
+        var targetType = exception.getRequiredType();
+        return new ResponseEntity<>(
+            Map.of(
+                "error", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                "detail", String.format(
+                    "%s should be %s",
+                    exception.getPropertyName(),
+                    targetType != null ? targetType.getSimpleName() : "null"
+                )
+            ),
+            null,
             HttpStatus.UNPROCESSABLE_ENTITY
         );
     }
