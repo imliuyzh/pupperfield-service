@@ -4,21 +4,6 @@
 
 ## API Reference
 
-### Data Model
-
-Here is the Typescript interface for the Dog objects returned by our API:
-
-```typescript
-interface Dog {
-    id: string
-    img: string
-    name: string
-    age: number
-    zip_code: string
-    breed: string
-}
-```
-
 ### Authentication
 
 You will need to hit the login endpoint in order to access other endpoints. A successful request to the login endpoint will return an auth cookie included in the set-cookie response header. It’s an HttpOnly cookie, so you will not be able to access this value from any Javascript code (nor should you need to). Your browser will automatically send this cookie with all successive credentialed requests to the API. Note that you will need to pass a config option in order to send credentials (cookies) with each request. Some documentation to help you with this:
