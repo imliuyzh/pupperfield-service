@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExceptionAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<String> failedHttpMessageConvertionHandler
+    public ResponseEntity<String> failedHttpMessageConversionHandler
             (HttpMessageConversionException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
@@ -50,7 +50,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<String> nohandlerFoundHandler
+    public ResponseEntity<String> notFoundHandler
             (NoHandlerFoundException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
