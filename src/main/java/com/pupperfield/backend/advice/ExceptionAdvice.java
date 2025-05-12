@@ -1,6 +1,6 @@
 package com.pupperfield.backend.advice;
 
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -100,15 +100,14 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> failedValidationHandler2
+    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler2
             (ConstraintViolationException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
-            Map.of(
-                "error", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                "detail", exception.getMessage()
+            new InvalidRequestResponseDto(
+                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                List.of(exception.getMessage())
             ),
-            null,
             HttpStatus.UNPROCESSABLE_ENTITY
         );
     }
@@ -133,20 +132,19 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, String>> failedValidationHandler4
+    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler4
             (MethodArgumentTypeMismatchException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         var targetType = exception.getRequiredType();
         return new ResponseEntity<>(
-            Map.of(
-                "error", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                "detail", String.format(
+            new InvalidRequestResponseDto(
+                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                List.of(String.format(
                     "%s should be %s",
                     exception.getPropertyName(),
                     targetType != null ? targetType.getSimpleName() : "null"
-                )
+                ))
             ),
-            null,
             HttpStatus.UNPROCESSABLE_ENTITY
         );
     }

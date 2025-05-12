@@ -67,10 +67,7 @@ public class DogController {
         > breeds,
 
         @PositiveOrZero(message = "from must be positive or zero")
-        @RequestParam(
-            defaultValue = "0",
-            required = false
-        )
+        @RequestParam(defaultValue = "0", required = false)
         Integer from,
 
         @PositiveOrZero(message = "ageMax must be positive or zero")
@@ -84,21 +81,14 @@ public class DogController {
         HttpServletRequest request,
 
         @Positive(message = "size must be positive")
-        @RequestParam(
-            defaultValue = "25",
-            required = false
-        )
+        @RequestParam(defaultValue = "25", required = false)
         Integer size,
 
         @Pattern(
-            message = "sort must be age:asc, age:desc, breed:asc, breed:desc,"
-                + " name:asc, or name:desc",
+            message = "sort must match (age|breed|name):(asc|desc)",
             regexp = "^(age|breed|name):(asc|desc)$"
         )
-        @RequestParam(
-            defaultValue = "breed:asc",
-            required = false
-        )
+        @RequestParam(defaultValue = "breed:asc", required = false)
         String sort,
 
         @RequestParam(required = false)
@@ -145,7 +135,7 @@ public class DogController {
         var fromExists = false;
         for (var index = 0; index < tokens.length; index++) {
             if (tokens[index].startsWith("from=")) {
-                tokens[index] = String.format("from=%d", from);
+                tokens[index] = "from=" + from;
                 fromExists = true;
                 break;
             }

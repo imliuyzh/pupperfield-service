@@ -20,6 +20,9 @@ import com.pupperfield.backend.spec.DogSpecs;
 
 import lombok.AllArgsConstructor;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 @AllArgsConstructor
 @Service
 public class DogService {
@@ -34,8 +37,8 @@ public class DogService {
     @Cacheable("lists")
     public List<DogDto> listDogs(List<String> idList) {
         var indexMap = new HashMap<String, Integer>();
-        for (int i = 0; i < idList.size(); i++) {
-            indexMap.put(idList.get(i), i);
+        for (var index = 0; index < idList.size(); index++) {
+            indexMap.put(idList.get(index), index);
         }
         return dogRepository.findAllById(idList)
             .stream()
@@ -74,9 +77,7 @@ public class DogService {
 
         var sortInfo = sort.split(":");
         var sortOrder = Sort.by(new Order(
-            sortInfo[1].equals("asc")
-                ? Sort.Direction.ASC : Sort.Direction.DESC,
-            sortInfo[0]
+            sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]
         ));
 
         return Pair.of(
