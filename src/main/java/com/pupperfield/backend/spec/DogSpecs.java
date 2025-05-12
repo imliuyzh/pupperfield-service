@@ -8,7 +8,7 @@ import com.pupperfield.backend.entity.Dog;
 
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access=lombok.AccessLevel.PRIVATE)
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DogSpecs {
     public static Specification<Dog> withBreeds(List<String> breeds) {
         return (root, query, builder) ->
