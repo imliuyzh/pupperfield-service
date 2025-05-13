@@ -65,11 +65,11 @@ public class DogService {
         if (zipCodes != null && zipCodes.isEmpty() == false) {
             conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));
         }
-        if (minAge != null) {
-            conditions = conditions.and(DogSpecs.withMinAge(minAge));
-        }
         if (maxAge != null) {
             conditions = conditions.and(DogSpecs.withMaxAge(maxAge));
+        }
+        if (minAge != null) {
+            conditions = conditions.and(DogSpecs.withMinAge(minAge));
         }
         if (breeds != null && breeds.isEmpty() == false) {
             conditions = conditions.and(DogSpecs.withBreeds(breeds));
