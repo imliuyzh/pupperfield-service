@@ -62,17 +62,17 @@ public class DogService {
         List<String> zipCodes
     ) {
         Specification<Dog> conditions = Specification.where(null);
-        if (breeds != null && breeds.isEmpty() == false) {
-            conditions = conditions.and(DogSpecs.withBreeds(breeds));
-        }
-        if (maxAge != null) {
-            conditions = conditions.and(DogSpecs.withMaxAge(maxAge));
+        if (zipCodes != null && zipCodes.isEmpty() == false) {
+            conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));
         }
         if (minAge != null) {
             conditions = conditions.and(DogSpecs.withMinAge(minAge));
         }
-        if (zipCodes != null && zipCodes.isEmpty() == false) {
-            conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));
+        if (maxAge != null) {
+            conditions = conditions.and(DogSpecs.withMaxAge(maxAge));
+        }
+        if (breeds != null && breeds.isEmpty() == false) {
+            conditions = conditions.and(DogSpecs.withBreeds(breeds));
         }
 
         var sortInfo = sort.split(":");
