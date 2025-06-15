@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.5</version>
+		<version>3.5.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.pupperfield</groupId>
@@ -43,12 +43,12 @@
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.49.1.0</version>
+			<version>3.50.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-community-dialects</artifactId>
-			<version>6.6.13.Final</version>
+			<version>6.6.18.Final</version>
 		</dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
