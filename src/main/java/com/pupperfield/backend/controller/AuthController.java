@@ -82,7 +82,7 @@ public class AuthController {
 
     @Operation(
         description = "Takes the authentication cookie, nullifies it by " +
-            "emptying the token, and setting it to expire immediately.",
+            "emptying the token, and sets it to expire immediately.",
         method = "POST",
         responses = {
             @ApiResponse(

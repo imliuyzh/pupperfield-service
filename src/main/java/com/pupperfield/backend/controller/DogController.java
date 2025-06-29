@@ -62,9 +62,8 @@ public class DogController {
     }
 
     @Operation(
-        description = "Receives a list of dog IDs and fetches data from the " +
-            "database about the dogs. The size of the list is restricted " +
-            "from 1 to 100 inclusive.",
+        description = "Receives a nonempty list of dog IDs (100 IDs max) " +
+            "and fetches their data from the database.",
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
@@ -127,19 +126,17 @@ public class DogController {
         )
         List<
             @NotBlank(message = "a dog ID must not be empty")
-            @Valid
-                String
-            > idList
+            @Valid String> idList
     ) {
         return dogService.listDogs(idList);
     }
 
     @Operation(
-        description = "Takes filter conditions from request parameters to " +
-            "search for dogs in the database. All parameters can be left " +
-            "empty. By default, size is set to 25, from is set to 0, and " +
-            "sort is set to breed:asc. Note that only dog IDs are returned, " +
-            "use POST /dogs to retrieve information about them.",
+        description = "Searches for dogs in the database using filter " +
+            "conditions from request parameters. All parameters are " +
+            "optional; by default, size is 25, from is 0, and sort is " +
+            "breed:asc. Note only dog IDs are returned, please use POST " +
+            "/dogs to retrieve full dog information.",
         method = "GET",
         responses = {
             @ApiResponse(
@@ -182,9 +179,7 @@ public class DogController {
         @RequestParam(required = false)
         List<
             @NotBlank(message = "a breed must not be empty")
-            @Valid
-                String
-            > breeds,
+            @Valid String> breeds,
 
         @PositiveOrZero(message = "from must be positive or zero")
         @RequestParam(defaultValue = "0", required = false)
@@ -214,9 +209,7 @@ public class DogController {
         @RequestParam(required = false)
         List<
             @NotBlank(message = "a zip code must not be empty")
-            @Valid
-                String
-            > zipCodes
+            @Valid String> zipCodes
     ) {
         var outcome = dogService.searchDogs(
             breeds, from, maxAge, minAge, size, sort, zipCodes
@@ -286,9 +279,7 @@ public class DogController {
         @Size(message = "body must not be empty", min = 1)
         List<
             @NotBlank(message = "a dog ID must not be empty")
-            @Valid
-                String
-            > idList
+            @Valid String> idList
     ) {
         return Map.of("match", idList.get(RANDOM.nextInt(idList.size())));
     }
