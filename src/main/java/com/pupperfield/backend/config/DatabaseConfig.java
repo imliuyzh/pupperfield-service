@@ -1,14 +1,10 @@
 package com.pupperfield.backend.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 @Configuration
 public class DatabaseConfig {
     @Bean("dataSource")

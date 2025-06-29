@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
@@ -92,7 +94,7 @@ public class ExceptionAdvice {
                 exception.getBindingResult()
                     .getFieldErrors()
                     .stream()
-                    .map(error -> error.getDefaultMessage())
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toSet())
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
@@ -124,7 +126,7 @@ public class ExceptionAdvice {
                 HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
                 exception.getAllErrors()
                     .stream()
-                    .map(error -> error.getDefaultMessage())
+                    .map(MessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toSet())
             ),
             HttpStatus.UNPROCESSABLE_ENTITY

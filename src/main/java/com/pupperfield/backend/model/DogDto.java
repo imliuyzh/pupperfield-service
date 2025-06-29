@@ -1,7 +1,7 @@
 package com.pupperfield.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -13,18 +13,52 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @NoArgsConstructor
+@Schema(
+    accessMode = Schema.AccessMode.WRITE_ONLY,
+    description = "Dog information"
+)
 public class DogDto {
     @PositiveOrZero
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "A dog's age"
+    )
     private long age;
 
     @NotBlank
-    private String breed, id, name;
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "A dog's breed"
+    )
+    private String breed;
+
+    @NotBlank
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "A dog's ID"
+    )
+    private String id;
+
+    @NotBlank
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "A dog's name"
+    )
+    private String name;
 
     @JsonProperty("img")
     @NotBlank
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "Link to a dog's image"
+    )
     private String imageLink;
 
     @JsonProperty("zip_code")
     @NotBlank
+    @Schema(
+        accessMode = Schema.AccessMode.WRITE_ONLY,
+        title = "A dog's zip code"
+    )
     private String zipCode;
 }

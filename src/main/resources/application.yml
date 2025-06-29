@@ -35,3 +35,9 @@ spring:
     threads:
         virtual:
             enabled: true
+
+springdoc:
+    api-docs:
+        path: /api-docs
+    swagger-ui:
+        display-request-duration: true

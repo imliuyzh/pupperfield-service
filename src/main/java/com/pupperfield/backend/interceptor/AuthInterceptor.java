@@ -1,7 +1,5 @@
 package com.pupperfield.backend.interceptor;
 
-import java.io.IOException;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -24,7 +22,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         @NonNull HttpServletRequest request,
         @NonNull HttpServletResponse response,
         @NonNull Object handler
-    ) throws AuthException, IOException {
+    ) throws AuthException {
         if (request.getMethod().equals(HttpMethod.OPTIONS.name()) == false) {
             var cookies = request.getCookies();
             if (cookies == null) {

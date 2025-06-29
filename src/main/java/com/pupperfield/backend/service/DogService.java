@@ -61,7 +61,7 @@ public class DogService {
         String sort,
         List<String> zipCodes
     ) {
-        // Use Specification.unrestricted() for Spring Data JPA v4.0.
+        // Use Specification.unrestricted() for Spring Data JPA v4.0+.
         Specification<Dog> conditions = (root, query, builder) -> null;
         if (zipCodes != null && zipCodes.isEmpty() == false) {
             conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));

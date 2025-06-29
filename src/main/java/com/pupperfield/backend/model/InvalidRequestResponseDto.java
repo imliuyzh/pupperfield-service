@@ -1,13 +1,17 @@
 package com.pupperfield.backend.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Collection;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+@Schema(
+    description = "Error message when an invalid request is sent"
+)
+public record InvalidRequestResponseDto(
+    @Schema(title = "HTTP reason phrase")
+    String error,
 
-@AllArgsConstructor
-@Value
-public class InvalidRequestResponseDto {
-    private String error;
-    private Collection<String> detail;
+    @Schema(title = "Error details")
+    Collection<String> detail
+) {
 }
