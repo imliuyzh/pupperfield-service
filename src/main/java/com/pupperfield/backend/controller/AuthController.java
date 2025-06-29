@@ -43,9 +43,7 @@ public class AuthController {
         responses = {
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "OK")
-                    },
+                    examples = {@ExampleObject(value = "OK")},
                     mediaType = "text/plain"
                 )},
                 description = "OK",
@@ -78,9 +76,7 @@ public class AuthController {
         responses = {
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "OK")
-                    },
+                    examples = {@ExampleObject(value = "OK")},
                     mediaType = "text/plain"
                 )},
                 description = "OK",
@@ -88,9 +84,7 @@ public class AuthController {
             ),
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "Unauthorized")
-                    },
+                    examples = {@ExampleObject(value = "Unauthorized")},
                     mediaType = "text/plain"
                 )},
                 description = "Unauthorized",

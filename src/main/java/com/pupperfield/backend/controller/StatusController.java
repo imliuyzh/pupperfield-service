@@ -25,9 +25,7 @@ public class StatusController {
         responses = {
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "OK")
-                    },
+                    examples = {@ExampleObject(value = "OK")},
                     mediaType = "text/plain"
                 )},
                 description = "OK",

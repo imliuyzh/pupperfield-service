@@ -39,9 +39,7 @@ public class DogController {
         responses = {
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "[\"Affenpinscher\"]")
-                    },
+                    examples = {@ExampleObject(value = "[\"Affenpinscher\"]")},
                     mediaType = "application/json"
                 )},
                 description = "OK",
@@ -49,9 +47,7 @@ public class DogController {
             ),
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "Unauthorized")
-                    },
+                    examples = {@ExampleObject(value = "Unauthorized")},
                     mediaType = "text/plain"
                 )},
                 description = "Unauthorized",
@@ -88,9 +84,7 @@ public class DogController {
             ),
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "Unauthorized")
-                    },
+                    examples = {@ExampleObject(value = "Unauthorized")},
                     mediaType = "text/plain"
                 )},
                 description = "Unauthorized",
@@ -144,9 +138,7 @@ public class DogController {
             ),
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "Unauthorized")
-                    },
+                    examples = {@ExampleObject(value = "Unauthorized")},
                     mediaType = "text/plain"
                 )},
                 description = "Unauthorized",
@@ -229,9 +221,7 @@ public class DogController {
             ),
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value = "Unauthorized")
-                    },
+                    examples = {@ExampleObject(value = "Unauthorized")},
                     mediaType = "text/plain"
                 )},
                 description = "Unauthorized",
