@@ -40,4 +40,5 @@ springdoc:
     api-docs:
         path: /api-docs
     swagger-ui:
-        display-request-duration: true
+        supportedSubmitMethods: []
+        tryItOutEnabled: false
