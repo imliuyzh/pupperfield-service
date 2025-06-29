@@ -66,6 +66,14 @@ public class DogController {
             "database about the dogs. The size of the list is restricted " +
             "from 1 to 100 inclusive.",
         method = "POST",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = {@ExampleObject(
+                    value = "[\"rcD-OZUBBPFf4ZNZzDCC\"]")},
+                mediaType = "application/json"
+            ),
+            required = true
+        ),
         responses = {
             @ApiResponse(
                 content = {@Content(
@@ -89,6 +97,16 @@ public class DogController {
                 )},
                 description = "Unauthorized",
                 responseCode = "401"
+            ),
+            @ApiResponse(
+                content = {@Content(
+                    examples = {@ExampleObject(value = "{\"error\":" +
+                        "\"Unprocessable Entity\",\"detail\":[" +
+                        "\"a dog ID must not be empty\"]}")},
+                    mediaType = "application/json"
+                )},
+                description = "Invalid request",
+                responseCode = "422"
             )
         },
         summary = "Get a list of dog details based on the array passed in."
@@ -98,6 +116,7 @@ public class DogController {
         @NotNull(message = "body must not be null")
         @Parameter(
             description = "Dog IDs",
+            example = "[\"z7_-OZUBBPFf4ZNZzPlX\"]",
             required = true
         )
         @RequestBody
@@ -116,8 +135,8 @@ public class DogController {
     }
 
     @Operation(
-        description = "Takes search conditions from the request parameters " +
-            "to search for dogs in the database. All parameters can be " +
+        description = "Takes filter conditions from request parameters to " +
+            "search for dogs in the database. All parameters can be left " +
             "empty. By default, size is set to 25, from is set to 0, and " +
             "sort is set to breed:asc. Note that only dog IDs are returned, " +
             "use POST /dogs to retrieve information about them.",
@@ -127,9 +146,10 @@ public class DogController {
                 content = {@Content(
                     examples = {
                         @ExampleObject(value = "{\"next\":\"/dogs/search?" +
-                            "breeds=Affenpinscher&size=1&sort=name%3Aasc" +
-                            "&from=1\",\"resultIds\":[" +
-                            "\"rcD-OZUBBPFf4ZNZzDCC\"],\"total\":150}")
+                            "breeds=Affenpinscher&size=1&from=26\",\"prev\":" +
+                            "\"/dogs/search?breeds=Affenpinscher&size=1&" +
+                            "from=24\",\"resultIds\":[\"5MD-OZUBBPFf4ZNZzDCC" +
+                            "\"],\"total\":150}")
                     },
                     mediaType = "application/json"
                 )},
@@ -143,6 +163,16 @@ public class DogController {
                 )},
                 description = "Unauthorized",
                 responseCode = "401"
+            ),
+            @ApiResponse(
+                content = {@Content(
+                    examples = {@ExampleObject(value = "{\"error\":" +
+                        "\"Unprocessable Entity\",\"detail\":[" +
+                        "\"from should be Integer\"]}")},
+                    mediaType = "application/json"
+                )},
+                description = "Invalid request",
+                responseCode = "422"
             )
         },
         summary = "Find dogs that matches the search criteria."
@@ -206,13 +236,22 @@ public class DogController {
     @Operation(
         description = "Picks and returns a random dog ID from the input list.",
         method = "POST",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = {
+                    @ExampleObject(value =
+                        "[\"rcD-OZUBBPFf4ZNZzDCC\", \"-7_-OZUBBPFf4ZNZzPJP\"]")
+                },
+                mediaType = "application/json"
+            ),
+            required = true
+        ),
         responses = {
             @ApiResponse(
                 content = {@Content(
                     examples = {
                         @ExampleObject(value =
-                            "{\"match\": \"-7_-OZUBBPFf4ZNZzPJP\"}"
-                        )
+                            "{\"match\": \"-7_-OZUBBPFf4ZNZzPJP\"}")
                     },
                     mediaType = "application/json"
                 )},
@@ -226,6 +265,16 @@ public class DogController {
                 )},
                 description = "Unauthorized",
                 responseCode = "401"
+            ),
+            @ApiResponse(
+                content = {@Content(
+                    examples = {@ExampleObject(value = "{\"error\":" +
+                        "\"Unprocessable Entity\",\"detail\":[\"a dog ID " +
+                        "must not be empty\"]}")},
+                    mediaType = "application/json"
+                )},
+                description = "Invalid request",
+                responseCode = "422"
             )
         },
         summary = "Randomly select a dog from the list provided."
@@ -233,10 +282,6 @@ public class DogController {
     @PostMapping("/match")
     public Map<String, String> match(
         @NotNull(message = "body must not be null")
-        @Parameter(
-            description = "Dog IDs",
-            required = true
-        )
         @RequestBody
         @Size(message = "body must not be empty", min = 1)
         List<

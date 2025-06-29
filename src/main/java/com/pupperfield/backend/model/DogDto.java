@@ -13,52 +13,31 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @NoArgsConstructor
-@Schema(
-    accessMode = Schema.AccessMode.WRITE_ONLY,
-    description = "Dog information"
-)
+@Schema(description = "Dog information")
 public class DogDto {
     @PositiveOrZero
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A dog's age"
-    )
+    @Schema(title = "A dog's age")
     private long age;
 
     @NotBlank
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A dog's breed"
-    )
+    @Schema(title = "A dog's breed")
     private String breed;
 
     @NotBlank
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A dog's ID"
-    )
+    @Schema(title = "A dog's ID")
     private String id;
 
     @NotBlank
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A dog's name"
-    )
+    @Schema(title = "A dog's name")
     private String name;
 
     @JsonProperty("img")
     @NotBlank
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "Link to a dog's image"
-    )
+    @Schema(title = "Link to a dog's image")
     private String imageLink;
 
     @JsonProperty("zip_code")
     @NotBlank
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A dog's zip code"
-    )
+    @Schema(title = "A dog's zip code")
     private String zipCode;
 }

@@ -38,7 +38,7 @@ public class AuthController {
         description = "Takes an email address and name wrapped in a JSON " +
             "body and returns a cookie that will be sent with every " +
             "request (the browser handles it automatically). Remember to " +
-            "this endpoint again before the token expires in an hour.",
+            "call this endpoint again before the token expires in an hour.",
         method = "POST",
         responses = {
             @ApiResponse(
@@ -48,6 +48,16 @@ public class AuthController {
                 )},
                 description = "OK",
                 responseCode = "200"
+            ),
+            @ApiResponse(
+                content = {@Content(
+                    examples = {@ExampleObject(value = "{\"error\":" +
+                        "\"Unprocessable Entity\",\"detail\":[\"email is " +
+                        "not valid\"]}")},
+                    mediaType = "application/json"
+                )},
+                description = "Invalid request",
+                responseCode = "422"
             )
         },
         summary = "Create a cookie called \"fetch-access-token.\""
@@ -71,7 +81,8 @@ public class AuthController {
     }
 
     @Operation(
-        description = "Expires the cookie \"fetch-access-token.\"",
+        description = "Takes the authentication cookie, nullifies it by " +
+            "emptying the token, and setting it to expire immediately.",
         method = "POST",
         responses = {
             @ApiResponse(

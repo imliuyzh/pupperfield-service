@@ -16,6 +16,7 @@ public class LoginRequestDto {
     @Email(message = "email is not valid")
     @NotBlank(message = "email must not be empty")
     @Schema(
+        example = "name@email.com",
         requiredMode = Schema.RequiredMode.REQUIRED,
         title = "User's email address"
     )
@@ -23,6 +24,7 @@ public class LoginRequestDto {
 
     @NotBlank(message = "name must not be empty")
     @Schema(
+        example = "First Last",
         requiredMode = Schema.RequiredMode.REQUIRED,
         title = "User's name"
     )

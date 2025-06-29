@@ -13,33 +13,18 @@ import java.util.List;
 @Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Schema(
-    accessMode = Schema.AccessMode.WRITE_ONLY,
-    description = "Dog search results"
-)
+@Schema(description = "Dog search results")
 public class DogSearchResponseDto {
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A link to the next page of results"
-    )
+    @Schema(title = "A link to the next page of results")
     private String next;
 
     @JsonProperty("prev")
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A link to the previous page of results"
-    )
+    @Schema(title = "A link to the previous page of results")
     private String previous;
 
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "A list of dog IDs"
-    )
+    @Schema(title = "A list of dog IDs")
     private List<String> resultIds;
 
-    @Schema(
-        accessMode = Schema.AccessMode.WRITE_ONLY,
-        title = "Total number of results"
-    )
+    @Schema(title = "Total number of results")
     private Long total;
 }
