@@ -32,6 +32,7 @@ public class DogController {
 
     private DogService dogService;
 
+    @GetMapping("/breeds")
     @Operation(
         description = "Extracts all dog breeds from the database. " +
             "The list is sorted in non-descending order.",
@@ -56,7 +57,6 @@ public class DogController {
         },
         summary = "Retrieve a list of all dog breeds in the database."
     )
-    @GetMapping("/breeds")
     public Collection<String> getBreeds() {
         return dogService.getBreeds();
     }
