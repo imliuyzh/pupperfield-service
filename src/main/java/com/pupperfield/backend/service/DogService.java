@@ -33,7 +33,10 @@ public class DogService {
         return dogRepository.getBreeds();
     }
 
-    @Cacheable(cacheNames = {CacheConfig.LIST_CACHE})
+    @Cacheable(
+        cacheNames = {CacheConfig.LIST_CACHE},
+        unless = "#result?.isEmpty()"
+    )
     public List<DogDto> listDogs(List<String> idList) {
         var indexMap = new HashMap<String, Integer>();
         for (var index = 0; index < idList.size(); index++) {
@@ -47,9 +50,10 @@ public class DogService {
     }
 
     @Cacheable(
+        cacheNames = {CacheConfig.SEARCH_CACHE},
         key = "#breeds + '_' + #from + '_' + #maxAge + '_' + #minAge + '_' + "
             + "#size + '_' + #sort + '_' + #zipCodes",
-        cacheNames = {CacheConfig.SEARCH_CACHE}
+        unless = "#result?.getSecond() <= 0"
     )
     public Pair<List<String>, Long> searchDogs(
         List<String> breeds,
