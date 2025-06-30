@@ -1,16 +1,14 @@
 package com.pupperfield.backend.service;
 
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Map;
-
-import javax.crypto.SecretKey;
-
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.Map;
 
 @AllArgsConstructor
 @Service
@@ -24,8 +22,7 @@ public class TokenService {
             .and()
             .claims(Map.of("email", email, "name", name))
             .expiration(
-                Date.from(ZonedDateTime.now().plusHours(1).toInstant())
-            )
+                Date.from(ZonedDateTime.now().plusHours(1).toInstant()))
             .issuedAt(new Date())
             .signWith(SECRET_KEY)
             .compact();

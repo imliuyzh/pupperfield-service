@@ -2,12 +2,10 @@ package com.pupperfield.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * This class is the main entry point for the Pupperfield backend application.
  */
-@EnableCaching
 @SpringBootApplication
 public class PupperfieldApplication {
     /**

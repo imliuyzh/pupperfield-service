@@ -23,11 +23,6 @@ server:
 spring:
     application:
         name: pupperfield
-    cache:
-        cache-names:
-            - breeds
-            - lists
-            - searches
     jpa:
         open-in-view: false
     main:

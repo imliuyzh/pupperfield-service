@@ -1,5 +1,8 @@
 logging:
     level:
+        org:
+            springframework:
+                cache: trace
         sql: trace
         web: trace
 
