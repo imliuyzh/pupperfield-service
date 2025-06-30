@@ -1,3 +1,9 @@
+logbook:
+    obfuscate:
+        headers:
+            - Authorization
+            - Cookie
+
 logging:
     file:
         name: pupperfield.log

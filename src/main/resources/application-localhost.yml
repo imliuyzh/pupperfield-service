@@ -3,6 +3,9 @@ logging:
         org:
             springframework:
                 cache: trace
+            zalando:
+                logbook:
+                    Logbook: trace
         sql: trace
         web: trace
 
