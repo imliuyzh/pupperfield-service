@@ -16,6 +16,7 @@ server:
         include-stacktrace: never
         whitelabel:
             enabled: false
+    forward-headers-strategy: native
     http2:
         enabled: true
     port: 8080
