@@ -131,6 +131,7 @@ public class DogController {
         return dogService.listDogs(idList);
     }
 
+    @GetMapping("/search")
     @Operation(
         description = "Searches for dogs in the database using filter " +
             "conditions from request parameters. All parameters are " +
@@ -174,7 +175,6 @@ public class DogController {
         },
         summary = "Find dogs that matches the search criteria."
     )
-    @GetMapping("/search")
     public DogSearchResponseDto search(
         @RequestParam(required = false)
         List<
