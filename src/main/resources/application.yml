@@ -1,12 +1,17 @@
 logbook:
     obfuscate:
         headers:
-            - Authorization
             - Cookie
+            - Set-Cookie
 
 logging:
     file:
         name: pupperfield.log
+    level:
+        org:
+            zalando:
+                logbook:
+                    Logbook: trace
     logback:
         rollingpolicy:
             max-history: 31

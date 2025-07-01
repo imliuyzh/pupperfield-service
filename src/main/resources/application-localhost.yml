@@ -7,9 +7,6 @@ logging:
         org:
             springframework:
                 cache: trace
-            zalando:
-                logbook:
-                    Logbook: trace
         sql: trace
         web: trace
 
@@ -23,5 +20,3 @@ server:
 spring:
     jpa:
         show-sql: true
-    mvc:
-        log-request-details: true
