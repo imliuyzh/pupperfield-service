@@ -38,8 +38,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .findFirst()
                 .orElseThrow(() -> new AuthException(String.format(
                     "Unauthorized due to invalid token: %s %s",
-                    request.getMethod(), request.getRequestURL().toString()
-                )));
+                    request.getMethod(), request.getRequestURL().toString())));
         }
         return true;
     }
