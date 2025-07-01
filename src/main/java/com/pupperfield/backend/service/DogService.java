@@ -4,7 +4,6 @@ import com.pupperfield.backend.config.CacheConfig;
 import com.pupperfield.backend.entity.Dog;
 import com.pupperfield.backend.mapper.DogMapper;
 import com.pupperfield.backend.model.DogDto;
-import com.pupperfield.backend.model.DogSearchResponseDto;
 import com.pupperfield.backend.repository.DogRepository;
 import com.pupperfield.backend.spec.DogSpecs;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,26 +31,6 @@ public class DogService {
     private DogRepository dogRepository;
 
     private static final SecureRandom RANDOM = new SecureRandom();
-
-    public DogSearchResponseDto buildSearchResponse(
-        Pair<List<String>, Long> queryResult,
-        Integer from,
-        Integer size,
-        HttpServletRequest request
-    ) {
-        var response = DogSearchResponseDto.builder()
-            .resultIds(queryResult.getFirst())
-            .total(queryResult.getSecond());
-        if (from - size >= 0) {
-            response = response.previous(
-                buildNavigation(from - size, request));
-        }
-        if (from + size < queryResult.getSecond()) {
-            response = response.next(
-                buildNavigation(from + size, request));
-        }
-        return response.build();
-    }
 
     @Cacheable(cacheNames = {CacheConfig.BREED_CACHE})
     public Collection<String> getBreeds() {
@@ -133,7 +112,7 @@ public class DogService {
      * @return a string for the navigation path including the new
      * "from" parameter.
      */
-    private String buildNavigation(
+    public String buildNavigation(
         Integer from,
         HttpServletRequest request
     ) {

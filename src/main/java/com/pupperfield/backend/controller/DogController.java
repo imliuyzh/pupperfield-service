@@ -279,6 +279,17 @@ public class DogController {
         var outcome = dogService.searchDogs(
             breeds, from, maxAge, minAge, size, sort, zipCodes
         );
-        return dogService.buildSearchResponse(outcome, from, size, request);
+        return DogSearchResponseDto.builder()
+            .resultIds(outcome.getFirst())
+            .total(outcome.getSecond())
+            .previous((from - size >= 0)
+                ? dogService.buildNavigation(from - size, request)
+                : null
+            )
+            .next((from + size < outcome.getSecond())
+                ? dogService.buildNavigation(from + size, request)
+                : null
+            )
+            .build();
     }
 }
