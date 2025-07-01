@@ -1,17 +1,15 @@
 package com.pupperfield.backend.interceptor;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import com.pupperfield.backend.controller.AuthController;
 import com.pupperfield.backend.service.TokenService;
-
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @AllArgsConstructor
 @Component

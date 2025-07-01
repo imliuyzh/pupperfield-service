@@ -1,8 +1,9 @@
 package com.pupperfield.backend.advice;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.pupperfield.backend.model.InvalidRequestResponseDto;
+import jakarta.security.auth.message.AuthException;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -20,18 +21,15 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.pupperfield.backend.model.InvalidRequestResponseDto;
-
-import jakarta.security.auth.message.AuthException;
-import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
 public class ExceptionAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
     public ResponseEntity<String> failedHttpMessageConversionHandler
-            (HttpMessageConversionException exception) {
+        (HttpMessageConversionException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -42,7 +40,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<String> failedAuthHandler
-            (AuthException exception) {
+        (AuthException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.UNAUTHORIZED.getReasonPhrase(),
@@ -53,7 +51,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<String> notFoundHandler
-            (NoHandlerFoundException exception) {
+        (NoHandlerFoundException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -64,7 +62,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<String> httpMethodNotSupportedHandler
-            (HttpRequestMethodNotSupportedException exception) {
+        (HttpRequestMethodNotSupportedException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
@@ -75,7 +73,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<String> invalidMediaTypeHandler
-            (HttpMediaTypeNotSupportedException exception) {
+        (HttpMediaTypeNotSupportedException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
@@ -86,7 +84,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler1
-            (MethodArgumentNotValidException exception) {
+        (MethodArgumentNotValidException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
@@ -103,7 +101,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler2
-            (ConstraintViolationException exception) {
+        (ConstraintViolationException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
@@ -119,7 +117,7 @@ public class ExceptionAdvice {
         MethodValidationException.class
     })
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler3
-            (MethodValidationResult exception) {
+        (MethodValidationResult exception) {
         log.info(ExceptionUtils.getStackTrace((RuntimeException) exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
@@ -135,7 +133,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler4
-            (MethodArgumentTypeMismatchException exception) {
+        (MethodArgumentTypeMismatchException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         var targetType = exception.getRequiredType();
         return new ResponseEntity<>(

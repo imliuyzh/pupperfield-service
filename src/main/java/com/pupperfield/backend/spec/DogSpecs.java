@@ -1,12 +1,10 @@
 package com.pupperfield.backend.spec;
 
-import java.util.List;
-
+import com.pupperfield.backend.entity.Dog;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.pupperfield.backend.entity.Dog;
-
-import lombok.NoArgsConstructor;
+import java.util.List;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DogSpecs {
