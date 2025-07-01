@@ -6,9 +6,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
+
+import static org.apache.commons.lang3.time.DateUtils.addHours;
 
 @AllArgsConstructor
 @Service
@@ -21,8 +22,7 @@ public class TokenService {
             .add("typ", "JWT")
             .and()
             .claims(Map.of("email", email, "name", name))
-            .expiration(
-                Date.from(ZonedDateTime.now().plusHours(1).toInstant()))
+            .expiration(addHours(new Date(), 1))
             .issuedAt(new Date())
             .signWith(SECRET_KEY)
             .compact();

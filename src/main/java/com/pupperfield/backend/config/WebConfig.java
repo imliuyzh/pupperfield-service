@@ -21,8 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
             .allowCredentials(true)
             .allowedMethods(
                 HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.OPTIONS.name()
+                HttpMethod.OPTIONS.name(),
+                HttpMethod.POST.name()
             )
             .allowedOriginPatterns("*");
     }
@@ -34,8 +34,8 @@ public class WebConfig implements WebMvcConfigurer {
                 "/api-docs/**",
                 "/auth/login",
                 "/status",
-                "/swagger-ui.html",
-                "/swagger-ui/**"
+                "/swagger-ui/**",
+                "/swagger-ui.html"
             );
     }
 }
