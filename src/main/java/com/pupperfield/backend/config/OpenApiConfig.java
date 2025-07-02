@@ -11,13 +11,10 @@ public class OpenApiConfig {
     @Bean("swaggerConfig")
     OpenAPI swaggerConfig() {
         return new OpenAPI()
-            .externalDocs(new ExternalDocumentation()
-                .url("https://frontend-take-home.fetch.com")
-            )
+            .externalDocs(new ExternalDocumentation().url("https://frontend-take-home.fetch.com"))
             .info(new Info()
-                .description("This is a mock API for Fetch Rewards' front " +
-                    "end take home assessment. The original problem " +
-                    "statement is available at: ")
+                .description("This is a mock API for Fetch Rewards' front end take home " +
+                    "assessment. The original problem statement is available at:")
                 .title("Pupperfield API")
             );
     }

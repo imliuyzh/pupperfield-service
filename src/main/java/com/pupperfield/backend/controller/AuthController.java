@@ -72,9 +72,7 @@ public class AuthController {
         @Validated
         LoginRequestDto user
     ) {
-        var cookie = createCookie(tokenService.generate(
-            user.getEmail(), user.getName()
-        ));
+        var cookie = createCookie(tokenService.generate(user.getEmail(), user.getName()));
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, cookie.toString())
             .body("OK");

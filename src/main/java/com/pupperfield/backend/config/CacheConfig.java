@@ -20,9 +20,7 @@ public class CacheConfig {
     @Bean("cacheManager")
     public CacheManager cacheManager() {
         var cacheManager = new CaffeineCacheManager();
-        cacheManager.registerCustomCache(
-            BREED_CACHE, Caffeine.newBuilder().build()
-        );
+        cacheManager.registerCustomCache(BREED_CACHE, Caffeine.newBuilder().build());
         cacheManager.registerCustomCache(
             LIST_CACHE, Caffeine.newBuilder()
                 .expireAfterAccess(15, TimeUnit.MINUTES)

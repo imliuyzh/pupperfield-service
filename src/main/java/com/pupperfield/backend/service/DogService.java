@@ -88,9 +88,7 @@ public class DogService {
         }
 
         var sortInfo = sort.split(":");
-        var sortOrder = Sort.by(new Order(
-            sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]
-        ));
+        var sortOrder = Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]));
 
         return Pair.of(
             dogRepository.findAll(conditions, sortOrder)
@@ -107,15 +105,10 @@ public class DogService {
      * Build the value for "prev" and "next" fields in the search result.
      *
      * @param from a new value for the "from" parameter to be set.
-     * @param request a HttpServletRequest object that has the current
-     * query string.
-     * @return a string for the navigation path including the new
-     * "from" parameter.
+     * @param request a HttpServletRequest object that has the current query string.
+     * @return a string for the navigation path including the new "from" parameter.
      */
-    public String buildNavigation(
-        Integer from,
-        HttpServletRequest request
-    ) {
+    public String buildNavigation(Integer from, HttpServletRequest request) {
         var tokens = request.getQueryString().split("&");
         var fromExists = false;
         for (var index = 0; index < tokens.length; index++) {

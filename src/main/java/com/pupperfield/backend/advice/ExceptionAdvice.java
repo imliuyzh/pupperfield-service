@@ -1,7 +1,6 @@
 package com.pupperfield.backend.advice;
 
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
-import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -35,17 +34,6 @@ public class ExceptionAdvice {
             HttpStatus.BAD_REQUEST.getReasonPhrase(),
             null,
             HttpStatus.BAD_REQUEST.value()
-        );
-    }
-
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> failedAuthHandler
-        (AuthException exception) {
-        log.info(ExceptionUtils.getStackTrace(exception));
-        return new ResponseEntity<>(
-            HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-            null,
-            HttpStatus.UNAUTHORIZED.value()
         );
     }
 

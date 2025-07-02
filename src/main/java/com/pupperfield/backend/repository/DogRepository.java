@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public interface DogRepository extends
-    JpaRepository<Dog, String>, JpaSpecificationExecutor<Dog> {
+public interface DogRepository extends JpaRepository<Dog, String>, JpaSpecificationExecutor<Dog> {
     @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed")
     Collection<String> getBreeds();
 }
