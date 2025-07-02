@@ -19,7 +19,7 @@ public class StatusController {
     @GetMapping("/status")
     @Operation(
         description = "Returns HTTP 200 along with its reason phrase. " +
-            "If the application is not working properly, other " +
+            "If the application is not working properly, then other " +
             "unexpected behaviors like HTTP 5xx errors will take place.",
         method = "GET",
         responses = {

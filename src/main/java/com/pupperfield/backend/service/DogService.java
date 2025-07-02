@@ -120,7 +120,6 @@ public class DogService {
         }
         return String.format(
             fromExists ? "/dogs/search?%s" : "/dogs/search?%s&from=" + from,
-            String.join("&", tokens)
-        );
+            String.join("&", tokens));
     }
 }
