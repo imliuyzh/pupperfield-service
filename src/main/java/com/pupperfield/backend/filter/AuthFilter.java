@@ -1,0 +1,70 @@
+package com.pupperfield.backend.filter;
+
+import com.pupperfield.backend.service.TokenService;
+import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
+
+@AllArgsConstructor
+@Component
+@Slf4j
+public class AuthFilter extends OncePerRequestFilter {
+    private TokenService tokenService;
+
+    private static final List<String> WHITELIST = List.of(
+        "/api-docs/**", "/auth/login", "/status", "/swagger-ui/**", "/swagger-ui.html"
+    );
+
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain chain
+    ) throws IOException, ServletException {
+        try {
+            var cookies = (request.getCookies() != null) ? request.getCookies() : new Cookie[0];
+            var accessCookie = Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals(COOKIE_NAME))
+                .findFirst()
+                .orElseThrow(() -> new AuthException(String.format(
+                    "Unauthorized due to missing cookie: %s %s",
+                    request.getMethod(), request.getRequestURL().toString()
+                )));
+            if (tokenService.isValid(accessCookie.getValue()) == false) {
+                throw new AuthException(String.format(
+                    "Unauthorized due to invalid token: %s %s",
+                    request.getMethod(), request.getRequestURL().toString()
+                ));
+            }
+            chain.doFilter(request, response);
+        } catch (AuthException exception) {
+            log.info(ExceptionUtils.getStackTrace(exception));
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("text/plain");
+            var printWriter = response.getWriter();
+            printWriter.write(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            printWriter.close();
+        }
+    }
+
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return HttpMethod.OPTIONS.matches(request.getMethod())
+            || WHITELIST.stream().anyMatch(path -> request.getRequestURI().startsWith(path));
+    }
+}
