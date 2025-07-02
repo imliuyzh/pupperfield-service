@@ -1,5 +1,7 @@
 package com.pupperfield.backend.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pupperfield.backend.model.InvalidRequestResponseDto;
 import com.pupperfield.backend.service.TokenService;
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.FilterChain;
@@ -26,10 +28,11 @@ import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
 @Component
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
+    private ObjectMapper objectMapper;
     private TokenService tokenService;
 
     private static final List<String> WHITELIST = List.of(
-        "/api-docs/**", "/auth/login", "/status", "/swagger-ui/**", "/swagger-ui.html"
+        "/api-docs", "/auth/login", "/status", "/swagger-ui"
     );
 
     protected void doFilterInternal(
@@ -42,23 +45,20 @@ public class AuthFilter extends OncePerRequestFilter {
             var accessCookie = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(COOKIE_NAME))
                 .findFirst()
-                .orElseThrow(() -> new AuthException(String.format(
-                    "Unauthorized due to missing cookie: %s %s",
-                    request.getMethod(), request.getRequestURL().toString()
-                )));
+                .orElseThrow(() -> new AuthException("Unauthorized due to missing cookie"));
             if (tokenService.isValid(accessCookie.getValue()) == false) {
-                throw new AuthException(String.format(
-                    "Unauthorized due to invalid token: %s %s",
-                    request.getMethod(), request.getRequestURL().toString()
-                ));
+                throw new AuthException("Unauthorized due to invalid token");
             }
             chain.doFilter(request, response);
         } catch (AuthException exception) {
             log.info(ExceptionUtils.getStackTrace(exception));
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType("text/plain");
+            response.setContentType("application/json");
             var printWriter = response.getWriter();
-            printWriter.write(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                List.of(exception.getMessage().substring(20))
+            )));
             printWriter.close();
         }
     }

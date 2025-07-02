@@ -10,6 +10,6 @@ public record InvalidRequestResponseDto(
     String error,
 
     @Schema(title = "Error details")
-    Collection<String> detail
+    Collection<String> details
 ) {
 }
