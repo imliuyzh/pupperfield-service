@@ -1,6 +1,7 @@
 package com.pupperfield.backend.advice;
 
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
+import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,9 +39,12 @@ public class ExceptionAdvice {
         );
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler({
+        NoHandlerFoundException.class,
+        NoResourceFoundException.class
+    })
     public ResponseEntity<String> notFoundHandler
-        (NoHandlerFoundException exception) {
+        (ServletException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.NOT_FOUND.getReasonPhrase(),
