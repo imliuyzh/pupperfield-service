@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -27,7 +26,6 @@ import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
 
 @AllArgsConstructor
 @Component
-@Order(1)
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
     private ObjectMapper objectMapper;
