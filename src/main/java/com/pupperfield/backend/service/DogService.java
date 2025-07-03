@@ -6,17 +6,22 @@ import com.pupperfield.backend.mapper.DogMapper;
 import com.pupperfield.backend.model.DogDto;
 import com.pupperfield.backend.repository.DogRepository;
 import com.pupperfield.backend.spec.DogSpecs;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -88,38 +93,90 @@ public class DogService {
         }
 
         var sortInfo = sort.split(":");
-        var sortOrder = Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]));
+        var pageRequest = dogRepository.findAll(conditions, new DogSearchPageRequest(
+            size, from, Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))));
 
         return Pair.of(
-            dogRepository.findAll(conditions, sortOrder)
+            pageRequest.getContent()
                 .stream()
-                .skip(from)
-                .limit(size)
                 .map(Dog::getId)
                 .toList(),
-            dogRepository.count(conditions)
+            pageRequest.getTotalElements()
         );
     }
 
     /**
      * Build the value for "prev" and "next" fields in the search result.
      *
-     * @param from a new value for the "from" parameter to be set.
-     * @param request a HttpServletRequest object that has the current query string.
-     * @return a string for the navigation path including the new "from" parameter.
+     * @param query current query string
+     * @param from a value for the "from" field
+     * @param size a value for the "size" field
+     * @return a string for the navigation path including the new "from" parameter
      */
-    public String buildNavigation(Integer from, HttpServletRequest request) {
-        var tokens = request.getQueryString().split("&");
-        var fromExists = false;
-        for (var index = 0; index < tokens.length; index++) {
-            if (tokens[index].startsWith("from=")) {
-                tokens[index] = "from=" + from;
+    public String buildNavigation(String query, Integer from, Integer size) {
+        var pairs = new ArrayList<String>();
+        if (query != null && query.isEmpty() == false) {
+            Collections.addAll(pairs, query.split("&"));
+        }
+        boolean fromExists = false, sizeExists = false;
+        for (int index = 0; index < pairs.size(); index++) {
+            if (pairs.get(index).startsWith("from=")) {
+                pairs.set(index, "from=%d".formatted(from));
                 fromExists = true;
-                break;
+            }
+            if (pairs.get(index).startsWith("size=")) {
+                sizeExists = true;
             }
         }
-        return String.format(
-            fromExists ? "/dogs/search?%s" : "/dogs/search?%s&from=" + from,
-            String.join("&", tokens));
+        if (fromExists == false) {
+            pairs.add("from=%d".formatted(from));
+        }
+        if (sizeExists == false) {
+            pairs.add("size=%d".formatted(size));
+        }
+        return "/dogs/search?%s".formatted(String.join("&", pairs));
+    }
+
+    @Value
+    private static class DogSearchPageRequest implements Pageable {
+        int limit;
+
+        @Getter
+        long offset;
+
+        @Getter
+        Sort sort;
+
+        @NonNull
+        public Pageable first() {
+            return new DogSearchPageRequest(this.limit, this.offset, this.sort);
+        }
+
+        public int getPageNumber() {
+            return 0;
+        }
+
+        public int getPageSize() {
+            return this.limit;
+        }
+
+        public boolean hasPrevious() {
+            return false;
+        }
+
+        @NonNull
+        public Pageable next() {
+            throw new UnsupportedOperationException("Not implemented");
+        }
+
+        @NonNull
+        public Pageable previousOrFirst() {
+            return this.first();
+        }
+
+        @NonNull
+        public Pageable withPage(int pageNumber) {
+            throw new UnsupportedOperationException("Not implemented");
+        }
     }
 }

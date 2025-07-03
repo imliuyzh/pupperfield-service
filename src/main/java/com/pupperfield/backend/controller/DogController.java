@@ -283,10 +283,10 @@ public class DogController {
             .resultIds(outcome.getFirst())
             .total(outcome.getSecond())
             .previous((from - size >= 0)
-                ? dogService.buildNavigation(from - size, request)
+                ? dogService.buildNavigation(request.getQueryString(), from - size, size)
                 : null)
             .next((from + size < outcome.getSecond())
-                ? dogService.buildNavigation(from + size, request)
+                ? dogService.buildNavigation(request.getQueryString(), from + size, size)
                 : null)
             .build();
     }
