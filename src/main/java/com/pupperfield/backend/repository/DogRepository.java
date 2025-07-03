@@ -14,9 +14,9 @@ import java.util.Collection;
 
 @Repository
 public interface DogRepository extends JpaRepository<Dog, String>, JpaSpecificationExecutor<Dog> {
-    @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed")
-    Collection<String> getBreeds();
-
     @NonNull
     Page<Dog> findAll(Specification<Dog> spec, @NonNull Pageable pageable);
+
+    @Query("SELECT DISTINCT breed FROM Dog ORDER BY breed")
+    Collection<String> getBreeds();
 }
