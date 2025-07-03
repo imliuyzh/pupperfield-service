@@ -95,7 +95,6 @@ public class DogService {
         var sortInfo = sort.split(":");
         var pageRequest = dogRepository.findAll(conditions, new DogSearchPageRequest(
             size, from, Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))));
-
         return Pair.of(
             pageRequest.getContent()
                 .stream()
