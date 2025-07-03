@@ -1,4 +1,4 @@
-package com.pupperfield.backend.advice;
+package com.pupperfield.backend.exception;
 
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
 import jakarta.servlet.ServletException;
