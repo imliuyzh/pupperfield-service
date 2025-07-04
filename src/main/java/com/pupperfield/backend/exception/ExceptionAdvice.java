@@ -33,10 +33,7 @@ public class ExceptionAdvice {
         (HttpMessageConversionException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
-            HttpStatus.BAD_REQUEST.getReasonPhrase(),
-            null,
-            HttpStatus.BAD_REQUEST.value()
-        );
+            HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({
@@ -47,10 +44,7 @@ public class ExceptionAdvice {
         (ServletException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
-            HttpStatus.NOT_FOUND.getReasonPhrase(),
-            null,
-            HttpStatus.NOT_FOUND.value()
-        );
+            HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -58,10 +52,7 @@ public class ExceptionAdvice {
         (HttpRequestMethodNotSupportedException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
-            HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
-            null,
-            HttpStatus.METHOD_NOT_ALLOWED.value()
-        );
+            HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
@@ -70,8 +61,7 @@ public class ExceptionAdvice {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
-            null,
-            HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()
+            HttpStatus.UNSUPPORTED_MEDIA_TYPE
         );
     }
 
@@ -146,9 +136,6 @@ public class ExceptionAdvice {
     public ResponseEntity<String> baseExceptionHandler(Exception exception) {
         log.error(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
-            HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-            null,
-            HttpStatus.INTERNAL_SERVER_ERROR.value()
-        );
+            HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
