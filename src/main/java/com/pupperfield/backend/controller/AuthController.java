@@ -25,10 +25,7 @@ import static org.apache.commons.lang3.BooleanUtils.toInteger;
 @AllArgsConstructor
 @RequestMapping("/auth")
 @RestController
-@Tag(
-    description = "Perform log in and log out operations.",
-    name = "Authentication"
-)
+@Tag(description = "Perform log in and log out operations.", name = "Authentication")
 public class AuthController {
     public static final String COOKIE_NAME = "fetch-access-token";
 
@@ -64,10 +61,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<String> login(
-        @Parameter(
-            description = "User email and name",
-            required = true
-        )
+        @Parameter(description = "User email and name", required = true)
         @RequestBody
         @Validated
         LoginRequestDto user
@@ -114,7 +108,7 @@ public class AuthController {
      *
      * @param value a JWT token set to be expired within an hour. A null value
      * indicates the cookie should be invalidated.
-     * @return a new cookie.
+     * @return a new cookie
      */
     private ResponseCookie createCookie(String value) {
         return ResponseCookie.from(COOKIE_NAME)

@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(
-    description = "Report the current status of the application.",
-    name = "Status"
-)
+@Tag(description = "Report the current status of the application.", name = "Status")
 public class StatusController {
     @GetMapping("/status")
     @Operation(

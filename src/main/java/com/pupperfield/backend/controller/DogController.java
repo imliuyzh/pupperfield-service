@@ -32,10 +32,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/dogs")
 @RestController
-@Tag(
-    description = "Execute operations upon dogs stored in the database.",
-    name = "Dogs"
-)
+@Tag(description = "Execute operations upon dogs stored in the database.", name = "Dogs")
 public class DogController {
     private DogService dogService;
 
@@ -74,8 +71,7 @@ public class DogController {
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
-                examples = {@ExampleObject(
-                    value = "[\"rcD-OZUBBPFf4ZNZzDCC\"]")},
+                examples = {@ExampleObject(value = "[\"rcD-OZUBBPFf4ZNZzDCC\"]")},
                 mediaType = "application/json"
             ),
             required = true
@@ -126,14 +122,8 @@ public class DogController {
             required = true
         )
         @RequestBody
-        @Size(
-            max = 100,
-            message = "body must have 1 to 100 dog IDs",
-            min = 1
-        )
-        List<
-            @NotBlank(message = "a dog ID must not be empty")
-            @Valid String> idList
+        @Size(max = 100, message = "body must have 1 to 100 dog IDs", min = 1)
+        List<@NotBlank(message = "a dog ID must not be empty") @Valid String> idList
     ) {
         return dogService.listDogs(idList);
     }
@@ -144,8 +134,7 @@ public class DogController {
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
                 examples = {
-                    @ExampleObject(value =
-                        "[\"rcD-OZUBBPFf4ZNZzDCC\", \"-7_-OZUBBPFf4ZNZzPJP\"]")
+                    @ExampleObject(value = "[\"rcD-OZUBBPFf4ZNZzDCC\", \"-7_-OZUBBPFf4ZNZzPJP\"]")
                 },
                 mediaType = "application/json"
             ),
@@ -154,10 +143,7 @@ public class DogController {
         responses = {
             @ApiResponse(
                 content = {@Content(
-                    examples = {
-                        @ExampleObject(value =
-                            "{\"match\": \"-7_-OZUBBPFf4ZNZzPJP\"}")
-                    },
+                    examples = {@ExampleObject(value = "{\"match\": \"-7_-OZUBBPFf4ZNZzPJP\"}")},
                     mediaType = "application/json"
                 )},
                 description = "OK",
@@ -189,9 +175,7 @@ public class DogController {
         @NotNull(message = "body must not be null")
         @RequestBody
         @Size(message = "body must not be empty", min = 1)
-        List<
-            @NotBlank(message = "a dog ID must not be empty")
-            @Valid String> idList
+        List<@NotBlank(message = "a dog ID must not be empty") @Valid String> idList
     ) {
         return Map.of("match", dogService.matchDogs(idList));
     }
@@ -242,9 +226,7 @@ public class DogController {
     )
     public DogSearchResponseDto search(
         @RequestParam(required = false)
-        List<
-            @NotBlank(message = "a breed must not be empty")
-            @Valid String> breeds,
+        List<@NotBlank(message = "a breed must not be empty") @Valid String> breeds,
 
         @PositiveOrZero(message = "from must be positive or zero")
         @RequestParam(defaultValue = "0", required = false)
@@ -272,13 +254,9 @@ public class DogController {
         String sort,
 
         @RequestParam(required = false)
-        List<
-            @NotBlank(message = "a zip code must not be empty")
-            @Valid String> zipCodes
+        List<@NotBlank(message = "a zip code must not be empty") @Valid String> zipCodes
     ) {
-        var outcome = dogService.searchDogs(
-            breeds, from, maxAge, minAge, size, sort, zipCodes
-        );
+        var outcome = dogService.searchDogs(breeds, from, maxAge, minAge, size, sort, zipCodes);
         return DogSearchResponseDto.builder()
             .resultIds(outcome.getFirst())
             .total(outcome.getSecond())

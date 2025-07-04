@@ -36,10 +36,7 @@ public class ExceptionAdvice {
             HttpStatus.BAD_REQUEST.getReasonPhrase(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({
-        NoHandlerFoundException.class,
-        NoResourceFoundException.class
-    })
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
     public ResponseEntity<String> notFoundHandler
         (ServletException exception) {
         log.info(ExceptionUtils.getStackTrace(exception));
@@ -95,10 +92,7 @@ public class ExceptionAdvice {
         );
     }
 
-    @ExceptionHandler({
-        HandlerMethodValidationException.class,
-        MethodValidationException.class
-    })
+    @ExceptionHandler({HandlerMethodValidationException.class, MethodValidationException.class})
     public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler3
         (MethodValidationResult exception) {
         log.info(ExceptionUtils.getStackTrace((RuntimeException) exception));

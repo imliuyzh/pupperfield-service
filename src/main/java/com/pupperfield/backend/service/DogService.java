@@ -115,6 +115,7 @@ public class DogService {
         if (isNotBlank(query)) {
             Collections.addAll(pairs, query.split("&"));
         }
+
         boolean fromExists = false, sizeExists = false;
         for (int index = 0; index < pairs.size(); index++) {
             if (pairs.get(index).startsWith("from=")) {
@@ -131,6 +132,7 @@ public class DogService {
         if (sizeExists == false) {
             pairs.add("size=%d".formatted(size));
         }
+
         return "/dogs/search?%s".formatted(String.join("&", pairs));
     }
 }
