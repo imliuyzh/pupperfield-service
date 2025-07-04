@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -111,7 +112,7 @@ public class DogService {
      */
     public String buildNavigation(String query, Integer from, Integer size) {
         var pairs = new ArrayList<String>();
-        if (query != null && query.isEmpty() == false) {
+        if (isNotBlank(query)) {
             Collections.addAll(pairs, query.split("&"));
         }
         boolean fromExists = false, sizeExists = false;
