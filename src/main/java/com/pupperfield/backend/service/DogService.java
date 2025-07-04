@@ -4,18 +4,15 @@ import com.pupperfield.backend.config.CacheConfig;
 import com.pupperfield.backend.entity.Dog;
 import com.pupperfield.backend.mapper.DogMapper;
 import com.pupperfield.backend.model.DogDto;
+import com.pupperfield.backend.pagination.DogSearchPagination;
 import com.pupperfield.backend.repository.DogRepository;
 import com.pupperfield.backend.spec.DogSpecs;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -93,7 +90,7 @@ public class DogService {
         }
 
         var sortInfo = sort.split(":");
-        var pageRequest = dogRepository.findAll(conditions, new DogSearchPageRequest(
+        var pageRequest = dogRepository.findAll(conditions, new DogSearchPagination(
             size, from, Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))));
         return Pair.of(
             pageRequest.getContent()
@@ -134,48 +131,5 @@ public class DogService {
             pairs.add("size=%d".formatted(size));
         }
         return "/dogs/search?%s".formatted(String.join("&", pairs));
-    }
-
-    @Value
-    private static class DogSearchPageRequest implements Pageable {
-        int limit;
-
-        @Getter
-        long offset;
-
-        @Getter
-        Sort sort;
-
-        @NonNull
-        public Pageable first() {
-            return new DogSearchPageRequest(this.limit, this.offset, this.sort);
-        }
-
-        public int getPageNumber() {
-            return 0;
-        }
-
-        public int getPageSize() {
-            return this.limit;
-        }
-
-        public boolean hasPrevious() {
-            return false;
-        }
-
-        @NonNull
-        public Pageable next() {
-            throw new UnsupportedOperationException("Not implemented");
-        }
-
-        @NonNull
-        public Pageable previousOrFirst() {
-            return this.first();
-        }
-
-        @NonNull
-        public Pageable withPage(int pageNumber) {
-            throw new UnsupportedOperationException("Not implemented");
-        }
     }
 }
