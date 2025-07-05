@@ -16,10 +16,10 @@ also want to run the `populator` program, make sure you have read the README fil
 The application will start on port 8080 by default:
 
 ```
-`./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost`
+./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost
 ```
 
-API documentation is available at: http://localhost:8080/swagger-ui.html.
+Check out the API documentation available at: http://localhost:8080/swagger-ui.html.
 
 ### Testing the Application
 
