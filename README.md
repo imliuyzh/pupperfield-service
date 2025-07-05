@@ -3,18 +3,21 @@
 This is a mock API service based off the Fetch Rewards' front end take-home interview question.
 The original problem statement is available at: https://frontend-take-home.fetch.com.
 
-Other than that, you can also check out its client application: https://github.com/imliuyzh/pupperfield.
+Other than that, you can also check out its client application, https://github.com/imliuyzh/pupperfield,
+which is implemented by myself too.
 
 ## Getting Started
 
 Before following the instructions below, please make sure you have Java v21 installed. If you
-also want to run the `populator` program, make sure you have read and followed the README file
-in `/populator`.
+also want to run the `populator` program, make sure you have read the README file in `/populator`.
 
 ### Running the Application
 
-You just need to execute `./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost`. The
-application will start on port 8080 by default.
+The application will start on port 8080 by default:
+
+```
+`./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost`
+```
 
 API documentation is available at: http://localhost:8080/swagger-ui.html.
 
@@ -24,7 +27,7 @@ TODO
 
 ## Technology Stack
 
-This is a primarily a Java application with its database built with a Go program.
+This is a primarily a Java application with its database built by a Go program.
 
 | Language | Framework/Library                                                                                                                                                          |
 |----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
