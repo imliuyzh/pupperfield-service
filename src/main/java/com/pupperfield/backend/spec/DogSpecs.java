@@ -12,12 +12,12 @@ public class DogSpecs {
         return (root, query, builder) -> builder.in(root.get("breed")).value(breeds);
     }
 
-    public static Specification<Dog> withMaxAge(Integer maxAge) {
-        return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("age"), maxAge);
+    public static Specification<Dog> withAgeMax(Integer ageMax) {
+        return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("age"), ageMax);
     }
 
-    public static Specification<Dog> withMinAge(Integer minAge) {
-        return (root, query, builder) -> builder.greaterThanOrEqualTo(root.get("age"), minAge);
+    public static Specification<Dog> withAgeMin(Integer ageMin) {
+        return (root, query, builder) -> builder.greaterThanOrEqualTo(root.get("age"), ageMin);
     }
 
     public static Specification<Dog> withZipCodes(List<String> zipCodes) {

@@ -4,6 +4,7 @@ import com.pupperfield.backend.config.CacheConfig;
 import com.pupperfield.backend.entity.Dog;
 import com.pupperfield.backend.mapper.DogMapper;
 import com.pupperfield.backend.model.DogDto;
+import com.pupperfield.backend.model.DogSearchRequestDto;
 import com.pupperfield.backend.pagination.DogSearchPagination;
 import com.pupperfield.backend.repository.DogRepository;
 import com.pupperfield.backend.spec.DogSpecs;
@@ -62,37 +63,34 @@ public class DogService {
 
     @Cacheable(
         cacheNames = {CacheConfig.SEARCH_CACHE},
-        key = "#breeds + '_' + #from + '_' + #maxAge + '_' + #minAge + '_' + "
-            + "#size + '_' + #sort + '_' + #zipCodes",
+        key = "#parameters.getBreeds() + '_' + #parameters.getFrom() + '_' + "
+            + "#parameters.getAgeMax() + '_' + #parameters.getAgeMin() + '_' + "
+            + "#parameters.getSize() + '_' + #parameters.getSort() + '_' + "
+            + "#parameters.getZipCodes()",
         unless = "#result?.getSecond() <= 0"
     )
-    public Pair<List<String>, Long> searchDogs(
-        List<String> breeds,
-        Integer from,
-        Integer maxAge,
-        Integer minAge,
-        Integer size,
-        String sort,
-        List<String> zipCodes
-    ) {
+    public Pair<List<String>, Long> searchDogs(DogSearchRequestDto parameters) {
         // Use Specification.unrestricted() for Spring Data JPA v4.0+.
         Specification<Dog> conditions = (root, query, builder) -> null;
-        if (zipCodes != null && zipCodes.isEmpty() == false) {
-            conditions = conditions.and(DogSpecs.withZipCodes(zipCodes));
+        if (parameters.getZipCodes() != null && parameters.getZipCodes().isEmpty() == false) {
+            conditions = conditions.and(DogSpecs.withZipCodes(parameters.getZipCodes()));
         }
-        if (maxAge != null) {
-            conditions = conditions.and(DogSpecs.withMaxAge(maxAge));
+        if (parameters.getAgeMax() != null) {
+            conditions = conditions.and(DogSpecs.withAgeMax(parameters.getAgeMax()));
         }
-        if (minAge != null) {
-            conditions = conditions.and(DogSpecs.withMinAge(minAge));
+        if (parameters.getAgeMin() != null) {
+            conditions = conditions.and(DogSpecs.withAgeMin(parameters.getAgeMin()));
         }
-        if (breeds != null && breeds.isEmpty() == false) {
-            conditions = conditions.and(DogSpecs.withBreeds(breeds));
+        if (parameters.getBreeds() != null && parameters.getBreeds().isEmpty() == false) {
+            conditions = conditions.and(DogSpecs.withBreeds(parameters.getBreeds()));
         }
 
-        var sortInfo = sort.split(":");
+        var sortInfo = parameters.getSort().split(":");
         var pageRequest = dogRepository.findAll(conditions, new DogSearchPagination(
-            size, from, Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))));
+            parameters.getSize(),
+            parameters.getFrom(),
+            Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))
+        ));
         return Pair.of(
             pageRequest.getContent()
                 .stream()

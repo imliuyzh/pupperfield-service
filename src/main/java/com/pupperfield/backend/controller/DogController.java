@@ -1,6 +1,7 @@
 package com.pupperfield.backend.controller;
 
 import com.pupperfield.backend.model.DogDto;
+import com.pupperfield.backend.model.DogSearchRequestDto;
 import com.pupperfield.backend.model.DogSearchResponseDto;
 import com.pupperfield.backend.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,16 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
@@ -225,46 +222,22 @@ public class DogController {
         summary = "Find dogs that matches the search criteria."
     )
     public DogSearchResponseDto search(
-        @RequestParam(required = false)
-        List<@NotBlank(message = "a breed must not be empty") @Valid String> breeds,
-
-        @PositiveOrZero(message = "from must be positive or zero")
-        @RequestParam(defaultValue = "0", required = false)
-        Integer from,
-
-        @PositiveOrZero(message = "ageMax must be positive or zero")
-        @RequestParam(name = "ageMax", required = false)
-        Integer maxAge,
-
-        @PositiveOrZero(message = "ageMin must be positive or zero")
-        @RequestParam(name = "ageMin", required = false)
-        Integer minAge,
-
-        HttpServletRequest request,
-
-        @Positive(message = "size must be positive")
-        @RequestParam(defaultValue = "25", required = false)
-        Integer size,
-
-        @Pattern(
-            message = "sort must match (age|breed|name):(asc|desc)",
-            regexp = "^(age|breed|name):(asc|desc)$"
-        )
-        @RequestParam(defaultValue = "breed:asc", required = false)
-        String sort,
-
-        @RequestParam(required = false)
-        List<@NotBlank(message = "a zip code must not be empty") @Valid String> zipCodes
+        @Valid DogSearchRequestDto parameters,
+        HttpServletRequest request
     ) {
-        var outcome = dogService.searchDogs(breeds, from, maxAge, minAge, size, sort, zipCodes);
+        var outcome = dogService.searchDogs(parameters);
+        var queryString = request.getQueryString();
+        int size = parameters.getSize(),
+            nextFrom = parameters.getFrom() + size,
+            previousFrom = parameters.getFrom() - size;
         return DogSearchResponseDto.builder()
             .resultIds(outcome.getFirst())
             .total(outcome.getSecond())
-            .previous((from - size >= 0)
-                ? dogService.buildNavigation(request.getQueryString(), from - size, size)
+            .next(nextFrom < outcome.getSecond()
+                ? dogService.buildNavigation(queryString, nextFrom, size)
                 : null)
-            .next((from + size < outcome.getSecond())
-                ? dogService.buildNavigation(request.getQueryString(), from + size, size)
+            .previous(previousFrom >= 0
+                ? dogService.buildNavigation(queryString, previousFrom, size)
                 : null)
             .build();
     }

@@ -15,16 +15,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Dog search results")
 public class DogSearchResponseDto {
-    @Schema(title = "A link to the next page of results")
+    @Schema(example = "/dogs/search?size=1&from=3", title = "Next page link")
     private String next;
 
     @JsonProperty("prev")
-    @Schema(title = "A link to the previous page of results")
+    @Schema(example = "/dogs/search?size=1&from=1", title = "Previous page link")
     private String previous;
 
-    @Schema(title = "A list of dog IDs")
+    @Schema(example = "[\"rcD-OZUBBPFf4ZNZzDCC\"]", title = "A list of dog IDs")
     private List<String> resultIds;
 
-    @Schema(title = "Total number of results")
+    @Schema(example = "150", title = "Total number of results")
     private Long total;
 }
