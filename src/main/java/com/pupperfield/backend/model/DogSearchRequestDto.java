@@ -23,15 +23,15 @@ public class DogSearchRequestDto {
         breeds = null;
 
     @NotNull(message = "from must be a number starting from zero")
-    @PositiveOrZero(message = "from must be positive or zero")
+    @PositiveOrZero(message = "from must be zero or positive")
     @Schema(example = "0", title = "Index of the first dog in the result")
     private Integer from = 0;
 
-    @PositiveOrZero(message = "ageMax must be positive or zero")
+    @PositiveOrZero(message = "ageMax must be zero or positive")
     @Schema(example = "10", title = "Maximum age of dogs")
     private Integer ageMax = null;
 
-    @PositiveOrZero(message = "ageMin must be positive or zero")
+    @PositiveOrZero(message = "ageMin must be zero or positive")
     @Schema(example = "5", title = "Minimum age of dogs")
     private Integer ageMin = null;
 
