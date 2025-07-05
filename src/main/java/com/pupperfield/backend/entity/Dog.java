@@ -32,11 +32,11 @@ public class Dog {
 
     @Id
     private String id;
-    
+
     @Column(name = "image_link", nullable = false, updatable = false)
     @NotBlank
     private String imageLink;
-    
+
     @Column(nullable = false, updatable = false)
     @NotBlank
     private String name;

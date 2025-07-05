@@ -57,8 +57,7 @@ public class AuthFilter extends OncePerRequestFilter {
             var printWriter = response.getWriter();
             printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                List.of(exception.getMessage().substring(20))
-            )));
+                List.of(exception.getMessage().substring(20)))));
             printWriter.close();
         }
     }
