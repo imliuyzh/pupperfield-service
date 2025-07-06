@@ -19,7 +19,7 @@ The application will start on port 8080 by default:
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost
 ```
 
-Check out the API documentation available at: http://localhost:8080/swagger-ui.html.
+API documentation is available at: http://localhost:8080/swagger-ui.html.
 
 ### Testing the Application
 
