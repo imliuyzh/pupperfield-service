@@ -237,7 +237,8 @@ func insertDogsByBreed(database *sql.DB, dogs []dog) error {
 
 	for _, dog := range dogs {
 		_, err := statement.Exec(
-			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode)
+			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode
+		)
 		if err != nil {
 			return err
 		}
@@ -262,7 +263,8 @@ func getAndInsertDogs(client *http.Client, database *sql.DB) error {
 		log.Println("insertDogsByBreed started for", breed)
 		if err = insertDogsByBreed(database, dogs); err != nil {
 			return fmt.Errorf(
-				"insertDogsByBreed for %s failed: %w", breed, err)
+				"insertDogsByBreed for %s failed: %w", breed, err
+			)
 		}
 	}
 	return nil
