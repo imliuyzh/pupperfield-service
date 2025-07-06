@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * A Data Transfer Object representing a dog in the database.
+ */
 @AllArgsConstructor
 @Builder
 @Data

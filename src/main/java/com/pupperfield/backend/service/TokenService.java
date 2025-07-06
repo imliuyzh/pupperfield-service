@@ -11,11 +11,21 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.time.DateUtils.addHours;
 
+/**
+ * A service for generating and validating JSON Web Tokens (JWT).
+ */
 @AllArgsConstructor
 @Service
 public class TokenService {
     private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
+    /**
+     * Generates a token.
+     *
+     * @param email user's email
+     * @param name user's name
+     * @return a JWT string valid for one hour
+     */
     public String generate(String email, String name) {
         return Jwts.builder()
             .header()
@@ -28,6 +38,12 @@ public class TokenService {
             .compact();
     }
 
+    /**
+     * Validates a token.
+     *
+     * @param token the JWT string
+     * @return whether the token is valid
+     */
     public boolean isValid(String token) {
         try {
             Jwts.parser()

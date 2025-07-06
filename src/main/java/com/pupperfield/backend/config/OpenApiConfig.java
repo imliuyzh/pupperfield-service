@@ -6,8 +6,17 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * A configuration class for setting up the OpenAPI/Swagger documentation.
+ */
 @Configuration
 public class OpenApiConfig {
+    /**
+     * Configures the title and description for the API document. Plus, it
+     * links to the original description of the API from Fetch Rewards.
+     *
+     * @return an object with the metadata of API documentation
+     */
     @Bean("swaggerConfig")
     OpenAPI swaggerConfig() {
         return new OpenAPI()

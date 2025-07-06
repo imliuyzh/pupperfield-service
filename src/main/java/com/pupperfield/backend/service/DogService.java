@@ -28,6 +28,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+/**
+ * A service for dog-related operations.
+ */
 @AllArgsConstructor
 @Service
 public class DogService {
@@ -36,11 +39,23 @@ public class DogService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    /**
+     * Retrieves a cached list of all dog breeds.
+     *
+     * @return a collection of dog breed names
+     */
     @Cacheable(cacheNames = {CacheConfig.BREED_CACHE})
     public Collection<String> getBreeds() {
         return dogRepository.getBreeds();
     }
 
+    /**
+     * Returns a list of dog information in the original input order. Results are cached
+     * unless the result is empty.
+     *
+     * @param idList a list of dog IDs
+     * @return a list of {@link com.pupperfield.backend.model.DogDto DogDto} in input order
+     */
     @Cacheable(
         cacheNames = {CacheConfig.LIST_CACHE},
         unless = "#result?.isEmpty()"
@@ -57,10 +72,23 @@ public class DogService {
             .toList();
     }
 
+    /**
+     * Randomly selects a dog ID from the input.
+     *
+     * @param idList a list of dog IDs to choose from
+     * @return a random dog ID
+     */
     public String matchDogs(List<String> idList) {
         return idList.get(RANDOM.nextInt(idList.size()));
     }
 
+    /**
+     * Searches for dogs based on various filter and sort parameters. Results are cached
+     * unless the result is empty.
+     *
+     * @param parameters search parameters
+     * @return an object containing a list of dog IDs and the total count
+     */
     @Cacheable(
         cacheNames = {CacheConfig.SEARCH_CACHE},
         key = "#parameters.getBreeds() + '_' + #parameters.getFrom() + '_' + "
@@ -101,12 +129,12 @@ public class DogService {
     }
 
     /**
-     * Build the value for "prev" and "next" fields in the search result.
+     * Builds a navigation URL for search pagination.
      *
      * @param query current query string
      * @param from a value for the "from" field
      * @param size a value for the "size" field
-     * @return a string for the navigation path including the new "from" parameter
+     * @return a full query for pagination
      */
     public String buildNavigation(String query, Integer from, Integer size) {
         var pairs = new ArrayList<String>();

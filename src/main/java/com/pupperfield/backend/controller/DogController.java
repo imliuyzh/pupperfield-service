@@ -35,8 +35,8 @@ public class DogController {
 
     @GetMapping("/breeds")
     @Operation(
-        description = "Extracts all dog breeds from the database. " +
-            "The list is sorted in non-descending order.",
+        description = "Extracts all dog breeds from the database. The result is sorted in "
+            + "non-descending order.",
         method = "GET",
         responses = {
             @ApiResponse(
@@ -63,8 +63,8 @@ public class DogController {
     }
 
     @Operation(
-        description = "Receives a nonempty list of dog IDs (100 IDs max) " +
-            "and fetches their data from the database.",
+        description = "Receives a nonempty list of dog IDs (100 IDs max) and fetches their data "
+            + "from the database.",
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
@@ -179,11 +179,10 @@ public class DogController {
 
     @GetMapping("/search")
     @Operation(
-        description = "Searches for dogs in the database using filter " +
-            "conditions from request parameters. All parameters are " +
-            "optional; by default, size is 25, from is 0, and sort is " +
-            "breed:asc. Note only dog IDs are returned, please use POST " +
-            "/dogs to retrieve full dog information.",
+        description = "Searches for dogs in the database using filter conditions from request "
+            + "parameters. All parameters are optional; by default, size is 25, from is 0, and "
+            + "sort is breed:asc. Note only dog IDs are returned, please use POST /dogs to "
+            + "retrieve full dog information.",
         method = "GET",
         responses = {
             @ApiResponse(

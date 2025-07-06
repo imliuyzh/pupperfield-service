@@ -24,6 +24,10 @@ import java.util.List;
 
 import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
 
+/**
+ * An authentication filter that validates access tokens from cookies. Note requests to some
+ * whitelisted endpoints bypass this filter.
+ */
 @AllArgsConstructor
 @Component
 @Slf4j
@@ -35,6 +39,16 @@ public class AuthFilter extends OncePerRequestFilter {
         "/api-docs", "/auth/login", "/status", "/swagger-ui"
     );
 
+    /**
+     * If the request is not whitelisted, attempts to validate access token from the cookie.
+     * If token is invalid or missing, returns a HTTP 401 response.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param chain the filter chain
+     * @throws IOException if an input or output exception occurs
+     * @throws ServletException if the request cannot be handled
+     */
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,
         @NonNull HttpServletResponse response,
@@ -62,6 +76,13 @@ public class AuthFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * Allow requests to bypass this filter if is an OPTIONS request or they talk to one of the
+     * whitelisted endpoints.
+     *
+     * @param request the HTTP request
+     * @return whether the request should bypass filtering
+     */
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return HttpMethod.OPTIONS.matches(request.getMethod())
             || WHITELIST.stream().anyMatch(path -> request.getRequestURI().startsWith(path));

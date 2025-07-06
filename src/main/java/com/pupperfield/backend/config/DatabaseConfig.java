@@ -5,8 +5,16 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * A configuration class for setting up the data source using HikariCP.
+ */
 @Configuration
 public class DatabaseConfig {
+    /**
+     * Configures a HikariDataSource to set up a connection pool for a local database.
+     *
+     * @return a configured data source with information connecting to the database
+     */
     @Bean("dataSource")
     HikariDataSource dataSource() {
         var config = new HikariConfig();

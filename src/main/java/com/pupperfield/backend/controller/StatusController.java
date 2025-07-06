@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusController {
     @GetMapping("/status")
     @Operation(
-        description = "Returns HTTP 200 along with its reason phrase. " +
-            "If the application is not working properly, then other " +
-            "unexpected behaviors like HTTP 5xx errors will take place.",
+        description = "Returns HTTP 200 along with its reason phrase. If the application is not "
+            + "working, then other unexpected behaviors like HTTP 5xx errors will happen.",
         method = "GET",
         responses = {
             @ApiResponse(

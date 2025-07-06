@@ -9,6 +9,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * A Data Transfer Object representing the results of a dog search query.
+ */
 @AllArgsConstructor
 @Builder
 @Data

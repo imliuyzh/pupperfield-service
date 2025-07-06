@@ -32,10 +32,9 @@ public class AuthController {
     private TokenService tokenService;
 
     @Operation(
-        description = "Takes an email address and name wrapped in a JSON " +
-            "body and returns a cookie that will be sent with every " +
-            "request (the browser handles it automatically). Remember to " +
-            "call this endpoint again before the token expires in an hour.",
+        description = "Takes an email address and name wrapped in a JSON body and returns a "
+            + "cookie that will be sent with every request (the browser handles it automatically "
+            + "). Remember to call this endpoint again before the token expires in an hour.",
         method = "POST",
         responses = {
             @ApiResponse(
@@ -73,8 +72,8 @@ public class AuthController {
     }
 
     @Operation(
-        description = "Takes the authentication cookie, nullifies it by " +
-            "emptying the token, and sets it to expire immediately.",
+        description = "Takes the authentication cookie, nullifies it by emptying the token, "
+            + "and sets it to expire immediately.",
         method = "POST",
         responses = {
             @ApiResponse(

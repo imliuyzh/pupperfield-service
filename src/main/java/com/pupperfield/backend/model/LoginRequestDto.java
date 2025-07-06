@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+/**
+ * A Data Transfer Object representing the login request.
+ */
 @AllArgsConstructor
 @Schema(
     description = "User email and name for log in.",

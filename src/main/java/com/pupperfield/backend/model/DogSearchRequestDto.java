@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * A Data Transfer Object representing the request parameters for searching dogs.
+ */
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
