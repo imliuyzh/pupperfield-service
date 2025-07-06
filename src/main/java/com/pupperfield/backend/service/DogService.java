@@ -154,11 +154,11 @@ public class DogService {
                 sizeExists = true;
             }
         }
-        if (fromExists == false) {
-            pairs.add("from=%d".formatted(from));
-        }
         if (sizeExists == false) {
             pairs.add("size=%d".formatted(size));
+        }
+        if (fromExists == false) {
+            pairs.add("from=%d".formatted(from));
         }
 
         return "/dogs/search?%s".formatted(String.join("&", pairs));
