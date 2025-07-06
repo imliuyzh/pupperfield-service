@@ -37,27 +37,26 @@ This is a primarily a Java application with its database built by a Go program.
 ## API Comparison
 
 1. Stricter validation constraints are placed upon the user input. 
-2. HTTP 401 response includes more detailed failure information.
+2. HTTP 401 and HTTP 422 responses include more detailed failure information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
-4. HTTP 415 is used for unsupported media types instead of returning the result in a different format.
-5. HTTP 422 response includes validation errors.
+4. HTTP 415 is used for unsupported media types instead of returning the response in a different format.
 
-6. `POST /auth/login`
-   - A few cookie attributes and header/value pairs are different due to the inner workings of Spring.
+5. `POST /auth/login`
+   - Different cookie attributes and header/value pairs are sent due to the inner workings of Spring.
 
-7. `GET /dogs/search`
+6. `GET /dogs/search`
    - Maximum number of dogs can include as much as the total number of rows in database.
    - "prev" and "next" fields are not included in the response when their value of "from" parameter is out of bounds.
      - For "prev," it is out of bounds when "from" is less than 0.
      - For "next," it is out of bounds when "from" is equal to or greater than the total number of result.
    - Order of parameters in "next" and "prev" fields can be different sometimes.
-   - Dog IDs can be listed in a different order due to data insertion and database sorting.
+   - Dog IDs can be listed differently due to data insertion order and database sorting.
    - Can pass in multiple values for a query string parameter with `,`.
-     - Original implementation only allows one value for each parameter. 
+     - Original implementation allows only one value for each parameter. 
 
-8. `POST /dogs`
+7. `POST /dogs`
    - Fields are sorted by their names in alphabetical order.
    - A nonexistent dog ID is omitted from the response.
 
-9. `GET /status`
+8. `GET /status`
    - A new health check endpoint that is missing from the original.
