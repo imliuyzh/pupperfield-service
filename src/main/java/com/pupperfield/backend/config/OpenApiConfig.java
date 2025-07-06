@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
     /**
      * Configures the title and description for the API document. Plus, it
-     * links to the original description of the API from Fetch Rewards.
+     * links to the original problem statement from Fetch Rewards.
      *
-     * @return an object with the metadata of API documentation
+     * @return an object with metadata of the API documentation
      */
     @Bean("swaggerConfig")
     OpenAPI swaggerConfig() {

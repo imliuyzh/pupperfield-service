@@ -29,5 +29,5 @@ public class DogSearchResponseDto {
     private List<String> resultIds;
 
     @Schema(example = "150", title = "Total number of results")
-    private Long total;
+    private long total;
 }

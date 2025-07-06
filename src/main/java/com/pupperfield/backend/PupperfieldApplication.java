@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * This class contains the main entry point of the application.
+ * Main entry point of the application.
  */
 @SpringBootApplication
 public class PupperfieldApplication {

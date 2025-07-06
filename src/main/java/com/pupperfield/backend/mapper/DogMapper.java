@@ -5,8 +5,8 @@ import com.pupperfield.backend.model.DogDto;
 import org.mapstruct.Mapper;
 
 /**
- * An interface for converting a {@link com.pupperfield.backend.entity.Dog Dog} entity to
- * {@link com.pupperfield.backend.model.DogDto DogDto} data transfer objects. MapStruct will
+ * An interface for converting a {@link com.pupperfield.backend.entity.Dog Dog} entity to a
+ * {@link com.pupperfield.backend.model.DogDto DogDto} data transfer object. MapStruct will
  * automatically generate the implementation at build time.
  */
 @Mapper

@@ -16,17 +16,17 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CacheConfig {
     /**
-     * Cache name for breed-related data.
+     * Cache name for /dogs/breeds.
      */
     public static final String BREED_CACHE = "breeds";
 
     /**
-     * Cache name for list-related data.
+     * Cache name for /dogs.
      */
     public static final String LIST_CACHE = "lists";
 
     /**
-     * Cache name for search-related data.
+     * Cache name for /dogs/search.
      */
     public static final String SEARCH_CACHE = "searches";
 

@@ -27,13 +27,16 @@ import static org.apache.commons.lang3.BooleanUtils.toInteger;
 @RestController
 @Tag(description = "Perform log in and log out operations.", name = "Authentication")
 public class AuthController {
+    /**
+     * Name of the cookie that has the token.
+     */
     public static final String COOKIE_NAME = "fetch-access-token";
 
     private TokenService tokenService;
 
     @Operation(
         description = "Takes an email address and name wrapped in a JSON body and returns a "
-            + "cookie that will be sent with every request (the browser handles it automatically "
+            + "cookie that will be sent with every request (the browser handles it automatically"
             + "). Remember to call this endpoint again before the token expires in an hour.",
         method = "POST",
         responses = {

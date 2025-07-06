@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * A Data Transfer Object representing the response body for invalid requests.
  *
- * @param error the HTTP reason phrase
+ * @param error an HTTP reason phrase
  * @param details one or more reasons about the error
  */
 @Schema(description = "Error message when an invalid request is sent")

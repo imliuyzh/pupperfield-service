@@ -8,8 +8,8 @@ import org.springframework.lang.NonNull;
 
 /**
  * An offset-based pagination implementation for the {@link com.pupperfield.backend.entity.Dog Dog}
- * entities. Note that it does not support going beyond the first page because it is meant to get
- * all the data for the request in a single page.
+ * entities. Note that it cannot go beyond the first page because it is meant to get all the data
+ * for the request in one single time.
  */
 @Value
 public class DogSearchPagination implements Pageable {
@@ -23,7 +23,7 @@ public class DogSearchPagination implements Pageable {
 
     /**
      * Always returns the current page since going after the first page is not supported.
-     * 
+     *
      * @return a pagination object with the same properties
      */
     @NonNull
@@ -50,7 +50,7 @@ public class DogSearchPagination implements Pageable {
     }
 
     /**
-     * Indicates whether there is a previous page. Always returns false.
+     * Indicates whether there is a previous page. It always returns false.
      *
      * @return false
      */

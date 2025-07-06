@@ -129,7 +129,9 @@ public class DogService {
     }
 
     /**
-     * Builds a navigation URL for search pagination.
+     * Builds a navigation URL for search pagination. If the "size" field is present in the
+     * query string, then it will be kept and the parameter is ignored. Otherwise, it will be
+     * added using the argument provided.
      *
      * @param query current query string
      * @param from a value for the "from" field
