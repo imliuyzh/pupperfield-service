@@ -89,8 +89,8 @@ func login(client *http.Client) error {
 	return err
 }
 
-// createDatabase initializes the database file "dogs.db" with a schema
-// (see README.md). It returns the database and an error if any occurs.
+// createDatabase initializes the database file "dogs.db" with a schema.
+// It returns the database and an error if any occurs.
 func createDatabase() (*sql.DB, error) {
 	database, err := sql.Open("sqlite", "dogs.db")
 	if err != nil {
@@ -237,8 +237,7 @@ func insertDogsByBreed(database *sql.DB, dogs []dog) error {
 
 	for _, dog := range dogs {
 		_, err := statement.Exec(
-			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode,
-		)
+			dog.Age, dog.Breed, dog.ID, dog.ImageLink, dog.Name, dog.ZipCode)
 		if err != nil {
 			return err
 		}
@@ -262,7 +261,8 @@ func getAndInsertDogs(client *http.Client, database *sql.DB) error {
 		}
 		log.Println("insertDogsByBreed started for", breed)
 		if err = insertDogsByBreed(database, dogs); err != nil {
-			return fmt.Errorf("insertDogsByBreed %s failed: %w", breed, err)
+			return fmt.Errorf(
+				"insertDogsByBreed for %s failed: %w", breed, err)
 		}
 	}
 	return nil
