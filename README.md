@@ -37,7 +37,7 @@ This is a primarily a Java application with its database built by a Go program.
 ## API Comparison
 
 1. Stricter validation constraints are placed upon the user input. 
-2. HTTP 401 response includes more detailed information.
+2. HTTP 401 response includes more detailed failure information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
 4. HTTP 415 is used for unsupported media types instead of returning the result in a different format.
 5. HTTP 422 response includes validation errors.
