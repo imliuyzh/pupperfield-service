@@ -22,6 +22,14 @@ import java.util.List;
 @NoArgsConstructor
 @Schema(description = "Dog search request parameters")
 public class DogSearchRequestDto {
+    @PositiveOrZero(message = "ageMax must be zero or positive")
+    @Schema(example = "10", title = "Maximum age of dogs")
+    private Integer ageMax = null;
+
+    @PositiveOrZero(message = "ageMin must be zero or positive")
+    @Schema(example = "5", title = "Minimum age of dogs")
+    private Integer ageMin = null;
+
     @Schema(example = "\"Affenpinscher\"", title = "A list of dog breeds")
     @Size(message = "breeds should not be empty", min = 1)
     private List<@NotBlank(message = "a breed must not be empty") @Valid String>
@@ -31,14 +39,6 @@ public class DogSearchRequestDto {
     @PositiveOrZero(message = "from must be zero or positive")
     @Schema(example = "0", title = "Index of the first dog in the result")
     private Integer from = 0;
-
-    @PositiveOrZero(message = "ageMax must be zero or positive")
-    @Schema(example = "10", title = "Maximum age of dogs")
-    private Integer ageMax = null;
-
-    @PositiveOrZero(message = "ageMin must be zero or positive")
-    @Schema(example = "5", title = "Minimum age of dogs")
-    private Integer ageMin = null;
 
     @NotNull(message = "size must be a positive number")
     @Positive(message = "size must be positive")

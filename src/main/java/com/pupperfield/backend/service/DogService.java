@@ -91,8 +91,8 @@ public class DogService {
      */
     @Cacheable(
         cacheNames = {CacheConfig.SEARCH_CACHE},
-        key = "#parameters.getBreeds() + '_' + #parameters.getFrom() + '_' + "
-            + "#parameters.getAgeMax() + '_' + #parameters.getAgeMin() + '_' + "
+        key = "#parameters.getAgeMax() + '_' + #parameters.getAgeMin() + '_' + "
+            + "#parameters.getBreeds() + '_' + #parameters.getFrom() + '_' + "
             + "#parameters.getSize() + '_' + #parameters.getSort() + '_' + "
             + "#parameters.getZipCodes()",
         unless = "#result?.getSecond() <= 0"
@@ -130,13 +130,13 @@ public class DogService {
 
     /**
      * Builds a navigation URL for search pagination. If the "size" field is present in the
-     * query string, then it will be kept and the parameter is ignored. Otherwise, the value
-     * in the argument will be used in the query string.
+     * query string, then it will be kept and the one passed in the "size" parameter is ignored.
+     * Otherwise, the value in the "size" parameter will be used in the query string.
      *
      * @param query current query string
      * @param from a value for the "from" field
-     * @param size a value for the "size" field
-     * @return a full query for pagination
+     * @param size a backup value for the "size" field in case it is not in {@code query}
+     * @return a full query string for pagination
      */
     public String buildNavigation(String query, Integer from, Integer size) {
         var pairs = new ArrayList<String>();
