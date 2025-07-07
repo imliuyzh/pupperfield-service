@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 @Schema(description = "Dog search request parameters")
 public class DogSearchRequestDto {
     @Schema(example = "\"Affenpinscher\"", title = "A list of dog breeds")
+    @Size(message = "breeds should not be empty", min = 1)
     private List<@NotBlank(message = "a breed must not be empty") @Valid String>
         breeds = null;
 
@@ -51,6 +53,7 @@ public class DogSearchRequestDto {
     private String sort = "breed:asc";
 
     @Schema(example = "\"12345\"", title = "A list of zip codes")
+    @Size(message = "zipCodes should not be empty", min = 1)
     private List<@NotBlank(message = "a zip code must not be empty") @Valid String>
         zipCodes = null;
 }
