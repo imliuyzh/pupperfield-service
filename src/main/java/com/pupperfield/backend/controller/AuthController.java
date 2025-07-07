@@ -106,7 +106,7 @@ public class AuthController {
     }
 
     /**
-     * Create or replace a cookie with a token.
+     * Creates or replaces a cookie with a token.
      *
      * @param value a JWT token set to be expired within an hour. A null value
      * indicates the cookie should be invalidated.
