@@ -53,6 +53,7 @@ This is a primarily a Java application with its database built by a Go program.
    - Dog IDs can be listed differently due to data insertion order and database sorting.
    - Can pass in multiple values for a query string parameter with `,`.
      - Must list out the values one by one for each parameter in the original implementation. 
+   - HTTP 422 instead of HTTP 400/500 is used when an out of range value is provided for some query string parameters.
 
 7. `POST /dogs`
    - Fields are sorted by their names in alphabetical order.
