@@ -52,7 +52,7 @@ This is a primarily a Java application with its database built by a Go program.
    - Order of parameters in "next" and "prev" fields can be different sometimes.
    - Dog IDs can be listed differently due to data insertion order and database sorting.
    - Can pass in multiple values for a query string parameter with `,`.
-     - Original implementation allows only one value for each parameter. 
+     - Must list out the values one by one for each parameter in the original implementation. 
 
 7. `POST /dogs`
    - Fields are sorted by their names in alphabetical order.
