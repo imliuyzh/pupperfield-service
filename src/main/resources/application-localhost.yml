@@ -5,6 +5,10 @@ logbook:
 logging:
     level:
         org:
+            hibernate:
+                orm:
+                    jdbc:
+                        bind: trace
             springframework:
                 cache: trace
         sql: trace
