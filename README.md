@@ -9,7 +9,9 @@ which is implemented by myself too.
 ## Getting Started
 
 Before following the instructions below, please make sure you have Java v21 installed. If you
-also want to run the `populator` program, make sure you have read the README file in `/populator`.
+also want to run the `populator` program, make sure you read the README file in `/populator`.
+
+It is highly recommended to run this project on Linux. 
 
 ### Running the Application
 
