@@ -33,7 +33,7 @@ This is a primarily a Java application with its database built by a Go program.
 
 | Language | Library                                                                                                                                                          |
 |----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Java     | Apache Commons Lang <br> Caffeine <br> JJWT <br> Logbook <br> Lombok <br> MapStruct <br> Spring Boot <br> Spring Cache <br> Spring Data JPA <br> Spring MVC <br> SpringDoc |
+| Java     | Apache Commons Lang <br> Caffeine <br> HikariCP <br> JJWT <br> Logbook <br> Lombok <br> MapStruct <br> Spring Boot <br> Spring Cache <br> Spring Data JPA <br> Spring MVC <br> SpringDoc |
 | Go       | modernc.org/sqlite                                                                                                                                                         |
 
 ## API Comparison
