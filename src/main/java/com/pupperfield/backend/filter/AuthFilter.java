@@ -35,6 +35,7 @@ public class AuthFilter extends OncePerRequestFilter {
     private ObjectMapper objectMapper;
     private TokenService tokenService;
 
+    private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized due to";
     private static final List<String> WHITELIST = List.of(
         "/api-docs", "/auth/login", "/status", "/swagger-ui"
     );
@@ -59,9 +60,10 @@ public class AuthFilter extends OncePerRequestFilter {
             var accessCookie = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(COOKIE_NAME))
                 .findFirst()
-                .orElseThrow(() -> new AuthException("Unauthorized due to missing cookie"));
+                .orElseThrow(() -> new AuthException(
+                    "%s missing cookie".formatted(EXCEPTION_MESSAGE_PREFIX)));
             if (tokenService.isValid(accessCookie.getValue()) == false) {
-                throw new AuthException("Unauthorized due to invalid token");
+                throw new AuthException("%s invalid token".formatted(EXCEPTION_MESSAGE_PREFIX));
             }
             chain.doFilter(request, response);
         } catch (AuthException exception) {
