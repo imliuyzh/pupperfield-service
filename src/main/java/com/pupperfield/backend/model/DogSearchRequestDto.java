@@ -40,7 +40,7 @@ public class DogSearchRequestDto {
     @Schema(example = "5", title = "Minimum age of dogs")
     private Integer ageMin = null;
 
-    @NotNull(message = "from must be a positive number")
+    @NotNull(message = "size must be a positive number")
     @Positive(message = "size must be positive")
     @Schema(example = "25", title = "Number of dogs in the result")
     private Integer size = 25;

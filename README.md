@@ -40,11 +40,12 @@ This is a primarily a Java application with its database built by a Go program.
 2. HTTP 401 and HTTP 422 responses include more detailed failure information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
 4. HTTP 415 is used for unsupported media types instead of returning the response in a different format.
+5. A white label error page is used if the URL includes invalid characters.
 
-5. `POST /auth/login`
+6. `POST /auth/login`
    - Different cookie attributes and header/value pairs are sent due to the inner workings of Spring.
 
-6. `GET /dogs/search`
+7. `GET /dogs/search`
    - Maximum number of dogs can include as much as the total number of rows in database.
    - "prev" and "next" fields are not included in the response when their value of "from" parameter is out of bounds.
      - For "prev," it is out of bounds when "from" is less than 0.
@@ -55,9 +56,9 @@ This is a primarily a Java application with its database built by a Go program.
      - Must list out the values one by one for each parameter in the original implementation. 
    - HTTP 422 instead of HTTP 400/500 is used when an out of range value is provided for some query string parameters.
 
-7. `POST /dogs`
+8. `POST /dogs`
    - Fields are sorted by their names in alphabetical order.
    - A nonexistent dog ID is omitted from the response.
 
-8. `GET /status`
+9. `GET /status`
    - A new health check endpoint that is missing from the original.

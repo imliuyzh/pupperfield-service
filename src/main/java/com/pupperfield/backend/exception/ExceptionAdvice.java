@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ExceptionAdvice {
     /**
-     * Handles cases when the request body cannot be processed.
+     * Handles cases when processing the request body cannot be continued.
      *
      * @param exception the exception thrown
      * @return an HTTP 400 response
