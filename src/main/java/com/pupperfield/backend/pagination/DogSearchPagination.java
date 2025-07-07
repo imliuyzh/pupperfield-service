@@ -1,5 +1,6 @@
 package com.pupperfield.backend.pagination;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 import org.springframework.data.domain.Pageable;
@@ -13,12 +14,11 @@ import org.springframework.lang.NonNull;
  */
 @Value
 public class DogSearchPagination implements Pageable {
+    @Getter(AccessLevel.PRIVATE)
     int limit;
 
-    @Getter
     long offset;
 
-    @Getter
     Sort sort;
 
     /**
