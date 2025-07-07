@@ -32,7 +32,7 @@ public class DogSearchPagination implements Pageable {
     }
 
     /**
-     * Returns the page number. Since this is offset-based, it will always returns 0.
+     * Returns the page number. Since this is offset-based, it will always return 0.
      *
      * @return 0
      */
