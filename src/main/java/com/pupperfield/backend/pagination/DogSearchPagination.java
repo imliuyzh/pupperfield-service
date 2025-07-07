@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 /**
  * An offset-based pagination implementation for the {@link com.pupperfield.backend.entity.Dog Dog}
  * entities. Note that it cannot go beyond the first page because it is meant to get all the data
- * for the request in one single time.
+ * for the request at once.
  */
 @Value
 public class DogSearchPagination implements Pageable {
