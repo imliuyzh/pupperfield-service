@@ -40,7 +40,7 @@ This is a primarily a Java application with its database built by a Go program.
 2. HTTP 401 and HTTP 422 responses include more detailed failure information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
 4. HTTP 415 is used for unsupported media types instead of returning the response in a different format.
-5. A white label error page is used if the URL includes invalid characters.
+5. A white label error page is returned when the URL includes invalid characters.
 
 6. `POST /auth/login`
    - Different cookie attributes and header/value pairs are sent due to the inner workings of Spring.
