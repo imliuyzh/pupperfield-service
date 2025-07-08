@@ -27,7 +27,7 @@ import lombok.Setter;
 public class Dog {
     @Column(nullable = false, updatable = false)
     @PositiveOrZero
-    private long age;
+    private int age;
 
     @Column(nullable = false, updatable = false)
     @NotBlank

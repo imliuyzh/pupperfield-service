@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class DogDto {
     @PositiveOrZero
     @Schema(title = "A dog's age")
-    private long age;
+    private int age;
 
     @NotBlank
     @Schema(title = "A dog's breed")
