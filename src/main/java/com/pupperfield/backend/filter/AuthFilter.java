@@ -12,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
+import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * An authentication filter that validates access token in the cookie. Note requests to some
@@ -68,11 +69,11 @@ public class AuthFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } catch (AuthException exception) {
             log.info(ExceptionUtils.getStackTrace(exception));
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType("application/json");
+            response.setStatus(UNAUTHORIZED.value());
+            response.setContentType(APPLICATION_JSON_VALUE);
             var printWriter = response.getWriter();
             printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                UNAUTHORIZED.getReasonPhrase(),
                 List.of(exception.getMessage().substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
             )));
             printWriter.close();
@@ -87,7 +88,7 @@ public class AuthFilter extends OncePerRequestFilter {
      * @return whether the request should bypass filtering
      */
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return HttpMethod.OPTIONS.matches(request.getMethod())
+        return OPTIONS.matches(request.getMethod())
             || WHITELIST.stream().anyMatch(path -> request.getRequestURI().startsWith(path));
     }
 }
