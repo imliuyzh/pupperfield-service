@@ -11,7 +11,7 @@ which is implemented by myself too.
 Before following the instructions below, please make sure you have Java v21 installed. If you
 also want to run the `populator` program, make sure you read the README file in `/populator`.
 
-It is highly recommended to run this project on Linux. 
+It is highly recommended to develop this project on Linux with IntelliJ IDEA. 
 
 ### Running the Application
 
