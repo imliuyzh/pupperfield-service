@@ -3,13 +3,13 @@
 This is a mock API service based off the Fetch Rewards' front end take-home interview question.
 The original problem statement is available at: https://frontend-take-home.fetch.com.
 
-Other than that, you can also check out its client application, https://github.com/imliuyzh/pupperfield,
+Other than that, you can check out its client application, https://github.com/imliuyzh/pupperfield,
 which is implemented by myself too.
 
 ## Getting Started
 
-Before following the instructions below, please make sure you have Java v21 installed. If you
-also want to run the `populator` program, make sure you read the README file in `/populator`.
+Before following the instructions below, please make sure you have Java v21 installed. If you want
+to run the `populator` program, make sure you also read the README file in `/populator`.
 
 It is highly recommended to develop this project on Linux with IntelliJ IDEA. 
 
@@ -25,7 +25,7 @@ API documentation is available at: http://localhost:8080/swagger-ui.html.
 
 ### Testing the Application
 
-TODO
+To be implemented.
 
 ## Technology Stack
 
