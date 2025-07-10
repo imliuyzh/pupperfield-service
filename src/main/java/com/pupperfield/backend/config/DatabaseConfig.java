@@ -16,7 +16,7 @@ public class DatabaseConfig {
      * @return a configured data source with information connecting to the database
      */
     @Bean("dataSource")
-    HikariDataSource dataSource() {
+    public HikariDataSource dataSource() {
         var config = new HikariConfig();
         config.setJdbcUrl("jdbc:sqlite:src/main/resources/database/dogs.db");
         config.setPoolName("pupperfield");

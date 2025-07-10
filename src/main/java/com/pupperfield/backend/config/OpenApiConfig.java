@@ -18,7 +18,7 @@ public class OpenApiConfig {
      * @return an object with metadata of the API documentation
      */
     @Bean("swaggerConfig")
-    OpenAPI swaggerConfig() {
+    public OpenAPI swaggerConfig() {
         return new OpenAPI()
             .externalDocs(new ExternalDocumentation().url("https://frontend-take-home.fetch.com"))
             .info(new Info()
