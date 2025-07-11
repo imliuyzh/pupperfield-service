@@ -18,6 +18,7 @@ public class DatabaseConfig {
     @Bean("dataSource")
     public HikariDataSource dataSource() {
         var config = new HikariConfig();
+        config.setConnectionTimeout(1000);    // Time out after one second
         config.setJdbcUrl("jdbc:sqlite:src/main/resources/database/dogs.db");
         config.setPoolName("pupperfield");
         return new HikariDataSource(config);
