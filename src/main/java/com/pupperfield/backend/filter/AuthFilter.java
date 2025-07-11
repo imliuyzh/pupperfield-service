@@ -36,7 +36,7 @@ public class AuthFilter extends OncePerRequestFilter {
     private ObjectMapper objectMapper;
     private TokenService tokenService;
 
-    private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized due to";
+    private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized:";
     private static final List<String> WHITELIST = List.of(
         "/api-docs", "/auth/login", "/status", "/swagger-ui"
     );
