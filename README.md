@@ -15,13 +15,19 @@ It is highly recommended to develop this project on Linux with IntelliJ IDEA.
 
 ### Running the Application
 
-The application will start on port 8080 by default:
+Before starting the application, you need to set up the dependencies for the application:
+
+```
+./mvnw clean install
+```
+
+Then, run the application with the following command:
 
 ```
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost
 ```
 
-API documentation is available at: http://localhost:8080/swagger-ui.html.
+The service will start on port 8080 by default. API documentation is available at: http://localhost:8080/swagger-ui.html.
 
 ### Testing the Application
 
@@ -31,10 +37,10 @@ To be implemented.
 
 This is a primarily a Java application with its database built by a Go program.
 
-| Language | Library                                                                                                                                                          |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Language | Library                                                                                                                                                                                  |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Java     | Apache Commons Lang <br> Caffeine <br> HikariCP <br> JJWT <br> Logbook <br> Lombok <br> MapStruct <br> Spring Boot <br> Spring Cache <br> Spring Data JPA <br> Spring MVC <br> SpringDoc |
-| Go       | modernc.org/sqlite                                                                                                                                                         |
+| Go       | modernc.org/sqlite                                                                                                                                                                       |
 
 ## API Comparison
 
