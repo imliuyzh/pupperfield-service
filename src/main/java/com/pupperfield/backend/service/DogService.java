@@ -10,6 +10,7 @@ import com.pupperfield.backend.repository.DogRepository;
 import com.pupperfield.backend.spec.DogSpecs;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
@@ -113,18 +114,18 @@ public class DogService {
             conditions = conditions.and(DogSpecs.withBreeds(parameters.getBreeds()));
         }
 
-        var sortInfo = parameters.getSort().split(":");
-        var pageRequest = dogRepository.findAll(conditions, new DogSearchPagination(
+        String[] sortInfo = parameters.getSort().split(":");
+        Page<Dog> result = dogRepository.findAll(conditions, new DogSearchPagination(
             parameters.getSize(),
             parameters.getFrom(),
             Sort.by(new Order(sortInfo[1].equals("asc") ? ASC : DESC, sortInfo[0]))
         ));
         return Pair.of(
-            pageRequest.getContent()
+            result.getContent()
                 .stream()
                 .map(Dog::getId)
                 .toList(),
-            pageRequest.getTotalElements()
+            result.getTotalElements()
         );
     }
 
@@ -145,7 +146,7 @@ public class DogService {
         }
 
         boolean fromExists = false, sizeExists = false;
-        for (int index = 0; index < pairs.size(); index++) {
+        for (var index = 0; index < pairs.size(); index++) {
             if (pairs.get(index).startsWith("from=")) {
                 pairs.set(index, "from=%d".formatted(from));
                 fromExists = true;

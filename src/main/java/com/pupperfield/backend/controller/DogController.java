@@ -16,10 +16,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
@@ -27,13 +27,32 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-@RequestMapping("/dogs")
 @RestController
 @Tag(description = "Execute operations upon dogs stored in the database.", name = "Dogs")
 public class DogController {
+    /**
+     * The base path for all dog operations.
+     */
+    public static final String DOGS_PATH = "/dogs";
+
+    /**
+     * The path for retrieving all dog breeds.
+     */
+    public static final String DOG_BREEDS_PATH = DOGS_PATH + "/breeds";
+
+    /**
+     * The path for matching a dog.
+     */
+    public static final String DOG_MATCH_PATH = DOGS_PATH + "/match";
+
+    /**
+     * The path for searching dogs.
+     */
+    public static final String DOG_SEARCH_PATH = DOGS_PATH + "/search";
+
     private DogService dogService;
 
-    @GetMapping("/breeds")
+    @GetMapping(DOG_BREEDS_PATH)
     @Operation(
         description = "Extracts all dog breeds from the database. The result is sorted in "
             + "non-descending order.",
@@ -63,8 +82,7 @@ public class DogController {
     }
 
     @Operation(
-        description = "Receives a nonempty list of dog IDs (100 IDs max) and fetches their data "
-            + "from the database.",
+        description = "Receives a list of dog IDs (100 IDs max) and fetches their data.",
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
@@ -110,7 +128,7 @@ public class DogController {
         },
         summary = "Get a list of dog details based on the array passed in."
     )
-    @PostMapping
+    @PostMapping(DOGS_PATH)
     public List<DogDto> list(
         @NotNull(message = "body must not be null")
         @Parameter(
@@ -119,7 +137,7 @@ public class DogController {
             required = true
         )
         @RequestBody
-        @Size(max = 100, message = "body must have 1 to 100 dog IDs", min = 1)
+        @Size(max = 100, message = "body must have at most 100 dog IDs")
         List<@NotBlank(message = "a dog ID must not be empty") @Valid String> idList
     ) {
         return dogService.listDogs(idList);
@@ -167,7 +185,7 @@ public class DogController {
         },
         summary = "Randomly select a dog from the list provided."
     )
-    @PostMapping("/match")
+    @PostMapping(DOG_MATCH_PATH)
     public Map<String, String> match(
         @NotNull(message = "body must not be null")
         @RequestBody
@@ -177,7 +195,7 @@ public class DogController {
         return Map.of("match", dogService.matchDogs(idList));
     }
 
-    @GetMapping("/search")
+    @GetMapping(DOG_SEARCH_PATH)
     @Operation(
         description = "Searches for dogs in the database using filter conditions from request "
             + "parameters. All parameters are optional; by default, size is 25, from is 0, and "
@@ -224,7 +242,7 @@ public class DogController {
         @Valid DogSearchRequestDto parameters,
         HttpServletRequest request
     ) {
-        var outcome = dogService.searchDogs(parameters);
+        Pair<List<String>, Long> outcome = dogService.searchDogs(parameters);
         var queryString = request.getQueryString();
         int size = parameters.getSize(),
             nextFrom = parameters.getFrom() + size,

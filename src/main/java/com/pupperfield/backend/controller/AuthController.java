@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
@@ -23,7 +22,6 @@ import java.time.Duration;
 import static org.apache.commons.lang3.BooleanUtils.toInteger;
 
 @AllArgsConstructor
-@RequestMapping("/auth")
 @RestController
 @Tag(description = "Perform log in and log out operations.", name = "Authentication")
 public class AuthController {
@@ -31,6 +29,16 @@ public class AuthController {
      * Name of the cookie that has the token.
      */
     public static final String COOKIE_NAME = "fetch-access-token";
+
+    /**
+     * The path to the login endpoint.
+     */
+    public static final String LOGIN_PATH = "/auth/login";
+
+    /**
+     * The path to the logout endpoint.
+     */
+    public static final String LOGOUT_PATH = "/auth/logout";
 
     private TokenService tokenService;
 
@@ -61,7 +69,7 @@ public class AuthController {
         },
         summary = "Create a cookie called \"fetch-access-token.\""
     )
-    @PostMapping("/login")
+    @PostMapping(LOGIN_PATH)
     public ResponseEntity<String> login(
         @Parameter(description = "User email and name", required = true)
         @RequestBody
@@ -98,7 +106,7 @@ public class AuthController {
         },
         summary = "Invalidate the cookie \"fetch-access-token.\""
     )
-    @PostMapping("/logout")
+    @PostMapping(LOGOUT_PATH)
     public ResponseEntity<String> logOut() {
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, createCookie(null).toString())

@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(description = "Report the current status of the application.", name = "Status")
 public class StatusController {
-    @GetMapping("/status")
+    /**
+     * The path to the status endpoint.
+     */
+    public static final String STATUS_PATH = "/status";
+
+    @GetMapping(STATUS_PATH)
     @Operation(
         description = "Returns HTTP 200 along with its reason phrase. If the application is not "
             + "working, then other unexpected behaviors like HTTP 5xx errors will happen.",
