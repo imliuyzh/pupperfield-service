@@ -1,4 +1,4 @@
-# Pupperfield Backend
+# Pupperfield Service
 
 This is a mock API service based off the Fetch Rewards' front end take-home interview question.
 The original problem statement is available at: https://frontend-take-home.fetch.com.
