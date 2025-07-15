@@ -1,10 +1,10 @@
 # Pupperfield Service
 
-This is a mock API service based off the Fetch Rewards' front end take-home interview question.
+This is a port of Fetch Rewards' front end take-home interview question.
 The original problem statement is available at: https://frontend-take-home.fetch.com.
 
-Other than that, you can check out its client application, https://github.com/imliuyzh/pupperfield,
-which is implemented by myself too.
+You can check out a client application, https://github.com/imliuyzh/pupperfield,
+which uses the same set of API.
 
 ## Getting Started
 
