@@ -45,23 +45,23 @@ This is a primarily a Java application with its database built by a Go program.
 ## API Comparison
 
 1. Stricter validation constraints are placed upon the user input. 
-2. HTTP 401 and HTTP 422 responses include more detailed failure information.
+2. HTTP 401 and HTTP 422 responses include more error information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
 4. HTTP 415 is used for unsupported media types instead of returning the response in a different format.
 5. A white label error page is returned when the URL includes invalid characters.
 
 6. `POST /auth/login`
-   - Different cookie attributes and header/value pairs are sent due to the inner workings of Spring.
+   - Different cookie attributes and header/value pairs are sent due to Spring internal implementation.
 
 7. `GET /dogs/search`
    - Maximum number of dogs can include as much as the total number of rows in database.
-   - "prev" and "next" fields are not included in the response when their value of "from" parameter is out of bounds.
+   - "prev" and "next" fields are not included in the response when the "from" parameter value is out of bounds.
      - For "prev," it is out of bounds when "from" is less than 0.
      - For "next," it is out of bounds when "from" is equal to or greater than the total number of result.
-   - Order of parameters in "next" and "prev" fields can be different sometimes.
-   - Dog IDs can be listed differently due to data insertion order and database sorting.
-   - Can pass in multiple values for a query string parameter with `,`.
-     - Must list out the values one by one for each parameter in the original implementation. 
+   - Parameter order in "next" and "prev" fields may differ from the original sometimes.
+   - Dog IDs can be listed differently due to `populator`'s processing order.
+   - `,` can be used to pass in multiple values for a query string parameter.
+     - Each parameter value must be listed out one by one in the original implementation. 
    - HTTP 422 instead of HTTP 400/500 is used when an out of range value is provided for some query string parameters.
 
 8. `POST /dogs`

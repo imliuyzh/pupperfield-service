@@ -23,7 +23,10 @@ public class OpenApiConfig {
             .externalDocs(new ExternalDocumentation().url("https://frontend-take-home.fetch.com"))
             .info(new Info()
                 .description("This is a mock API for Fetch Rewards' front end take home "
-                    + "assessment. The original problem statement is available at:")
+                    + "assessment. The original problem statement is available at the URL below. "
+                    + "For a list of implementation differences between this API and the original,"
+                    + " please check out the README file in the repository."
+                )
                 .title("Pupperfield API")
             );
     }
