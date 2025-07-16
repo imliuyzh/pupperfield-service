@@ -67,6 +67,7 @@ This is a primarily a Java application with its database built by a Go program.
 8. `POST /dogs`
    - Fields are sorted by their names in alphabetical order.
    - A nonexistent dog ID is omitted from the response.
+   - Duplicated dog information is listed only once.
 
 9. `GET /status`
    - A new health check endpoint that is missing from the original.
