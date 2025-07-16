@@ -99,9 +99,10 @@ public class DogServiceTest {
         given(dogRepository.findAll(any(Specification.class), any(DogSearchPagination.class)))
             .willReturn(new PageImpl<>(
                 List.of(Dog.builder().id("qcD-OZUBBPFf4ZNZzDCC").build()),
-                new DogSearchPagination(25, 0, Sort.by(ASC, "breed")), 1));
+                new DogSearchPagination(1, 0, Sort.by(ASC, "breed")), 1));
 
-        var result = dogService.searchDogs(new DogSearchRequestDto());
+        var result = dogService.searchDogs(
+            DogSearchRequestDto.builder().from(0).size(1).sort("breed:asc").build());
         verify(dogRepository, times(1)).findAll(
             any(Specification.class), any(DogSearchPagination.class));
         assertThat(result.getFirst()).isNotEmpty();
