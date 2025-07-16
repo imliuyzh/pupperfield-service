@@ -43,9 +43,7 @@ public class DogServiceTest {
 
         verify(dogRepository, times(1)).getBreeds();
         assertThat(breeds).isNotEmpty();
-        for (var breed : breeds) {
-            assertThat(breed).isNotEmpty();
-        }
+        breeds.forEach(breed -> assertThat(breed).isNotEmpty());
     }
 
     @Test
@@ -101,8 +99,12 @@ public class DogServiceTest {
                 List.of(Dog.builder().id("qcD-OZUBBPFf4ZNZzDCC").build()),
                 new DogSearchPagination(1, 0, Sort.by(ASC, "breed")), 1));
 
-        var result = dogService.searchDogs(
-            DogSearchRequestDto.builder().from(0).size(1).sort("breed:asc").build());
+        var result = dogService.searchDogs(DogSearchRequestDto.builder()
+            .from(0)
+            .size(1)
+            .sort("breed:asc")
+            .build()
+        );
         verify(dogRepository, times(1)).findAll(
             any(Specification.class), any(DogSearchPagination.class));
         assertThat(result.getFirst()).isNotEmpty();
