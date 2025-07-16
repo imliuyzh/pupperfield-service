@@ -10,7 +10,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Data
-@NoArgsConstructor
 @Schema(description = "Dog search request parameters")
 public class DogSearchRequestDto {
     @PositiveOrZero(message = "ageMax must be zero or positive")
@@ -56,4 +54,13 @@ public class DogSearchRequestDto {
     @Size(message = "zipCodes should not be empty", min = 1)
     private List<@NotBlank(message = "a zip code must not be empty") @Valid String>
         zipCodes = null;
+
+    /**
+     * Creates a new DogSearchRequestDto with default values.
+     */
+    public DogSearchRequestDto() {
+        this.from = 0;
+        this.size = 25;
+        this.sort = "breed:asc";
+    }
 }
