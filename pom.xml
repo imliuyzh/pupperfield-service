@@ -72,6 +72,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<version>3.18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -126,6 +127,31 @@
 						<compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
 					</compilerArgs>
 				</configuration>
+			</plugin>
+			<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.13</version>
+					<configuration>
+						<excludes>
+							<exclude>com/pupperfield/backend/PupperfieldApplication.class</exclude>
+							<exclude>com/pupperfield/backend/mapper/DogMapperImpl.class</exclude>
+						</excludes>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
