@@ -282,12 +282,12 @@ func run() error {
 		return fmt.Errorf("login failed: %w", err)
 	}
 
-	// Note the database is not manually closed because it is unnecessary
-	// according to documentation.
 	database, err := createDatabase()
 	if err != nil {
 		return fmt.Errorf("createDatabase failed: %w", err)
 	}
+	defer database.Close()
+
 	if err = getAndInsertDogs(client, database); err != nil {
 		return fmt.Errorf("getAndInsertDogs failed: %w", err)
 	}
