@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * A Data Transfer Object representing the login request.
@@ -25,6 +26,7 @@ public class LoginRequestDto {
     )
     String email;
 
+    @Length(max = 800, message = "name should not have more than 800 characters")
     @NotBlank(message = "name must not be empty")
     @Schema(
         example = "First Last",

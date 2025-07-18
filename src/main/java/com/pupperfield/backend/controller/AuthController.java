@@ -70,7 +70,7 @@ public class AuthController {
         summary = "Create a cookie called \"fetch-access-token.\""
     )
     @PostMapping(LOGIN_PATH)
-    public ResponseEntity<String> login(
+    public ResponseEntity<String> logIn(
         @Parameter(description = "User email and name", required = true)
         @RequestBody
         @Validated
