@@ -37,8 +37,8 @@ public class DogSearchRequestDto {
     @Builder.Default
     @Schema(example = "\"Affenpinscher\"", title = "A list of dog breeds")
     @Size(message = "breeds should not be empty", min = 1)
-    private List<@NotBlank(message = "a breed must not be empty") @Valid String>
-        breeds = null;
+    private List<@NotBlank(message = "a breed must not be empty") @Size(max = 30, message =
+        "a breed should not have more than 30 characters") @Valid String> breeds = null;
 
     @Builder.Default
     @NotNull(message = "from must be a number starting from zero")
@@ -63,6 +63,6 @@ public class DogSearchRequestDto {
     @Builder.Default
     @Schema(example = "\"12345\"", title = "A list of zip codes")
     @Size(message = "zipCodes should not be empty", min = 1)
-    private List<@NotBlank(message = "a zip code must not be empty") @Valid String>
-        zipCodes = null;
+    private List<@NotBlank(message = "a zip code must not be empty") @Size(max = 10, message =
+        "a zip code should not have more than 10 characters") @Valid String> zipCodes = null;
 }
