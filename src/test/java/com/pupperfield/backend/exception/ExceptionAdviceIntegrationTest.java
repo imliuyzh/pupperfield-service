@@ -127,7 +127,14 @@ public class ExceptionAdviceIntegrationTest {
 
     @Test
     public void testOptionsMethodWillNotThrowAuthException() {
-        assertDoesNotThrow(() ->
-            mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk()));
+        assertDoesNotThrow(() -> {
+            mockMvc.perform(options(AuthController.LOGIN_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(DogController.DOGS_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(DogController.DOG_BREEDS_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(DogController.DOG_MATCH_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(DogController.DOG_SEARCH_PATH)).andExpect(status().isOk());
+            mockMvc.perform(options(StatusController.STATUS_PATH)).andExpect(status().isOk());
+        });
     }
 }
