@@ -2,7 +2,6 @@ package com.pupperfield.backend.exception;
 
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
 import jakarta.servlet.ServletException;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.MessageSourceResolvable;
@@ -18,11 +17,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -118,27 +115,8 @@ public class ExceptionAdvice {
      * @param exception the exception thrown
      * @return an HTTP 422 response
      */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler2
-    (ConstraintViolationException exception) {
-        log.info(ExceptionUtils.getStackTrace(exception));
-        return new ResponseEntity<>(
-            new InvalidRequestResponseDto(
-                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                List.of(exception.getMessage())
-            ),
-            HttpStatus.UNPROCESSABLE_ENTITY
-        );
-    }
-
-    /**
-     * Handles some cases when request validation failed.
-     *
-     * @param exception the exception thrown
-     * @return an HTTP 422 response
-     */
     @ExceptionHandler({HandlerMethodValidationException.class, MethodValidationException.class})
-    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler3
+    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler2
     (MethodValidationResult exception) {
         log.info(ExceptionUtils.getStackTrace((RuntimeException) exception));
         return new ResponseEntity<>(
@@ -148,30 +126,6 @@ public class ExceptionAdvice {
                     .stream()
                     .map(MessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toSet())
-            ),
-            HttpStatus.UNPROCESSABLE_ENTITY
-        );
-    }
-
-    /**
-     * Handles some cases when request validation failed.
-     *
-     * @param exception the exception thrown
-     * @return an HTTP 422 response
-     */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<InvalidRequestResponseDto> failedValidationHandler4
-    (MethodArgumentTypeMismatchException exception) {
-        log.info(ExceptionUtils.getStackTrace(exception));
-        var targetType = exception.getRequiredType();
-        return new ResponseEntity<>(
-            new InvalidRequestResponseDto(
-                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                List.of(String.format(
-                    "%s should be %s",
-                    exception.getPropertyName(),
-                    targetType != null ? targetType.getSimpleName() : "null"
-                ))
             ),
             HttpStatus.UNPROCESSABLE_ENTITY
         );
