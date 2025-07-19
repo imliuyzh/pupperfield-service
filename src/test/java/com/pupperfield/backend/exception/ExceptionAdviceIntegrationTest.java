@@ -61,7 +61,7 @@ public class ExceptionAdviceIntegrationTest {
     }
 
     @Test
-    public void testAnArrayWithEmptyString() throws Exception {
+    public void testEmptyStringArray() throws Exception {
         var cookies = mockMvc.perform(buildLoginRequest("test@email.com", "test"))
             .andReturn()
             .getResponse()
