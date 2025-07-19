@@ -2,16 +2,15 @@ package com.pupperfield.backend.service;
 
 import com.pupperfield.backend.entity.Dog;
 import com.pupperfield.backend.mapper.DogMapper;
+import com.pupperfield.backend.model.DogDto;
 import com.pupperfield.backend.model.DogSearchRequestDto;
 import com.pupperfield.backend.pagination.DogSearchPagination;
 import com.pupperfield.backend.repository.DogRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
@@ -29,14 +28,13 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @ExtendWith(MockitoExtension.class)
 public class DogServiceTest {
     @Mock
+    private DogMapper dogMapper;
+
+    @Mock
     private DogRepository dogRepository;
 
     @InjectMocks
     private DogService dogService;
-
-    @Spy
-    @SuppressWarnings("unused")
-    private static DogMapper DOG_MAPPER = Mappers.getMapper(DogMapper.class);
 
     @Test
     public void testGetBreeds() {
@@ -60,10 +58,15 @@ public class DogServiceTest {
         var dogList = idList.stream()
             .map(id -> Dog.builder().id(id).build())
             .toList();
+
         given(dogRepository.findAllById(any())).willReturn(dogList);
+        for (var dog : dogList) {
+            given(dogMapper.dogToDogDto(dog)).willReturn(DogDto.builder().id(dog.getId()).build());
+        }
 
         var dogs = dogService.listDogs(idList);
         verify(dogRepository, times(1)).findAllById(ArgumentMatchers.eq(idList));
+        verify(dogMapper, times(idList.size())).dogToDogDto(any(Dog.class));
         assertThat(dogs).isNotEmpty();
         assertThat(dogs.size()).isEqualTo(idList.size());
         dogs.forEach(dog -> assertThat(idList.contains(dog.getId())).isTrue());
