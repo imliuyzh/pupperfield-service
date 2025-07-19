@@ -86,9 +86,11 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testLogInWithReallyLongName() throws Exception {
-        mockMvc.perform(buildLoginRequest("name@email.com", "n".repeat(1000)))
-            .andExpect(status().isUnprocessableEntity());
+    public void testLogInWithInvalidFieldType() throws Exception {
+        var request = post(AuthController.LOGIN_PATH)
+            .contentType("application/json")
+            .content("{\"email\":32435235352,\"name\":\"name\"}");
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -111,6 +113,12 @@ public class AuthControllerIntegrationTest {
             .contentType("application/json")
             .content("{\"email\":\"e@mail.com\"}");
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testLogInWithReallyLongName() throws Exception {
+        mockMvc.perform(buildLoginRequest("name@email.com", "n".repeat(1000)))
+            .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
