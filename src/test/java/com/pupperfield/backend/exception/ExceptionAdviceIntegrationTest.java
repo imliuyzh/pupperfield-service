@@ -14,6 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.pupperfield.backend.auth.AuthRequestBuilder.buildLoginRequest;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -125,7 +126,8 @@ public class ExceptionAdviceIntegrationTest {
     }
 
     @Test
-    public void testOptionsMethodIsAuthorized() throws Exception {
-        mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk());
+    public void testOptionsMethodWillNotThrowAuthException() {
+        assertDoesNotThrow(() ->
+            mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk()));
     }
 }
