@@ -15,7 +15,7 @@ public class TokenServiceTest {
 
     @Test
     public void testGenerateAndValidateToken() {
-        String token = tokenService.generate("john.doe@email.com", "John Doe");
+        var token = tokenService.generate("john.doe@email.com", "John Doe");
         assertThat(token).isNotEmpty();
         assertThat(tokenService.isValid(token)).isTrue();
     }

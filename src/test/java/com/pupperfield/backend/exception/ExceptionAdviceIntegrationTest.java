@@ -11,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.pupperfield.backend.auth.AuthRequestBuilder.buildLoginRequest;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
@@ -38,7 +39,7 @@ public class ExceptionAdviceIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoSpyBean
+    @MockitoBean
     private StatusController statusController;
 
     @Test
@@ -79,8 +80,9 @@ public class ExceptionAdviceIntegrationTest {
             .andReturn()
             .getResponse()
             .getCookies();
-        mockMvc.perform(get("%s?from=bbwbwe".formatted(DogController.DOG_SEARCH_PATH)).cookie(cookies))
-            .andExpect(status().isUnprocessableEntity());
+        var request =
+            get("%s?from=bbwbwe".formatted(DogController.DOG_SEARCH_PATH)).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -108,7 +110,8 @@ public class ExceptionAdviceIntegrationTest {
 
     @Test
     public void testWrongMethod() throws Exception {
-        mockMvc.perform(delete(AuthController.LOGIN_PATH)).andExpect(status().isMethodNotAllowed());
+        mockMvc.perform(delete(AuthController.LOGIN_PATH))
+            .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
@@ -116,7 +119,9 @@ public class ExceptionAdviceIntegrationTest {
         given(statusController.report()).willAnswer(invocation -> {
             throw new Exception();
         });
-        mockMvc.perform(get(StatusController.STATUS_PATH)).andExpect(status().isInternalServerError());
+        mockMvc.perform(get(StatusController.STATUS_PATH))
+            .andExpect(status().isInternalServerError());
+        verify(statusController, times(1)).report();
     }
 
     @Test
