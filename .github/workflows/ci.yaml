@@ -31,5 +31,5 @@ jobs:
       - name: Install Dependencies
         run: ./mvnw clean install -Dmaven.test.skip=true
 
-      - name: Start Testing
+      - name: Run Tests
         run: ./mvnw clean test
