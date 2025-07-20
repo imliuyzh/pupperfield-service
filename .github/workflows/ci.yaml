@@ -18,7 +18,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Front End Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Java
