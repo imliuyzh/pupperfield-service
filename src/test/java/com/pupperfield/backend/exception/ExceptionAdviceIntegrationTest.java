@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.pupperfield.backend.auth.AuthRequestBuilder.buildLoginRequest;
+import static com.pupperfield.backend.auth.AuthRequestBuilder.getAuthCookie;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -51,49 +51,35 @@ public class ExceptionAdviceIntegrationTest {
     @SuppressWarnings("StringOperationCanBeSimplified")
     @Test
     public void testBrokenBody() throws Exception {
-        var cookies = mockMvc.perform(buildLoginRequest("test@email.com", "test"))
-            .andReturn()
-            .getResponse()
-            .getCookies();
         var request = post(DogController.DOG_MATCH_PATH)
             .contentType("application/json")
             .content(new String("["))
-            .cookie(cookies);
+            .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
 
     @Test
     public void testEmptyStringArray() throws Exception {
-        var cookies = mockMvc.perform(buildLoginRequest("test@email.com", "test"))
-            .andReturn()
-            .getResponse()
-            .getCookies();
         var request = post(DogController.DOG_MATCH_PATH)
             .contentType("application/json")
             .content("[\"\"]")
-            .cookie(cookies);
+            .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testInvalidFromParameter() throws Exception {
-        var cookies = mockMvc.perform(buildLoginRequest("test@email.com", "test"))
-            .andReturn()
-            .getResponse()
-            .getCookies();
         var request =
-            get("%s?from=bbwbwe".formatted(DogController.DOG_SEARCH_PATH)).cookie(cookies);
+            get("%s?from=bbwbwe".formatted(DogController.DOG_SEARCH_PATH)).cookie(
+                getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testInvalidSortParameter() throws Exception {
-        var cookies = mockMvc.perform(buildLoginRequest("test@email.com", "test"))
-            .andReturn()
-            .getResponse()
-            .getCookies();
-        mockMvc.perform(get("%s?sort=".formatted(DogController.DOG_SEARCH_PATH)).cookie(cookies))
-            .andExpect(status().isUnprocessableEntity());
+        var request = get("%s?sort=".formatted(DogController.DOG_SEARCH_PATH))
+            .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test

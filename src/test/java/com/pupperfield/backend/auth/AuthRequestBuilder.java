@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pupperfield.backend.controller.AuthController;
 import com.pupperfield.backend.model.LoginRequestDto;
+import jakarta.servlet.http.Cookie;
 import lombok.NoArgsConstructor;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,5 +18,13 @@ public class AuthRequestBuilder {
         return post(AuthController.LOGIN_PATH)
             .contentType("application/json")
             .content(new ObjectMapper().writeValueAsString(new LoginRequestDto(email, name)));
+    }
+
+    public static Cookie[] getAuthCookie(MockMvc mockMvc, String email, String name)
+        throws Exception {
+        return mockMvc.perform(buildLoginRequest(email, name))
+            .andReturn()
+            .getResponse()
+            .getCookies();
     }
 }
