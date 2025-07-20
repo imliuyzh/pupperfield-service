@@ -109,4 +109,9 @@ public class DogServiceTest {
         assertThat(result.getFirst()).isNotEmpty();
         assertThat(result.getSecond()).isGreaterThan(0);
     }
+
+    @Test
+    public void testBuildNavigation() {
+
+    }
 }

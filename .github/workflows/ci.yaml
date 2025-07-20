@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_call:
+  workflow_dispatch:
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Front End Repository
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          check-latest: true
+          distribution: liberica
+          java-version: 21
+
+      - name: Install Dependencies
+        run: ./mvnw clean install -Dmaven.test.skip=true
+
+      - name: Start Testing
+        run: ./mvnw clean test

@@ -18,11 +18,11 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
-    @Mock
-    private TokenService tokenService;
-
     @InjectMocks
     private AuthController authController;
+
+    @Mock
+    private TokenService tokenService;
 
     @Test
     public void testLogin() {
