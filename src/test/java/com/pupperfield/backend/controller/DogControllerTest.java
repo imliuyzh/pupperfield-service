@@ -84,6 +84,7 @@ public class DogControllerTest {
             .willReturn(Pair.of(List.of("rr_-OZUBBPFf4ZNZzPlX"), 1L));
         var result = dogController.search(
             DogSearchRequestDto.builder()
+                .sort("breed:asc")
                 .zipCodes(List.of("12345"))
                 .build(),
             mock(HttpServletRequest.class)

@@ -18,11 +18,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -130,9 +130,16 @@ public class DogService {
     }
 
     /**
-     * Builds a navigation URL for search pagination. If the "size" field is present in the
-     * query string, then it will be kept and the one passed in the "size" parameter is ignored.
-     * Otherwise, the value in the "size" parameter will be used in the query string.
+     * Builds a navigation URL for search pagination. Since the controller handles validation
+     * already, arguments are assumed to be always valid (so no error checking here). A sample
+     * case is given below:
+     * <p>
+     * If the "size" field is present in the query string, then it will be kept and the one passed
+     * in the "size" parameter is ignored. Otherwise, the value in the "size" parameter will be
+     * used in the query string.
+     * <p>
+     * "from" and "size" are the only ones not repeated in the final result due to original
+     * implementation's behavior.
      *
      * @param query current query string
      * @param from a value for the "from" field
@@ -140,18 +147,27 @@ public class DogService {
      * @return a full query string for pagination
      */
     public String buildNavigation(String query, Integer from, Integer size) {
-        var pairs = new ArrayList<String>();
+        var pairs = new LinkedList<String>();
         if (isNotBlank(query)) {
             Collections.addAll(pairs, query.split("&"));
         }
 
         boolean fromExists = false, sizeExists = false;
-        for (var index = 0; index < pairs.size(); index++) {
-            if (pairs.get(index).startsWith("from=")) {
-                pairs.set(index, "from=%d".formatted(from));
+        var iterator = pairs.listIterator();
+        while (iterator.hasNext()) {
+            var pair = iterator.next();
+            if (pair.startsWith("from=")) {
+                if (fromExists) {
+                    iterator.remove();
+                    continue;
+                }
+                iterator.set("from=%d".formatted(from));
                 fromExists = true;
             }
-            if (pairs.get(index).startsWith("size=")) {
+            if (pair.startsWith("size=")) {
+                if (sizeExists) {
+                    iterator.remove();
+                }
                 sizeExists = true;
             }
         }
@@ -161,7 +177,6 @@ public class DogService {
         if (fromExists == false) {
             pairs.add("from=%d".formatted(from));
         }
-
         return "/dogs/search?%s".formatted(String.join("&", pairs));
     }
 }

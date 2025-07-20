@@ -111,7 +111,68 @@ public class DogServiceTest {
     }
 
     @Test
-    public void testBuildNavigation() {
+    public void testBuildNavigationWithAllFieldsPresent() {
+        var link = dogService.buildNavigation(
+            "from=0&size=50&sort=breed:asc&ageMax=0&ageMin=15&breeds=Doberman&zipCodes=10001",
+            50, 25
+        );
+        assertThat(link.contains("from=50")).isTrue();
+        assertThat(link.contains("size=25")).isFalse();
+        assertThat(link.contains("size=50")).isTrue();
+        assertThat(link.contains("sort=breed:asc")).isTrue();
+        assertThat(link.contains("ageMax=0")).isTrue();
+        assertThat(link.contains("ageMin=15")).isTrue();
+        assertThat(link.contains("breeds=Doberman")).isTrue();
+        assertThat(link.contains("zipCodes=10001")).isTrue();
+    }
 
+    @Test
+    public void testBuildNavigationWithEmptyQueryString() {
+        var link = dogService.buildNavigation("", 0, 5);
+        assertThat(link.contains("from=0")).isTrue();
+        assertThat(link.contains("size=5")).isTrue();
+    }
+
+    @Test
+    public void testBuildNavigationWithFromMissing() {
+        var link = dogService.buildNavigation("size=100&ageMin=6", 10, 100);
+        assertThat(link.contains("from=10")).isTrue();
+        assertThat(link.contains("size=100")).isTrue();
+        assertThat(link.contains("ageMin=6")).isTrue();
+    }
+
+    @Test
+    public void testBuildNavigationWithSizeMissing() {
+        var link = dogService.buildNavigation("from=0&zipCodes=12345,54321", 10, 5);
+        assertThat(link.contains("from=10")).isTrue();
+        assertThat(link.contains("size=5")).isTrue();
+        assertThat(link.contains("zipCodes=12345,54321")).isTrue();
+    }
+
+    @Test
+    public void testBuildNavigationWithFromAndSizeMissing() {
+        var link = dogService.buildNavigation(
+            "breeds=Doberman,Affenpinscher&zipCodes=12345,54321", 234, 9);
+        assertThat(link.contains("from=234")).isTrue();
+        assertThat(link.contains("size=9")).isTrue();
+        assertThat(link.contains("breeds=Doberman,Affenpinscher")).isTrue();
+        assertThat(link.contains("zipCodes=12345,54321")).isTrue();
+    }
+
+    @Test
+    public void testBuildNavigationWithRepeatedParameters1() {
+        var link = dogService.buildNavigation("from=0&from=5&size=100&size=200", 2, 1);
+        assertThat(link.contains("from=2")).isTrue();
+        assertThat(link.contains("size=1")).isTrue();
+        assertThat(link.split("&").length).isEqualTo(2);
+    }
+
+    @Test
+    public void testBuildNavigationWithRepeatedParameters2() {
+        var link = dogService.buildNavigation(
+            "from=0&ageMax=5&from=5&size=100&ageMax=0&size=200", 2, 1);
+        assertThat(link.contains("from=2")).isTrue();
+        assertThat(link.contains("size=1")).isTrue();
+        assertThat(link.split("&").length).isEqualTo(4);
     }
 }
