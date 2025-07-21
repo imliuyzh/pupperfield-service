@@ -86,7 +86,7 @@ public class DogController {
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
-                examples = {@ExampleObject(value = "[\"rcD-OZUBBPFf4ZNZzDCC\"]")},
+                examples = {@ExampleObject(value = "[\"qcD-OZUBBPFf4ZNZzDCC\"]")},
                 mediaType = "application/json"
             ),
             required = true
@@ -133,7 +133,7 @@ public class DogController {
         @NotNull(message = "body must not be null")
         @Parameter(
             description = "Dog IDs",
-            example = "[\"z7_-OZUBBPFf4ZNZzPlX\"]",
+            example = "[\"qcD-OZUBBPFf4ZNZzDCC\"]",
             required = true
         )
         @RequestBody
