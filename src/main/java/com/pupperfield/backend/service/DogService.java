@@ -155,7 +155,7 @@ public class DogService {
         boolean fromExists = false, sizeExists = false;
         var iterator = pairs.listIterator();
         while (iterator.hasNext()) {
-            var pair = iterator.next();
+            String pair = iterator.next();
             if (pair.startsWith("from=")) {
                 if (fromExists) {
                     iterator.remove();
