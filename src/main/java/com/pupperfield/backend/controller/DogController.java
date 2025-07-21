@@ -138,7 +138,8 @@ public class DogController {
         )
         @RequestBody
         @Size(max = 100, message = "body must have at most 100 dog IDs")
-        List<@NotBlank(message = "a dog ID must not be empty") @Valid String> idList
+        List<@NotBlank(message = "a dog ID must not be empty") @Size(max = 20, message =
+            "a dog ID should have at most 20 characters") @Valid String> idList
     ) {
         return dogService.listDogs(idList);
     }
@@ -190,7 +191,8 @@ public class DogController {
         @NotNull(message = "body must not be null")
         @RequestBody
         @Size(message = "body must not be empty", min = 1)
-        List<@NotBlank(message = "a dog ID must not be empty") @Valid String> idList
+        List<@NotBlank(message = "a dog ID must not be empty") @Size(max = 20, message =
+            "a dog ID should have at most 20 characters") @Valid String> idList
     ) {
         return Map.of("match", dogService.matchDogs(idList));
     }
