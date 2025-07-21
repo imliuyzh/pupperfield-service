@@ -180,7 +180,7 @@ public class DogControllerIntegrationTest {
     }
 
     @Test
-    public void testMatchWithSameIds() throws Exception {
+    public void testMatchWithRepeatedIds() throws Exception {
         var request = post(DogController.DOG_MATCH_PATH)
             .contentType("application/json")
             .content("[\"MMD-OZUBBPFf4ZNZzCl8\", \"MMD-OZUBBPFf4ZNZzCl8\"]")
