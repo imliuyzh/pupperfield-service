@@ -14,7 +14,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.pupperfield.backend.auth.AuthRequestBuilder.getAuthCookie;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,15 +111,13 @@ public class ExceptionAdviceIntegrationTest {
     }
 
     @Test
-    public void testOptionsMethodWillNotThrowAuthException() {
-        assertDoesNotThrow(() -> {
-            mockMvc.perform(options(AuthController.LOGIN_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(DogController.DOGS_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(DogController.DOG_BREEDS_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(DogController.DOG_MATCH_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(DogController.DOG_SEARCH_PATH)).andExpect(status().isOk());
-            mockMvc.perform(options(StatusController.STATUS_PATH)).andExpect(status().isOk());
-        });
+    public void testOptionsMethodWillNotBeUnauthorized() throws Exception {
+        mockMvc.perform(options(AuthController.LOGIN_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DogController.DOGS_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DogController.DOG_BREEDS_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DogController.DOG_MATCH_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DogController.DOG_SEARCH_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(StatusController.STATUS_PATH)).andExpect(status().isOk());
     }
 }
