@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 @Import(DatabaseConfig.class)
-public class DogRepositoryIntegrationTest {
+public class DogRepositoryIntegrationTests {
     @Autowired
     private DogRepository dogRepository;
 

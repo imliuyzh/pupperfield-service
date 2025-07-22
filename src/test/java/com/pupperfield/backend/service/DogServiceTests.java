@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @ExtendWith(MockitoExtension.class)
-public class DogServiceTest {
+public class DogServiceTests {
     @Mock
     private DogMapper dogMapper;
 

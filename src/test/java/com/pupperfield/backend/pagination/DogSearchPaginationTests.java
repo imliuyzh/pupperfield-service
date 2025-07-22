@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DogSearchPaginationTest {
+public class DogSearchPaginationTests {
     @Test
     public void testFirst() {
         var pagination = new DogSearchPagination(10, 0, Sort.by(Sort.Direction.ASC, "breed"));

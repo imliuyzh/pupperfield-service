@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class DogControllerTest {
+public class DogControllerTests {
     @InjectMocks
     private DogController dogController;
 

@@ -9,7 +9,7 @@ import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class TokenServiceTest {
+public class TokenServiceTests {
     @InjectMocks
     private TokenService tokenService;
 

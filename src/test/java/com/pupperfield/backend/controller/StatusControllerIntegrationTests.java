@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import({AuthFilter.class, TokenService.class})
 @WebMvcTest(StatusController.class)
-public class StatusControllerIntegrationTest {
+public class StatusControllerIntegrationTests {
     @Autowired
     private MockMvc mockMvc;
 

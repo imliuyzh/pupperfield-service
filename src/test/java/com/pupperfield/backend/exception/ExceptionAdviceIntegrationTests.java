@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     TokenService.class
 })
 @WebMvcTest(ExceptionAdvice.class)
-public class ExceptionAdviceIntegrationTest {
+public class ExceptionAdviceIntegrationTests {
     @MockitoBean
     private DogService dogService;
 
