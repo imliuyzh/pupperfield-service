@@ -35,10 +35,10 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @AllArgsConstructor
 @Service
 public class DogService {
+    private static final SecureRandom random = new SecureRandom();
+
     private DogMapper dogMapper;
     private DogRepository dogRepository;
-
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     /**
      * Retrieves a cached list of all dog breeds.
@@ -80,7 +80,7 @@ public class DogService {
      * @return a random dog ID
      */
     public String matchDogs(List<String> idList) {
-        return idList.get(RANDOM.nextInt(idList.size()));
+        return idList.get(random.nextInt(idList.size()));
     }
 
     /**

@@ -33,13 +33,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Component
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
-    private ObjectMapper objectMapper;
-    private TokenService tokenService;
-
     private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized:";
     private static final List<String> WHITELIST = List.of(
         "/api-docs", "/auth/login", "/status", "/swagger-ui"
     );
+
+    private ObjectMapper objectMapper;
+    private TokenService tokenService;
 
     /**
      * If the request is not whitelisted, attempts to validate access token from the cookie.
