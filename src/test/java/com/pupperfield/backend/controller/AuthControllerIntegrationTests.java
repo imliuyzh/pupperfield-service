@@ -3,6 +3,8 @@ package com.pupperfield.backend.controller;
 import com.pupperfield.backend.filter.AuthFilter;
 import com.pupperfield.backend.service.TokenService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -69,19 +71,12 @@ public class AuthControllerIntegrationTests {
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
 
-    @Test
-    public void testLogInWithEmptyBody1() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"", "              "})
+    public void testLogInWithEmptyBody(String body) throws Exception {
         var request = post(AuthController.LOGIN_PATH)
             .contentType("application/json")
-            .content("");
-        mockMvc.perform(request).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testLogInWithEmptyBody2() throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
-            .contentType("application/json")
-            .content("              ");
+            .content(body);
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
 
@@ -99,19 +94,12 @@ public class AuthControllerIntegrationTests {
             .andExpect(status().isUnprocessableEntity());
     }
 
-    @Test
-    public void testLogInWithMissingFields1() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"{}", "{\"email\":\"e@mail.com\"}"})
+    public void testLogInWithMissingFields(String body) throws Exception {
         var request = post(AuthController.LOGIN_PATH)
             .contentType("application/json")
-            .content("{}");
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    public void testLogInWithMissingFields2() throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
-            .contentType("application/json")
-            .content("{\"email\":\"e@mail.com\"}");
+            .content(body);
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
