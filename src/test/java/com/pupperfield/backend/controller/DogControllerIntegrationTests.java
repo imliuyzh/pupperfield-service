@@ -6,6 +6,7 @@ import com.pupperfield.backend.model.DogDto;
 import com.pupperfield.backend.model.DogSearchResponseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +20,9 @@ import static com.pupperfield.backend.auth.AuthRequestBuilder.getAuthCookie;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.oneOf;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -475,6 +478,326 @@ public class DogControllerIntegrationTests {
     }
 
     @Test
+    public void testSearchWithAgeMax1() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=10&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?ageMax=10&size=1&sort=age:desc&from=1", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(1, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+
+        request = post(DogController.DOGS_PATH)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(result1.getResultIds()))
+            .cookie(cookies);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$[0].age").value(10));
+    }
+
+    @Test
+    public void testSearchWithAgeMax2() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=00&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?ageMax=00&size=1&sort=age:desc&from=1", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(1, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+
+        request = post(DogController.DOGS_PATH)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(result1.getResultIds()))
+            .cookie(cookies);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$[0].age").value(0));
+    }
+
+    @Test
+    public void testSearchWithAgeMax3() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=%d&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH, Integer.MIN_VALUE
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithAgeMax4() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=null&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithAgeMax5() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=g32g23g3&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithAgeMin1() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMin=10&size=1&sort=age:asc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?ageMin=10&size=1&sort=age:asc&from=1", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(1, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+
+        request = post(DogController.DOGS_PATH)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(result1.getResultIds()))
+            .cookie(cookies);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$[0].age").value(10));
+    }
+
+    @Test
+    public void testSearchWithAgeMin2() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMax=0&size=1&sort=age:asc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?ageMax=0&size=1&sort=age:asc&from=1", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(1, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+
+        request = post(DogController.DOGS_PATH)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(result1.getResultIds()))
+            .cookie(cookies);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$[0].age").value(0));
+    }
+
+    @Test
+    public void testSearchWithAgeMin3() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMin=%d&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH, Integer.MIN_VALUE
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithAgeMin4() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMin=null&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithAgeMin5() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?ageMin=g32g23g3&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithFrom1() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?from=100".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?from=125&size=25", result1.getNext());
+        assertEquals("/dogs/search?from=75&size=25", result1.getPrevious());
+        assertEquals(25, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+    }
+
+    @Test
+    public void testSearchWithFrom2() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?from=0".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?from=25&size=25", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(25, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+    }
+
+    @Test
+    public void testSearchWithFrom3() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?from=%d".formatted(
+            DogController.DOG_SEARCH_PATH, Integer.MIN_VALUE
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithFrom4() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?from=null".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithFrom5() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?from=g32g23g3".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithSize1() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?size=2".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        var response = mockMvc.perform(request).andReturn().getResponse();
+        var result1 = objectMapper.readValue(
+            response.getContentAsString(), DogSearchResponseDto.class);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("/dogs/search?size=2&from=2", result1.getNext());
+        assertNull(result1.getPrevious());
+        assertEquals(2, result1.getResultIds().size());
+        assertTrue(result1.getTotal() > 0);
+    }
+
+    @Test
+    public void testSearchWithSize2() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?size=0".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithSize3() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?size=%d".formatted(
+            DogController.DOG_SEARCH_PATH, Integer.MIN_VALUE
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithSize4() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?size=null".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testSearchWithSize5() throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?size=g32g23g3".formatted(
+            DogController.DOG_SEARCH_PATH
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @CsvSource({
+        "age:asc,0",
+        "age:desc,14",
+        "breed:asc,A",
+        "breed:desc,Y",
+        "name:asc,A",
+        "name:desc,Z"
+    })
+    @ParameterizedTest
+    public void testSearchWithSort1(String sort, String firstToken) throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?sort=%s&size=1".formatted(
+            DogController.DOG_SEARCH_PATH, sort
+        )).cookie(cookies);
+        var result1 = mockMvc.perform(request).andReturn().getResponse();
+        var content = objectMapper.readValue(result1.getContentAsString(),
+            DogSearchResponseDto.class);
+
+        request = post(DogController.DOGS_PATH)
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(content.getResultIds()))
+            .cookie(cookies);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].%s".formatted(sort.split(":")[0]))
+                .value(hasToString(startsWith(firstToken))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "name:",
+        "zipCode:desc",
+        "",
+        "avasv",
+        "9223372036854775807",
+        "name:asc:asc",
+        "          ",
+        ":::",
+        ",,,"
+    })
+    public void testSearchWithSort2(String sort) throws Exception {
+        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
+        var request = get("%s?sort=%s".formatted(
+            DogController.DOG_SEARCH_PATH, sort
+        )).cookie(cookies);
+        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     public void testSearchWithAgeRange() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
         var request = get("%s?size=%d&from=%d&ageMax=%d&ageMin=%d".formatted(
@@ -507,7 +830,7 @@ public class DogControllerIntegrationTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"ageMin", "ageMax", "from", "size"})
+    @ValueSource(strings = {"ageMax", "ageMin", "from", "size"})
     public void testSearchWithIntegerOverflow(String field) throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
         var request = get(DogController.DOG_SEARCH_PATH)
