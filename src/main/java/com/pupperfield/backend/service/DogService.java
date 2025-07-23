@@ -101,7 +101,7 @@ public class DogService {
     public Pair<List<String>, Long> searchDogs(DogSearchRequestDto parameters) {
         // Use Specification.unrestricted() for Spring Data JPA v4.0+.
         Specification<Dog> conditions = (root, query, builder) -> null;
-        if (parameters.getZipCodes() != null && parameters.getZipCodes().isEmpty() == false) {
+        if (parameters.getZipCodes() != null) {
             conditions = conditions.and(DogSpecs.withZipCodes(parameters.getZipCodes()));
         }
         if (parameters.getAgeMax() != null) {
@@ -110,7 +110,7 @@ public class DogService {
         if (parameters.getAgeMin() != null) {
             conditions = conditions.and(DogSpecs.withAgeMin(parameters.getAgeMin()));
         }
-        if (parameters.getBreeds() != null && parameters.getBreeds().isEmpty() == false) {
+        if (parameters.getBreeds() != null) {
             conditions = conditions.and(DogSpecs.withBreeds(parameters.getBreeds()));
         }
 
