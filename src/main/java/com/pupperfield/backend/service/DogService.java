@@ -135,7 +135,7 @@ public class DogService {
      * case is given below:
      * <p>
      * If the "size" field is present in the query string, then it will be kept and the one passed
-     * in the "size" parameter is ignored. Otherwise, the value in the "size" parameter will be
+     * by the "size" parameter is ignored. Otherwise, the value in the "size" parameter will be
      * used in the query string.
      * <p>
      * "from" and "size" are the only ones not repeated in the final result due to original
