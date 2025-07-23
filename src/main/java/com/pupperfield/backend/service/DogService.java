@@ -131,8 +131,8 @@ public class DogService {
 
     /**
      * Builds a navigation URL for search pagination. Since the controller handles validation
-     * already, arguments are assumed to be always valid (so no error checking here). A sample
-     * case is given below:
+     * already, arguments are assumed to be always valid (so no any kind of error checking here).
+     * A sample case is given below:
      * <p>
      * If the "size" field is present in the query string, then it will be kept and the one passed
      * by the "size" parameter is ignored. Otherwise, the value in the "size" parameter will be
