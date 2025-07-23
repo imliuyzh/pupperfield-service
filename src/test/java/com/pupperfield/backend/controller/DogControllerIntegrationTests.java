@@ -175,20 +175,12 @@ public class DogControllerIntegrationTests {
             .andExpect(jsonPath("$.length()").value(0));
     }
 
-    @Test
-    public void testListWithEmptyContent1() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"", "               "})
+    public void testListWithEmptyContent(String content) throws Exception {
         var request = post(DogController.DOGS_PATH)
             .contentType("application/json")
-            .content("")
-            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
-        mockMvc.perform(request).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testListWithEmptyContent2() throws Exception {
-        var request = post(DogController.DOGS_PATH)
-            .contentType("application/json")
-            .content("               ")
+            .content(content)
             .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
@@ -302,20 +294,12 @@ public class DogControllerIntegrationTests {
             .andExpect(jsonPath("$.match").value(oneOf(response.getResultIds().toArray())));
     }
 
-    @Test
-    public void testMatchWithEmptyContent1() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"", "               "})
+    public void testMatchWithEmptyContent(String content) throws Exception {
         var request = post(DogController.DOG_MATCH_PATH)
             .contentType("application/json")
-            .content("")
-            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
-        mockMvc.perform(request).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void testMatchWithEmptyContent2() throws Exception {
-        var request = post(DogController.DOG_MATCH_PATH)
-            .contentType("application/json")
-            .content("               ")
+            .content(content)
             .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
