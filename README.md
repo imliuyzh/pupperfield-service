@@ -31,7 +31,7 @@ The service will start on port 8080 by default. API documentation is available a
 
 ### Testing the Application
 
-You can see the execution status as well as getting the full coverage report at `/target/site/jacoco/index.html` with:
+You can see the execution status as well as the coverage report at `/target/site/jacoco/index.html` with:
 
 ```
 ./mvnw clean test
