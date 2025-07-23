@@ -780,6 +780,9 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {
         "name:",
+        "naame:desc",
+        "breed:assc",
+        "age:ascc",
         "zipCode:desc",
         "",
         "avasv",
