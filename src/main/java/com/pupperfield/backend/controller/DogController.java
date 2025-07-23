@@ -252,7 +252,7 @@ public class DogController {
         return DogSearchResponseDto.builder()
             .resultIds(outcome.getFirst())
             .total(outcome.getSecond())
-            .next(nextFrom < outcome.getSecond()
+            .next(nextFrom < outcome.getSecond() && nextFrom > 0
                 ? dogService.buildNavigation(queryString, nextFrom, size)
                 : null)
             .previous(previousFrom >= 0
