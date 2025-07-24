@@ -36,7 +36,9 @@ public class TokenServiceTests {
             + "COZth0auWPTs0J8",
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoibmFtZSIsImVtYWlsIjoibmFtZUBlbWFpbC5j"
             + "b20iLCJleHAiOjE3NTIzOTQyMjIsImlhdCI6MTc1MjM5MDYyMn0.OYmZVWHyTjih8ctgAu-7PVj_bFNi"
-            + "Y2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJ"
+            + "Y2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJ",
+        "john.doe@email.com",
+        "John Doe"
     })
     public void testInvalidToken(String token) {
         assertThat(tokenService.isValid(token)).isFalse();

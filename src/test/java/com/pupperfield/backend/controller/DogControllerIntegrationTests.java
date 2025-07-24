@@ -104,9 +104,7 @@ public class DogControllerIntegrationTests {
     @Test
     public void testListWith100Ids() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("size", "100")
-            .cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?size={size}", 100).cookie(cookies);
         var response = objectMapper.readValue(
             mockMvc.perform(request).andReturn().getResponse().getContentAsString(),
             DogSearchResponseDto.class
@@ -124,13 +122,10 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"age:asc", "age:desc"})
     public void testListWithAgeLimit(String sort) throws Exception {
+        var path = "%s?ageMax={ageMax}&ageMin={ageMin}&size={size}&sort={sort}"
+            .formatted(DogController.DOG_SEARCH_PATH);
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("ageMax", "3")
-            .param("ageMin", "3")
-            .param("size", "3")
-            .param("sort", sort)
-            .cookie(cookies);
+        var request = get(path, 3, 3, 3, sort).cookie(cookies);
         var response = objectMapper.readValue(
             mockMvc.perform(request).andReturn().getResponse().getContentAsString(),
             DogSearchResponseDto.class
@@ -148,14 +143,11 @@ public class DogControllerIntegrationTests {
     @Test
     public void testListWithManyIds() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("from", "1000")
-            .param("size", "500")
+        var request = get(DogController.DOG_SEARCH_PATH + "?from={from}&size={size}", 1000, 500)
             .cookie(cookies);
         var response = objectMapper.readValue(
             mockMvc.perform(request).andReturn().getResponse().getContentAsString(),
-            DogSearchResponseDto.class
-        );
+            DogSearchResponseDto.class);
         request = post(DogController.DOGS_PATH)
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(response.getResultIds()))
@@ -278,13 +270,11 @@ public class DogControllerIntegrationTests {
     @Test
     public void testMatchWithAllIds() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("size", Integer.toString(Integer.MAX_VALUE))
+        var request = get(DogController.DOG_SEARCH_PATH + "?size={size}", Integer.MAX_VALUE)
             .cookie(cookies);
         var response = objectMapper.readValue(
             mockMvc.perform(request).andReturn().getResponse().getContentAsString(),
-            DogSearchResponseDto.class
-        );
+            DogSearchResponseDto.class);
         request = post(DogController.DOG_MATCH_PATH)
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(response.getResultIds()))
@@ -385,16 +375,13 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearch() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("ageMax", "100")
-            .param("ageMin", "0")
-            .param("breeds", "Great Dane,Norwegian Elkhound,Standard Poodle")
-            .param("from", "0")
-            .param("size", "10")
-            .param("sort", "name:asc")
-            .param("zipCodes", "72080,01053,59634")
-            .cookie(cookies);
+        var path = "%s?ageMax=100&ageMin=0&breeds=%s&from=0&size=10&sort=%s&zipCodes=%s".formatted(
+            DogController.DOG_SEARCH_PATH,
+            "Great Dane,Norwegian Elkhound,Standard Poodle",
+            "name:asc",
+            "72080,01053,59634"
+        );
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -408,10 +395,8 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchPagingOffset1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("size", "11")
-            .cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?size=11")
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -425,29 +410,23 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchPagingOffset2() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("from", "101")
-            .param("size", "6")
-            .cookie(cookies);
+        var request = get("%s?from=101&size=6".formatted(DogController.DOG_SEARCH_PATH))
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("/dogs/search?size=6&from=107", result.getNext());
-        assertEquals("/dogs/search?size=6&from=95", result.getPrevious());
+        assertEquals("/dogs/search?from=107&size=6", result.getNext());
+        assertEquals("/dogs/search?from=95&size=6", result.getPrevious());
         assertEquals(6, result.getResultIds().size());
         assertTrue(result.getTotal() > 0);
     }
 
     @Test
     public void testSearchPagingOffset3() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("from", Integer.toString(Integer.MAX_VALUE))
-            .param("size", "1")
-            .cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?size=1&from={from}", Integer.MAX_VALUE)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -464,9 +443,8 @@ public class DogControllerIntegrationTests {
     @Test
     public void testSearchWithAgeMax1() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMax=10&size=1&sort=age:desc".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?ageMax=10&size=1&sort=age:desc")
+            .cookie(cookies);
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result1 = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -490,9 +468,8 @@ public class DogControllerIntegrationTests {
     @Test
     public void testSearchWithAgeMax2() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMax=00&size=1&sort=age:desc".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?ageMax=00&size=1&sort=age:desc")
+            .cookie(cookies);
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result1 = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -516,19 +493,17 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"-2147483648", "null", "g32g23g3", ",3", ",,,"})
     public void testSearchWithAgeMax3(String ageMax) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMax=%s&size=1&sort=age:desc".formatted(
-            DogController.DOG_SEARCH_PATH, ageMax
-        )).cookie(cookies);
+        var path = "%s?ageMax=%s&size=1&sort=age:desc".formatted(
+            DogController.DOG_SEARCH_PATH, ageMax);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testSearchWithAgeMin1() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMin=10&size=1&sort=age:asc".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?ageMin=10&size=1&sort=age:asc")
+            .cookie(cookies);
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result1 = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -552,9 +527,8 @@ public class DogControllerIntegrationTests {
     @Test
     public void testSearchWithAgeMin2() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMax=0&size=1&sort=age:asc".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?ageMax=0&size=1&sort=age:asc")
+            .cookie(cookies);
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result1 = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -578,19 +552,17 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"-2147483648", "null", "g32g23g3", ",3", ",,,"})
     public void testSearchWithAgeMin3(String ageMin) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?ageMin=%s&size=1&sort=age:desc".formatted(
-            DogController.DOG_SEARCH_PATH, ageMin
-        )).cookie(cookies);
+        var path = "%s?ageMin=%s&size=%d&sort=%s".formatted(
+            DogController.DOG_SEARCH_PATH, ageMin, 1, "age:desc");
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testSearchWithAgeRange() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?size=%d&from=%d&ageMax=%d&ageMin=%d".formatted(
-            DogController.DOG_SEARCH_PATH, 5, 20, 8, 3
-        )).cookie(cookies);
+        var path = "%s?size=%d&from=%d&ageMax=%d&ageMin=%d".formatted(
+            DogController.DOG_SEARCH_PATH, 5, 20, 8, 3);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -604,10 +576,9 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithBreeds1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?breeds=Doberman&breeds=West Highland White Terrier&size=5".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var path = "%s?breeds=Doberman&breeds=West Highland White Terrier&size=5".formatted(
+            DogController.DOG_SEARCH_PATH);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -623,10 +594,9 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithBreeds2() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?breeds=80263-adve80263-adve80263-adve,-2147483648".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?breeds={breeds}",
+                "80263-adve80263-adve80263-adve,-2147483648")
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -648,17 +618,15 @@ public class DogControllerIntegrationTests {
         ""
     })
     public void testSearchWithBreeds3(String zipCodes) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?zipCodes=%s".formatted(
-            DogController.DOG_SEARCH_PATH, zipCodes
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?zipCodes={zipCodes}", zipCodes)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testSearchWithDefaultValues() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -672,68 +640,58 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithFrom1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?from=100".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?from={from}", 100)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
-        var result1 = objectMapper.readValue(
+        var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("/dogs/search?from=125&size=25", result1.getNext());
-        assertEquals("/dogs/search?from=75&size=25", result1.getPrevious());
-        assertEquals(25, result1.getResultIds().size());
-        assertTrue(result1.getTotal() > 0);
+        assertEquals("/dogs/search?from=125&size=25", result.getNext());
+        assertEquals("/dogs/search?from=75&size=25", result.getPrevious());
+        assertEquals(25, result.getResultIds().size());
+        assertTrue(result.getTotal() > 0);
     }
 
     @Test
     public void testSearchWithFrom2() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?from=0".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?from={from}", 0)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
-        var result1 = objectMapper.readValue(
+        var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("/dogs/search?from=25&size=25", result1.getNext());
-        assertNull(result1.getPrevious());
-        assertEquals(25, result1.getResultIds().size());
-        assertTrue(result1.getTotal() > 0);
+        assertEquals("/dogs/search?from=25&size=25", result.getNext());
+        assertNull(result.getPrevious());
+        assertEquals(25, result.getResultIds().size());
+        assertTrue(result.getTotal() > 0);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"-2147483648", "null", "g32g23g3", ",3", ",,,", "       ", ""})
     public void testSearchWithFrom3(String from) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?from=%s".formatted(
-            DogController.DOG_SEARCH_PATH, from
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?from=%s", from)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"ageMax", "ageMin", "from", "size"})
     public void testSearchWithIntegerOverflow(String field) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param(field, Long.toString(Long.MAX_VALUE))
-            .cookie(cookies);
+        var path = "%s?%s=%d".formatted(DogController.DOG_SEARCH_PATH, field, Long.MAX_VALUE);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), mockMvc.perform(request)
             .andReturn()
             .getResponse()
-            .getStatus()
-        );
+            .getStatus());
     }
 
     @Test
     public void testSearchWithMultipleParameterValues1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?breeds=Saluki&breeds=Doberman&from=351&size=1".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var path = "%s?breeds=Saluki&breeds=Doberman&from=351&size=1"
+            .formatted(DogController.DOG_SEARCH_PATH);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -750,9 +708,8 @@ public class DogControllerIntegrationTests {
     @Test
     public void testSearchWithMultipleParameterValues2() throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?zipCodes=80263,71341&size=3&from=3".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?zipCodes=80263,71341&size=3&from=3")
+            .cookie(cookies);
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -766,11 +723,8 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithoutResult() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get(DogController.DOG_SEARCH_PATH)
-            .param("ageMax", "0")
-            .param("ageMin", "1")
-            .cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?ageMax={ageMax}&ageMin={ageMin}", 0, 1)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -784,10 +738,8 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithSize1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?size=2".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?size={size}", 2)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result1 = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -802,10 +754,8 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"0", "-2147483648", "null", "g32g23g3", ",3", ",,,", "       ", ""})
     public void testSearchWithSize2(String size) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?size=%s".formatted(
-            DogController.DOG_SEARCH_PATH, size
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?size={size}", size)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
@@ -820,9 +770,8 @@ public class DogControllerIntegrationTests {
     @ParameterizedTest
     public void testSearchWithSort1(String sort, String firstToken) throws Exception {
         var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?sort=%s&size=1".formatted(
-            DogController.DOG_SEARCH_PATH, sort
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?sort={sort}&size={size}", sort, 1)
+            .cookie(cookies);
         var result1 = mockMvc.perform(request).andReturn().getResponse();
         var content = objectMapper.readValue(result1.getContentAsString(),
             DogSearchResponseDto.class);
@@ -854,19 +803,16 @@ public class DogControllerIntegrationTests {
         ",,,"
     })
     public void testSearchWithSort2(String sort) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?sort=%s".formatted(
-            DogController.DOG_SEARCH_PATH, sort
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?sort={sort}", sort)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testSearchWithZipCodes1() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?zipCodes=80263&zipCodes=71341&size=1&from=8".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var path = "%s?zipCodes=80263&zipCodes=71341&size=1&from=8"
+            .formatted(DogController.DOG_SEARCH_PATH);
+        var request = get(path).cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -882,10 +828,8 @@ public class DogControllerIntegrationTests {
 
     @Test
     public void testSearchWithZipCodes2() throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?zipCodes=80263-adve,123".formatted(
-            DogController.DOG_SEARCH_PATH
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?zipCodes={zipCodes}", "80263-adve,123")
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         var response = mockMvc.perform(request).andReturn().getResponse();
         var result = objectMapper.readValue(
             response.getContentAsString(), DogSearchResponseDto.class);
@@ -907,10 +851,8 @@ public class DogControllerIntegrationTests {
         ""
     })
     public void testSearchWithZipCodes3(String zipCodes) throws Exception {
-        var cookies = getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME);
-        var request = get("%s?zipCodes=%s".formatted(
-            DogController.DOG_SEARCH_PATH, zipCodes
-        )).cookie(cookies);
+        var request = get(DogController.DOG_SEARCH_PATH + "?zipCodes={zipCodes}", zipCodes)
+            .cookie(getAuthCookie(mockMvc, TEST_EMAIL, TEST_NAME));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 }

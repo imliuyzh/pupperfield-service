@@ -68,7 +68,7 @@ public class ExceptionAdviceIntegrationTests {
 
     @Test
     public void testInvalidFromParameter() throws Exception {
-        var request = get("%s?from=bbwbwe".formatted(DogController.DOG_SEARCH_PATH))
+        var request = get(DogController.DOG_SEARCH_PATH + "?from={from}", "bbwbwe")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
