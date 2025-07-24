@@ -33,11 +33,10 @@ public class DogControllerTests {
     public void testGetBreeds() {
         given(dogService.getBreeds()).willReturn(List.of("Breed1", "Breed2", "Breed3"));
         var breeds = dogController.getBreeds();
-        assertThat(breeds).isNotEmpty();
-        for (var breed : breeds) {
-            assertThat(breed).isNotEmpty();
-        }
+
         verify(dogService, times(1)).getBreeds();
+        assertThat(breeds).isNotEmpty();
+        breeds.forEach(breed -> assertThat(breed).isNotEmpty());
     }
 
     @Test
@@ -56,26 +55,21 @@ public class DogControllerTests {
         );
         given(dogService.listDogs(idList)).willReturn(idList.stream()
             .map(id -> DogDto.builder().id(id).build())
-            .toList()
-        );
+            .toList());
         var dogs = dogController.list(idList);
-        assertThat(dogs).isNotEmpty();
-        for (var dog : dogs) {
-            assertThat(dog).isNotNull();
-        }
         verify(dogService, times(1)).listDogs(idList);
+        assertThat(dogs).isNotEmpty();
+        dogs.forEach(dog -> assertThat(dog).isNotNull());
     }
 
     @Test
     public void testMatch() {
-        var idList = List.of(
-            "kMD-OZUBBPFf4ZNZzCd7", "icD-OZUBBPFf4ZNZzCd7", "wMD-OZUBBPFf4ZNZzCd7"
-        );
-        given(dogService.matchDogs(idList)).willReturn(
-            idList.get(new SecureRandom().nextInt(idList.size())));
+        var idList = List.of("kMD-OZUBBPFf4ZNZzCd7", "icD-OZUBBPFf4ZNZzCd7");
+        given(dogService.matchDogs(idList))
+            .willReturn(idList.get(new SecureRandom().nextInt(idList.size())));
         var result = dogController.match(idList);
-        assertThat(idList.contains(result.get("match"))).isTrue();
         verify(dogService, times(1)).matchDogs(idList);
+        assertThat(idList.contains(result.get("match"))).isTrue();
     }
 
     @Test
@@ -93,7 +87,6 @@ public class DogControllerTests {
         assertThat(result.getResultIds()).isNotEmpty();
         assertThat(result.getResultIds().getFirst()).isEqualTo("rr_-OZUBBPFf4ZNZzPlX");
         assertThat(result.getTotal()).isEqualTo(1);
-        verify(dogService, times(1)).searchDogs(
-            any(DogSearchRequestDto.class));
+        verify(dogService, times(1)).searchDogs(any(DogSearchRequestDto.class));
     }
 }

@@ -21,9 +21,7 @@ public class DogRepositoryIntegrationTests {
     @Test
     public void testFindAll() {
         var result = dogRepository.findAll(
-            (root, query, builder) -> null,
-            new DogSearchPagination(1, 0, Sort.by("name"))
-        );
+            (root, query, builder) -> null, new DogSearchPagination(1, 0, Sort.by("name")));
         assertThat(result.getContent().size()).isEqualTo(1);
         assertThat(result.getContent().getFirst().getId()).isNotEmpty();
         assertThat(result.getTotalElements()).isGreaterThan(0);
@@ -33,8 +31,6 @@ public class DogRepositoryIntegrationTests {
     public void testGetBreeds() {
         var breeds = dogRepository.getBreeds();
         assertThat(breeds).isNotEmpty();
-        for (var breed : breeds) {
-            assertThat(breed).isNotEmpty();
-        }
+        breeds.forEach(breed -> assertThat(breed).isNotEmpty());
     }
 }
