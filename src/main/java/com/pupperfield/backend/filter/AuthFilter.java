@@ -3,7 +3,6 @@ package com.pupperfield.backend.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
 import com.pupperfield.backend.service.TokenService;
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -16,6 +15,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.CredentialNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -61,13 +62,14 @@ public class AuthFilter extends OncePerRequestFilter {
             var accessCookie = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(COOKIE_NAME))
                 .findFirst()
-                .orElseThrow(() -> new AuthException(
+                .orElseThrow(() -> new CredentialNotFoundException(
                     "%s missing cookie".formatted(EXCEPTION_MESSAGE_PREFIX)));
             if (tokenService.isValid(accessCookie.getValue()) == false) {
-                throw new AuthException("%s invalid token".formatted(EXCEPTION_MESSAGE_PREFIX));
+                throw new CredentialException(
+                    "%s invalid token".formatted(EXCEPTION_MESSAGE_PREFIX));
             }
             chain.doFilter(request, response);
-        } catch (AuthException exception) {
+        } catch (CredentialException exception) {
             log.info(ExceptionUtils.getStackTrace(exception));
             response.setStatus(UNAUTHORIZED.value());
             response.setContentType(APPLICATION_JSON_VALUE);
