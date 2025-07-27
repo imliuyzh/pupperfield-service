@@ -52,20 +52,20 @@ This is a primarily a Java application with its database built by a Go program.
 2. HTTP 401 and HTTP 422 responses include more error information.
 3. HTTP 405 is used for unsupported HTTP methods instead of HTTP 404.
 4. HTTP 415 is used for unsupported media types instead of returning the response in a different format.
-5. A white label error page is returned when the URL includes invalid characters.
+5. A white label error page is returned when the URL has invalid characters.
 
 6. `POST /auth/login`
    - Different cookie attributes and header/value pairs are sent due to Spring internal implementation.
 
 7. `GET /dogs/search`
-   - Maximum number of dogs can include as much as the total number of rows in database.
-   - "prev" and "next" fields are not included in the response when the "from" parameter value returned with those links is out of bounds.
-     - For "prev," it is included when "from" is still equal or greater than 0.
-     - For "next," it is included when "from" is greater than zero and less than the total number of result.
+   - Maximum number of dogs can be as much as the total number of rows in database.
+   - "prev" and/or "next" fields are not included in the response when the "from" parameter value is out of bounds.
+     - For "prev," it is included when "from" is equal or greater than 0.
+     - For "next," it is included when "from" is greater than zero but less than the total number of result.
    - Parameter order in "next" and "prev" fields may differ from the original sometimes.
    - Dog IDs can be listed differently due to `populator`'s processing order.
    - `,` can be used to pass in multiple values for a query string parameter.
-     - Each parameter value must be listed out one by one in the original implementation. 
+     - Each parameter value must be listed out individually in the original implementation. 
    - HTTP 422 instead of HTTP 400/500 is used when an out of range value is provided for some query string parameters.
    - HTTP 422 instead of HTTP 400 is used when some query string parameters are repeated.
 
@@ -75,4 +75,4 @@ This is a primarily a Java application with its database built by a Go program.
    - Duplicated dog information is listed only once.
 
 9. `GET /status`
-   - A new health check endpoint that is missing from the original.
+   - A new health check endpoint that is missing in the original.
