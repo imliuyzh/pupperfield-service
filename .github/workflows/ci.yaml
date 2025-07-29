@@ -18,12 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install go
+      - name: Install Go
         uses: actions/setup-go@v5
         with:
           check-latest: true
       
-      - name: Lint populator
+      - name: Lint Populator
         run: |
           cd populator
           make lint
