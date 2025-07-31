@@ -1,10 +1,10 @@
 # Pupperfield Service
 
-This is a port of Fetch Rewards' front end take-home interview question.
-The original problem statement is available at: https://frontend-take-home.fetch.com.
+This is a port of the back end application used by Fetch Rewards' front end take-home
+interview question. The original description is available at: https://frontend-take-home.fetch.com.
 
-You can check out a client application, https://github.com/imliuyzh/pupperfield,
-which uses the same API.
+*You can check out a client application based on this API, https://github.com/imliuyzh/pupperfield,*
+*which I implemented myself.*
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ Before starting the application, you need to set up the dependencies for the app
 ./mvnw clean install
 ```
 
-Then, run the application with the following command:
+Then, run the following command:
 
 ```
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=localhost
