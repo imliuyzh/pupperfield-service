@@ -1,4 +1,4 @@
-package com.pupperfield.backend.exception;
+package com.pupperfield.backend.advice;
 
 import com.pupperfield.backend.controller.AuthController;
 import com.pupperfield.backend.controller.DogController;
