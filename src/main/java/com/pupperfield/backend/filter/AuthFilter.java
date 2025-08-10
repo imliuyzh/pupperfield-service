@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -71,14 +72,8 @@ public class AuthFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } catch (CredentialException exception) {
             log.info(ExceptionUtils.getStackTrace(exception));
-            response.setStatus(UNAUTHORIZED.value());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            var printWriter = response.getWriter();
-            printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
-                UNAUTHORIZED.getReasonPhrase(),
-                List.of(exception.getMessage().substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
-            )));
-            printWriter.close();
+            handleUnauthorizedRequest(
+                response, exception.getMessage(), request.getHeader(HttpHeaders.ORIGIN));
         }
     }
 
@@ -92,5 +87,31 @@ public class AuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return OPTIONS.matches(request.getMethod())
             || WHITELIST.stream().anyMatch(path -> request.getRequestURI().startsWith(path));
+    }
+
+    /**
+     * Write an unauthorized HTTP 401 response with a JSON body that contains the error message.
+     *
+     * @param response the HTTP response
+     * @param message the error message
+     * @param origin value of the origin header in the request
+     * @throws IOException if an input or output exception occurs
+     */
+    private void handleUnauthorizedRequest(
+        HttpServletResponse response,
+        String message,
+        String origin
+    ) throws IOException {
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+        response.setStatus(UNAUTHORIZED.value());
+
+        var printWriter = response.getWriter();
+        printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
+            UNAUTHORIZED.getReasonPhrase(),
+            List.of(message.substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
+        )));
+        printWriter.close();
     }
 }
