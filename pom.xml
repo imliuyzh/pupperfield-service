@@ -8,10 +8,10 @@
 		<version>3.5.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.pupperfield</groupId>
-	<artifactId>backend</artifactId>
-	<version>1.0.2</version>
-	<name>pupperfield</name>
+	<groupId>com.pupperfield.backend</groupId>
+	<artifactId>pupperfield-service</artifactId>
+	<version>1.0.3</version>
+	<name>pupperfield-service</name>
 	<description>A mock API for Fetch Rewards&apos; interview</description>
 	<properties>
 		<java.version>21</java.version>
