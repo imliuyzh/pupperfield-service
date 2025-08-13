@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -46,6 +47,7 @@ public class DogService {
      * @return a collection of dog breed names
      */
     @Cacheable(cacheNames = {CacheConfig.BREED_CACHE})
+    @Transactional(readOnly = true)
     public Collection<String> getBreeds() {
         return dogRepository.getBreeds();
     }
@@ -61,6 +63,7 @@ public class DogService {
         cacheNames = {CacheConfig.LIST_CACHE},
         unless = "#result?.isEmpty()"
     )
+    @Transactional(readOnly = true)
     public List<DogDto> listDogs(List<String> idList) {
         var indexMap = new HashMap<String, Integer>();
         for (var index = 0; index < idList.size(); index++) {
@@ -98,6 +101,7 @@ public class DogService {
             + "#parameters.getZipCodes()",
         unless = "#result?.getSecond() <= 0"
     )
+    @Transactional(readOnly = true)
     public Pair<List<String>, Long> searchDogs(DogSearchRequestDto parameters) {
         // Use Specification.unrestricted() for Spring Data JPA v4.0+.
         Specification<Dog> conditions = (root, query, builder) -> null;
