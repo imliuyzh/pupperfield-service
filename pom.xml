@@ -171,6 +171,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
+					<exclude>application-localhost.yml</exclude>
 					<exclude>database/dogs.db</exclude>
 				</excludes>
 			</resource>
