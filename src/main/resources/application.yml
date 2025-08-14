@@ -39,6 +39,7 @@ spring:
         open-in-view: false
     main:
         banner-mode: off
+        keep-alive: true
     threads:
         virtual:
             enabled: true
