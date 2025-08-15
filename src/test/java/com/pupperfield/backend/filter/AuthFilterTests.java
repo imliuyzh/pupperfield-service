@@ -1,5 +1,13 @@
 package com.pupperfield.backend.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pupperfield.backend.controller.AuthController;
+import com.pupperfield.backend.controller.DogController;
+import com.pupperfield.backend.service.TokenService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,15 +18,9 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pupperfield.backend.controller.AuthController;
-import com.pupperfield.backend.controller.DogController;
-import com.pupperfield.backend.service.TokenService;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,10 +28,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthFilterTests {
@@ -44,7 +42,7 @@ public class AuthFilterTests {
 
     @Spy
     private HttpServletRequest request;
-    
+
     @Spy
     private HttpServletResponse response;
 
@@ -151,11 +149,7 @@ public class AuthFilterTests {
         given(response.getWriter()).willAnswer(invocation -> {
             throw new IOException();
         });
-
-        assertThrows(IOException.class, () -> {
-            authFilter.doFilter(request, response, chain);
-        });
-
+        assertThrows(IOException.class, () -> authFilter.doFilter(request, response, chain));
         verify(request, atLeastOnce()).getMethod();
         verify(request, atLeastOnce()).getRequestURI();
         verify(response, atLeastOnce()).getWriter();
