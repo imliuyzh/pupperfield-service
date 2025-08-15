@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.security.auth.login.CredentialException;
 import javax.security.auth.login.CredentialNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,16 +103,19 @@ public class AuthFilter extends OncePerRequestFilter {
         String message,
         String origin
     ) throws IOException {
-        response.setContentType(APPLICATION_JSON_VALUE);
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-        response.setStatus(UNAUTHORIZED.value());
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
+                UNAUTHORIZED.getReasonPhrase(),
+                List.of(message.substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
+            )));
 
-        var printWriter = response.getWriter();
-        printWriter.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
-            UNAUTHORIZED.getReasonPhrase(),
-            List.of(message.substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
-        )));
-        printWriter.close();
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            response.setStatus(UNAUTHORIZED.value());
+        } catch (IOException exception) {
+            log.error("Error writing unauthorized response: ", exception);
+            throw exception;
+        }
     }
 }
