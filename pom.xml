@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.pupperfield.backend</groupId>
 	<artifactId>pupperfield-service</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<name>pupperfield-service</name>
 	<description>A mock API for Fetch Rewards&apos; interview</description>
 	<properties>
