@@ -32,10 +32,10 @@ public class CacheConfig {
 
     /**
      * Creates a CacheManager using Caffeine as the provider. It contains three caches:
-     * 
+     *
      * <ul>
      *     <li>{@code breeds} — no expiration</li>
-     *     <li>{@code lists} — expires 15 minutes after last access</li>
+     *     <li>{@code lists} — expires 1 minute after last access</li>
      *     <li>{@code searches} — expires 10 minutes after last access</li>
      * </ul>
      *
@@ -47,7 +47,7 @@ public class CacheConfig {
         cacheManager.registerCustomCache(BREED_CACHE, Caffeine.newBuilder().build());
         cacheManager.registerCustomCache(
             LIST_CACHE, Caffeine.newBuilder()
-                .expireAfterAccess(15, TimeUnit.MINUTES)
+                .expireAfterAccess(1, TimeUnit.MINUTES)
                 .build()
         );
         cacheManager.registerCustomCache(
