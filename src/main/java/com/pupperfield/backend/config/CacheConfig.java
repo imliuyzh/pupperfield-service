@@ -35,7 +35,7 @@ public class CacheConfig {
      *
      * <ul>
      *     <li>{@code breeds} — no expiration</li>
-     *     <li>{@code lists} — expires 15 minutes after last access</li>
+     *     <li>{@code lists} — expires 1 minute after last access</li>
      *     <li>{@code searches} — expires 10 minutes after last access</li>
      * </ul>
      *
