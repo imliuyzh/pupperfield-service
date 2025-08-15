@@ -149,7 +149,9 @@ public class AuthFilterTests {
         given(response.getWriter()).willAnswer(invocation -> {
             throw new IOException();
         });
+
         assertThrows(IOException.class, () -> authFilter.doFilter(request, response, chain));
+
         verify(request, atLeastOnce()).getMethod();
         verify(request, atLeastOnce()).getRequestURI();
         verify(response, atLeastOnce()).getWriter();
