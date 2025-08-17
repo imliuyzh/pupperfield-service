@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.pupperfield.backend.constant.StatusConstants.STATUS_PATH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,7 +22,7 @@ public class StatusControllerIntegrationTests {
 
     @Test
     public void testStatusReport() throws Exception {
-        mockMvc.perform(get(StatusController.STATUS_PATH))
+        mockMvc.perform(get(STATUS_PATH))
             .andExpect(content().string(HttpStatus.OK.getReasonPhrase()))
             .andExpect(status().isOk());
     }

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.pupperfield.backend.auth.AuthRequestBuilder.buildLoginRequest;
+import static com.pupperfield.backend.constant.AuthConstants.LOGIN_PATH;
+import static com.pupperfield.backend.constant.AuthConstants.LOGOUT_PATH;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -65,7 +67,7 @@ public class AuthControllerIntegrationTests {
     @SuppressWarnings("StringOperationCanBeSimplified")
     @Test
     public void testLogInWithBlankInfo2() throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
+        var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content(new String("{\"email\":\"e@mail.com\",\"name\":}"));
         mockMvc.perform(request).andExpect(status().isBadRequest());
@@ -74,7 +76,7 @@ public class AuthControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"", "              "})
     public void testLogInWithEmptyBody(String body) throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
+        var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content(body);
         mockMvc.perform(request).andExpect(status().isBadRequest());
@@ -82,7 +84,7 @@ public class AuthControllerIntegrationTests {
 
     @Test
     public void testLogInWithInvalidFieldType() throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
+        var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content("{\"email\":32435235352,\"name\":\"name\"}");
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
@@ -97,7 +99,7 @@ public class AuthControllerIntegrationTests {
     @ParameterizedTest
     @ValueSource(strings = {"{}", "{\"email\":\"e@mail.com\"}"})
     public void testLogInWithMissingFields(String body) throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
+        var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content(body);
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
@@ -115,14 +117,14 @@ public class AuthControllerIntegrationTests {
             .andReturn()
             .getResponse()
             .getCookies();
-        mockMvc.perform(post(AuthController.LOGOUT_PATH).cookie(cookies))
+        mockMvc.perform(post(LOGOUT_PATH).cookie(cookies))
             .andExpect(content().string(HttpStatus.OK.getReasonPhrase()))
             .andExpect(status().isOk());
     }
 
     @Test
     public void testLogOutWithoutLogIn() throws Exception {
-        mockMvc.perform(post(AuthController.LOGOUT_PATH)).andExpect(status().isUnauthorized());
+        mockMvc.perform(post(LOGOUT_PATH)).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -132,7 +134,6 @@ public class AuthControllerIntegrationTests {
             .getResponse()
             .getCookies();
         cookies[0].setValue("invalid");
-        mockMvc.perform(post(AuthController.LOGOUT_PATH).cookie(cookies))
-            .andExpect(status().isUnauthorized());
+        mockMvc.perform(post(LOGOUT_PATH).cookie(cookies)).andExpect(status().isUnauthorized());
     }
 }

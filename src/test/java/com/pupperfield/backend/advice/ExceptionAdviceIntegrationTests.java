@@ -14,6 +14,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.pupperfield.backend.auth.AuthRequestBuilder.getAuthCookie;
+import static com.pupperfield.backend.constant.AuthConstants.LOGIN_PATH;
+import static com.pupperfield.backend.constant.AuthConstants.LOGOUT_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOGS_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_BREEDS_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_MATCH_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_SEARCH_PATH;
+import static com.pupperfield.backend.constant.StatusConstants.STATUS_PATH;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,7 +57,7 @@ public class ExceptionAdviceIntegrationTests {
     @SuppressWarnings("StringOperationCanBeSimplified")
     @Test
     public void testBrokenBody() throws Exception {
-        var request = post(DogController.DOG_MATCH_PATH)
+        var request = post(DOG_MATCH_PATH)
             .contentType("application/json")
             .content(new String("["))
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
@@ -59,7 +66,7 @@ public class ExceptionAdviceIntegrationTests {
 
     @Test
     public void testEmptyStringArray() throws Exception {
-        var request = post(DogController.DOG_MATCH_PATH)
+        var request = post(DOG_MATCH_PATH)
             .contentType("application/json")
             .content("[\"\"]")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
@@ -68,26 +75,26 @@ public class ExceptionAdviceIntegrationTests {
 
     @Test
     public void testInvalidFromParameter() throws Exception {
-        var request = get(DogController.DOG_SEARCH_PATH + "?from={from}", "bbwbwe")
+        var request = get(DOG_SEARCH_PATH + "?from={from}", "bbwbwe")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testInvalidSortParameter() throws Exception {
-        var request = get("%s?sort=".formatted(DogController.DOG_SEARCH_PATH))
+        var request = get(DOG_SEARCH_PATH + "?sort=")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
         mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     public void testUnauthorized() throws Exception {
-        mockMvc.perform(get(DogController.DOG_BREEDS_PATH)).andExpect(status().isUnauthorized());
+        mockMvc.perform(get(DOG_BREEDS_PATH)).andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testWrongMediaType() throws Exception {
-        var request = post(AuthController.LOGIN_PATH)
+        var request = post(LOGIN_PATH)
             .contentType("application/text")
             .content("[]");
         mockMvc.perform(request).andExpect(status().isUnsupportedMediaType());
@@ -95,8 +102,7 @@ public class ExceptionAdviceIntegrationTests {
 
     @Test
     public void testWrongMethod() throws Exception {
-        mockMvc.perform(delete(AuthController.LOGIN_PATH))
-            .andExpect(status().isMethodNotAllowed());
+        mockMvc.perform(delete(LOGIN_PATH)).andExpect(status().isMethodNotAllowed());
     }
 
     @Test
@@ -104,19 +110,18 @@ public class ExceptionAdviceIntegrationTests {
         given(statusController.report()).willAnswer(invocation -> {
             throw new Exception();
         });
-        mockMvc.perform(get(StatusController.STATUS_PATH))
-            .andExpect(status().isInternalServerError());
+        mockMvc.perform(get(STATUS_PATH)).andExpect(status().isInternalServerError());
         verify(statusController, times(1)).report();
     }
 
     @Test
     public void testOptionsMethodWillNotBeUnauthorized() throws Exception {
-        mockMvc.perform(options(AuthController.LOGIN_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(AuthController.LOGOUT_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(DogController.DOGS_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(DogController.DOG_BREEDS_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(DogController.DOG_MATCH_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(DogController.DOG_SEARCH_PATH)).andExpect(status().isOk());
-        mockMvc.perform(options(StatusController.STATUS_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(LOGIN_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(LOGOUT_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DOGS_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DOG_BREEDS_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DOG_MATCH_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(DOG_SEARCH_PATH)).andExpect(status().isOk());
+        mockMvc.perform(options(STATUS_PATH)).andExpect(status().isOk());
     }
 }

@@ -19,27 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 
+import static com.pupperfield.backend.constant.AuthConstants.COOKIE_NAME;
+import static com.pupperfield.backend.constant.AuthConstants.LOGIN_PATH;
+import static com.pupperfield.backend.constant.AuthConstants.LOGOUT_PATH;
 import static org.apache.commons.lang3.BooleanUtils.toInteger;
 
 @AllArgsConstructor
 @RestController
 @Tag(description = "Perform log in and log out operations.", name = "Authentication")
 public class AuthController {
-    /**
-     * Name of the cookie that has the token.
-     */
-    public static final String COOKIE_NAME = "fetch-access-token";
-
-    /**
-     * The path to the login endpoint.
-     */
-    public static final String LOGIN_PATH = "/auth/login";
-
-    /**
-     * The path to the logout endpoint.
-     */
-    public static final String LOGOUT_PATH = "/auth/logout";
-
     private TokenService tokenService;
 
     @Operation(
