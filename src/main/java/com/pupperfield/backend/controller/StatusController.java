@@ -10,14 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.pupperfield.backend.constant.StatusConstants.STATUS_PATH;
+
 @RestController
 @Tag(description = "Report the current status of the application.", name = "Status")
 public class StatusController {
-    /**
-     * The path to the status endpoint.
-     */
-    public static final String STATUS_PATH = "/status";
-
     @GetMapping(STATUS_PATH)
     @Operation(
         description = "Returns HTTP 200 along with its reason phrase. If the application is not "

@@ -1,8 +1,6 @@
 package com.pupperfield.backend.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pupperfield.backend.controller.AuthController;
-import com.pupperfield.backend.controller.DogController;
 import com.pupperfield.backend.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -11,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.FieldSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
@@ -22,6 +20,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static com.pupperfield.backend.constant.AuthConstants.COOKIE_NAME;
+import static com.pupperfield.backend.constant.AuthConstants.LOGIN_PATH;
+import static com.pupperfield.backend.constant.AuthConstants.LOGOUT_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_BREEDS_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_MATCH_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOGS_PATH;
+import static com.pupperfield.backend.constant.DogConstants.DOG_SEARCH_PATH;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -52,10 +57,10 @@ public class AuthFilterTests {
     @Test
     public void testFilterPassedThrough() throws Exception {
         given(request.getCookies()).willReturn(new Cookie[] {
-            new Cookie(AuthController.COOKIE_NAME, "vwevwve")
+            new Cookie(COOKIE_NAME, "vwevwve")
         });
         given(request.getMethod()).willReturn(HttpMethod.GET.name());
-        given(request.getRequestURI()).willReturn(DogController.DOG_BREEDS_PATH);
+        given(request.getRequestURI()).willReturn(DOG_BREEDS_PATH);
         given(tokenService.isValid(any(String.class))).willReturn(true);
 
         authFilter.doFilter(request, response, chain);
@@ -72,7 +77,7 @@ public class AuthFilterTests {
             new Cookie("cookie-name", "cookie-value")
         });
         given(request.getMethod()).willReturn(HttpMethod.POST.name());
-        given(request.getRequestURI()).willReturn(DogController.DOG_MATCH_PATH);
+        given(request.getRequestURI()).willReturn(DOG_MATCH_PATH);
         given(response.getWriter()).willReturn(new PrintWriter(new StringWriter()));
 
         authFilter.doFilter(request, response, chain);
@@ -88,7 +93,7 @@ public class AuthFilterTests {
     public void testInvalidToken1() throws Exception {
         given(request.getCookies()).willReturn(null);
         given(request.getMethod()).willReturn(HttpMethod.POST.name());
-        given(request.getRequestURI()).willReturn(AuthController.LOGOUT_PATH);
+        given(request.getRequestURI()).willReturn(LOGOUT_PATH);
         given(response.getWriter()).willReturn(new PrintWriter(new StringWriter()));
 
         authFilter.doFilter(request, response, chain);
@@ -104,10 +109,10 @@ public class AuthFilterTests {
     @ValueSource(strings = {"invalid_token", "wev3 vq 22b", "", "        ", ",,*(%@())"})
     public void testInvalidToken2(String token) throws Exception {
         given(request.getCookies()).willReturn(new Cookie[] {
-            new Cookie(AuthController.COOKIE_NAME, token)
+            new Cookie(COOKIE_NAME, token)
         });
         given(request.getMethod()).willReturn(HttpMethod.POST.name());
-        given(request.getRequestURI()).willReturn(DogController.DOGS_PATH);
+        given(request.getRequestURI()).willReturn(DOGS_PATH);
         given(response.getWriter()).willReturn(new PrintWriter(new StringWriter()));
 
         authFilter.doFilter(request, response, chain);
@@ -127,15 +132,11 @@ public class AuthFilterTests {
         verify(request, atLeastOnce()).getMethod();
     }
 
-    @CsvSource({
-        "GET,/api-docs",
-        "POST,/auth/login",
-        "GET,/status",
-        "GET,/swagger-ui",
-    })
+    @FieldSource("com.pupperfield.backend.constant.AuthConstants#ALLOWLIST")
     @ParameterizedTest
-    public void testShouldNotFilter2(String method, String path) throws Exception {
-        given(request.getMethod()).willReturn(method);
+    public void testShouldNotFilter2(String path) throws Exception {
+        given(request.getMethod()).willReturn(
+            path.equals(LOGIN_PATH) ? HttpMethod.POST.name() : HttpMethod.GET.name());
         given(request.getRequestURI()).willReturn(path);
         authFilter.doFilter(request, response, chain);
         verify(request, atLeastOnce()).getMethod();
@@ -145,7 +146,7 @@ public class AuthFilterTests {
     @Test
     public void testUnableToGetWriter() throws Exception {
         given(request.getMethod()).willReturn(HttpMethod.GET.name());
-        given(request.getRequestURI()).willReturn("/test");
+        given(request.getRequestURI()).willReturn(DOG_SEARCH_PATH);
         given(response.getWriter()).willAnswer(invocation -> {
             throw new IOException();
         });

@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static com.pupperfield.backend.controller.AuthController.COOKIE_NAME;
+import static com.pupperfield.backend.constant.AuthConstants.ALLOWLIST;
+import static com.pupperfield.backend.constant.AuthConstants.COOKIE_NAME;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,9 +39,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
     private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized:";
-    private static final List<String> WHITELIST = List.of(
-        "/api-docs", "/auth/login", "/status", "/swagger-ui"
-    );
 
     private ObjectMapper objectMapper;
     private TokenService tokenService;
@@ -87,7 +86,7 @@ public class AuthFilter extends OncePerRequestFilter {
      */
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return OPTIONS.matches(request.getMethod())
-            || WHITELIST.stream().anyMatch(path -> request.getRequestURI().startsWith(path));
+            || Stream.of(ALLOWLIST).anyMatch(path -> request.getRequestURI().startsWith(path));
     }
 
     /**
