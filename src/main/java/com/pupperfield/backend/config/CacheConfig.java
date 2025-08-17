@@ -36,7 +36,7 @@ public class CacheConfig {
      * <ul>
      *     <li>{@code breeds} — no expiration</li>
      *     <li>{@code lists} — expires 1 minute after last access</li>
-     *     <li>{@code searches} — expires 3 minutes after last access</li>
+     *     <li>{@code searches} — expires 5 minutes after last access</li>
      * </ul>
      *
      * @return a configured CacheManager instance
@@ -52,7 +52,7 @@ public class CacheConfig {
         );
         cacheManager.registerCustomCache(
             SEARCH_CACHE, Caffeine.newBuilder()
-                .expireAfterAccess(3, TimeUnit.MINUTES)
+                .expireAfterAccess(5, TimeUnit.MINUTES)
                 .build()
         );
         return cacheManager;
