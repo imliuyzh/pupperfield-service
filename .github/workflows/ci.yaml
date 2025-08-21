@@ -16,20 +16,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Go
         uses: actions/setup-go@v5
         with:
           check-latest: true
-      
+
       - name: Lint Populator
         run: |
           cd populator
           make lint
 
       - name: Install Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           check-latest: true
           distribution: liberica
