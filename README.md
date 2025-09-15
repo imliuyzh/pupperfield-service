@@ -8,7 +8,7 @@ interview question. The original description is available at: https://frontend-t
 
 ## Getting Started
 
-Before following the instructions below, please make sure you have Java v21 installed. If you want
+Before following the instructions below, please make sure you have Java v25+ installed. If you want
 to run the `populator` program, make sure you also read the README file in `/populator`.
 
 It is highly recommended to develop this project on Linux with IntelliJ IDEA. 
