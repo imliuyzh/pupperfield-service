@@ -33,7 +33,7 @@ jobs:
         with:
           check-latest: true
           distribution: liberica
-          java-version: 21
+          java-version: 25
 
       - name: Install Dependencies
         run: ./mvnw clean install -Dmaven.test.skip=true
