@@ -107,14 +107,14 @@ public class DogService {
         if (parameters.getZipCodes() != null) {
             conditions = conditions.and(DogSpecs.withZipCodes(parameters.getZipCodes()));
         }
+        if (parameters.getBreeds() != null) {
+            conditions = conditions.and(DogSpecs.withBreeds(parameters.getBreeds()));
+        }
         if (parameters.getAgeMax() != null) {
             conditions = conditions.and(DogSpecs.withAgeMax(parameters.getAgeMax()));
         }
         if (parameters.getAgeMin() != null) {
             conditions = conditions.and(DogSpecs.withAgeMin(parameters.getAgeMin()));
-        }
-        if (parameters.getBreeds() != null) {
-            conditions = conditions.and(DogSpecs.withBreeds(parameters.getBreeds()));
         }
 
         String[] sortInfo = parameters.getSort().split(":");
