@@ -18,7 +18,6 @@ public class DatabaseConfig {
     @Bean("dataSource")
     public HikariDataSource dataSource() {
         var config = new HikariConfig();
-        config.setAutoCommit(false);
         config.setConnectionTimeout(1000);    // Wait for a second maximum for a connection
         config.setJdbcUrl("jdbc:sqlite:src/main/resources/database/dogs.db");
         config.setPoolName("pupperfield");

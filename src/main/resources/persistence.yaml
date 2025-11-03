@@ -1,6 +1,0 @@
-hibernate:
-    ddl-auto: validate
-
-spring:
-    jpa:
-        database-platform: org.hibernate.community.dialect.SQLiteDialect
