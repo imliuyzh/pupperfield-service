@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.pupperfield.backend.constant.StatusConstants.STATUS_PATH;
 
 @RestController
-@Tag(
-    description = "Report the current status of the application. It is not included in "
-        + "the original implementation.",
-    name = "Status")
+@Tag(description = "Report the current status of the application.", name = "Status")
 public class StatusController {
     @GetMapping(STATUS_PATH)
     @Operation(

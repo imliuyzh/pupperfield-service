@@ -23,8 +23,8 @@ public class OpenApiConfig {
             .externalDocs(new ExternalDocumentation().url("https://frontend-take-home.fetch.com"))
             .info(new Info()
                 .description("This is a mock API for Fetch Rewards' front end take home "
-                    + "assessment available at the URL below. Here is a list of implementation "
-                    + "differences comparing to the original:"
+                    + "assessment available at the URL below. Here is a list of high-level "
+                    + "implementation differences comparing to the original:"
                     + "<ol>"
                     + "<li>Stricter validation constraints are placed upon the user input.</li>"
                     + "<li>HTTP 401 and HTTP 422 responses include more error information.</li>"
@@ -33,6 +33,7 @@ public class OpenApiConfig {
                         + "response in a different format.</li>"
                     + "<li>A white label error page is returned when the URL has invalid "
                         + "characters.</li>"
+                    + "<li>A new `/status` endpoint is introduced to report application status.</li>"
                     + "</ol>")
                 .title("Pupperfield API")
             );
