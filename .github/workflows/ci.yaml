@@ -35,8 +35,8 @@ jobs:
           distribution: liberica
           java-version: 25
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: ./mvnw clean install -Dmaven.test.skip=true
 
-      - name: Run Tests
+      - name: Run tests
         run: ./mvnw clean test
