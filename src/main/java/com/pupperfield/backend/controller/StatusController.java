@@ -14,8 +14,8 @@ import static com.pupperfield.backend.constant.StatusConstants.STATUS_PATH;
 
 @RestController
 @Tag(
-    description = "Report the current status of the application. It is not included in"
-        + " the original implementation.",
+    description = "Report the current status of the application. It is not included in "
+        + "the original implementation.",
     name = "Status")
 public class StatusController {
     @GetMapping(STATUS_PATH)
