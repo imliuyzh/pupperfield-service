@@ -8,7 +8,7 @@ import com.pupperfield.backend.service.DogService;
 import com.pupperfield.backend.service.TokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -70,21 +70,21 @@ public class ExceptionAdviceIntegrationTests {
             .contentType("application/json")
             .content("[\"\"]")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(request).andExpect(status().isUnprocessableContent());
     }
 
     @Test
     public void testInvalidFromParameter() throws Exception {
         var request = get(DOG_SEARCH_PATH + "?from={from}", "bbwbwe")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(request).andExpect(status().isUnprocessableContent());
     }
 
     @Test
     public void testInvalidSortParameter() throws Exception {
         var request = get(DOG_SEARCH_PATH + "?sort=")
             .cookie(getAuthCookie(mockMvc, "test@email.com", "test"));
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(request).andExpect(status().isUnprocessableContent());
     }
 
     @Test

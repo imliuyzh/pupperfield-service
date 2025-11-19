@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
 
 /**
  * An offset-based pagination implementation for the {@link com.pupperfield.backend.entity.Dog Dog}
@@ -26,7 +25,6 @@ public class DogSearchPagination implements Pageable {
      *
      * @return a pagination object with the same properties
      */
-    @NonNull
     public Pageable first() {
         return new DogSearchPagination(this.limit, this.offset, this.sort);
     }
@@ -63,7 +61,6 @@ public class DogSearchPagination implements Pageable {
      *
      * @throws UnsupportedOperationException every time
      */
-    @NonNull
     public Pageable next() {
         throw new UnsupportedOperationException("Not implemented");
     }
@@ -74,7 +71,6 @@ public class DogSearchPagination implements Pageable {
      *
      * @return a pagination object with the same properties
      */
-    @NonNull
     public Pageable previousOrFirst() {
         return this.first();
     }
@@ -85,7 +81,6 @@ public class DogSearchPagination implements Pageable {
      * @param pageNumber ignored
      * @throws UnsupportedOperationException every time
      */
-    @NonNull
     public Pageable withPage(int pageNumber) {
         throw new UnsupportedOperationException("Not implemented");
     }
