@@ -3,7 +3,6 @@ package com.pupperfield.backend.service;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.pupperfield.backend.config.CacheConfig;
 import com.pupperfield.backend.model.DogSearchRequestDto;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
