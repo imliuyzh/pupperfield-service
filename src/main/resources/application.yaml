@@ -20,13 +20,6 @@ server:
   compression:
     enabled: true
     min-response-size: 1024
-  error:
-    include-exception: false
-    include-message: never
-    include-path: never
-    include-stacktrace: never
-    whitelabel:
-      enabled: false
   forward-headers-strategy: native
   http2:
     enabled: true
@@ -48,6 +41,14 @@ spring:
   threads:
     virtual:
       enabled: true
+  web:
+    error:
+      include-exception: false
+      include-message: never
+      include-path: never
+      include-stacktrace: never
+      whitelabel:
+        enabled: false
 
 springdoc:
   api-docs:
