@@ -3,17 +3,17 @@ package com.pupperfield.backend.service;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.pupperfield.backend.config.CacheConfig;
 import com.pupperfield.backend.model.DogSearchRequestDto;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 public class DogServiceCachingTests {
     @Autowired
@@ -21,6 +21,13 @@ public class DogServiceCachingTests {
 
     @Autowired
     private DogService dogService;
+
+    @BeforeEach
+    public void setUp() {
+        for (var cacheName : cacheManager.getCacheNames()) {
+            cacheManager.getCache(cacheName).clear();
+        }
+    }
 
     @SuppressWarnings("unchecked")
     @Test
