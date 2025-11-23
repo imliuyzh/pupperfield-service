@@ -1,6 +1,5 @@
 package com.pupperfield.backend.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.pupperfield.backend.model.DogDto;
 import com.pupperfield.backend.model.DogSearchResponseDto;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
