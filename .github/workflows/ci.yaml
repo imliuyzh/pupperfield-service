@@ -21,6 +21,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v6
         with:
+          cache-dependency-path: "populator/go.sum"
           check-latest: true
           go-version-file: 'populator/go.mod'
 
