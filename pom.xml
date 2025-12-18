@@ -93,11 +93,11 @@
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.zalando</groupId>
 			<artifactId>logbook-spring-boot-starter</artifactId>
-			<version>3.12.3</version>
-		</dependency> -->
+			<version>4.0.0-RC.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
