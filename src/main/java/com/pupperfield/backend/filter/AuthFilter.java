@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -70,7 +69,6 @@ public class AuthFilter extends OncePerRequestFilter {
             }
             chain.doFilter(request, response);
         } catch (CredentialException exception) {
-            log.info(ExceptionUtils.getStackTrace(exception));
             handleUnauthorizedRequest(
                 response, exception.getMessage(), request.getHeader(HttpHeaders.ORIGIN));
         }
