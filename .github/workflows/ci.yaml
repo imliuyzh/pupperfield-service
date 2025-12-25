@@ -23,7 +23,7 @@ jobs:
         with:
           cache-dependency-path: "populator/go.sum"
           check-latest: true
-          go-version-file: 'populator/go.mod'
+          go-version-file: "populator/go.mod"
 
       - name: Lint Populator
         run: |
