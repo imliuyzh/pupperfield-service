@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>org.zalando</groupId>
 			<artifactId>logbook-spring-boot-starter</artifactId>
-			<version>4.0.0-RC.1</version>
+			<version>4.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
