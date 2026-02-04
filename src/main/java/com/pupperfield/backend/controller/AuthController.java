@@ -32,8 +32,10 @@ public class AuthController {
 
     @Operation(
         description = "Takes an email address and name wrapped in a JSON body and returns a "
-            + "cookie that will be sent with every request (the browser handles it automatically"
-            + "). Remember to call this endpoint again before the token expires in an hour.",
+            + "cookie that will be sent with every request (the browser handles it automatically)."
+            + " Remember to call this endpoint again before the token expires in an hour. Note "
+            + "that different cookie attributes and header/value pairs are sent in comparison to "
+            + "the original implementation due to Spring's internal mechanism.",
         method = "POST",
         responses = {
             @ApiResponse(

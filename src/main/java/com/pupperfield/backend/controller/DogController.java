@@ -67,7 +67,13 @@ public class DogController {
     }
 
     @Operation(
-        description = "Receives a list of dog IDs (100 IDs max) and fetches their data.",
+        description = "Receives a list of dog IDs (100 IDs max) and fetches their data. "
+            + "Unlike the original implementation:"
+            + "<ul>"
+            + "<li>Fields are sorted by their names in alphabetical order.</li>"
+            + "<li>A nonexistent dog ID is omitted from the response.</li>"
+            + "<li>Duplicated dog information is listed only once.</li>"
+            + "</ul>",
         method = "POST",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
@@ -187,7 +193,32 @@ public class DogController {
         description = "Searches for dogs in the database using filter conditions from request "
             + "parameters. All parameters are optional; by default, size is 25, from is 0, and "
             + "sort is breed:asc. Note only dog IDs are returned, please use POST /dogs to "
-            + "retrieve full dog information.",
+            + "retrieve full dog information. Unlike the original implementation:"
+            + "<ul>"
+            + "<li>Maximum number of dogs can be as much as the total number of rows in "
+                + "database.</li>"
+            + "<li>Parameter order in \"next\" and \"prev\" fields may differ from the original "
+                + "sometimes.</li>"
+            + "<li>Dog IDs can be listed differently due to the spider (`populator`)'s "
+                + "processing order.</li>"
+            + "<li>"
+            + "`,` can be used to pass in multiple values for a query string parameter."
+            + "<ul><li>Each parameter value must be listed out individually in the original "
+                + "implementation.</li></ul>"
+            + "</li>"
+            + "<li>"
+            + "\"prev\" and/or \"next\" fields are not included in the response when the \"from\""
+                + "parameter value is out of bounds."
+            + "<ul><li>For \"prev,\" it is included when \"from\" is equal or greater than "
+                + "0.</li></ul>"
+            + "<ul><li>For \"next,\" it is included when \"from\" is greater than zero but "
+                + "less than the total number of result.</li></ul>"
+            + "</li>"
+            + "<li>HTTP 422 instead of HTTP 400/500 is used when an out of range value is "
+                + "provided for some query string parameters.</li>"
+            + "<li>HTTP 422 instead of HTTP 400 is used when some query string parameters "
+                + "are repeated.</li>"
+            + "</ul>",
         method = "GET",
         responses = {
             @ApiResponse(

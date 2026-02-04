@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
+          cache-dependency-path: "populator/go.sum"
           check-latest: true
+          go-version-file: "populator/go.mod"
 
       - name: Lint Populator
         run: |
@@ -35,8 +37,8 @@ jobs:
           distribution: liberica
           java-version: 25
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: ./mvnw clean install -Dmaven.test.skip=true
 
-      - name: Run Tests
+      - name: Run tests
         run: ./mvnw clean test

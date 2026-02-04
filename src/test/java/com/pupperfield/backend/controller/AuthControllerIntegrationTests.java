@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
@@ -61,7 +61,7 @@ public class AuthControllerIntegrationTests {
     @Test
     public void testLogInWithBlankInfo1() throws Exception {
         mockMvc.perform(buildLoginRequest(null, " "))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableContent());
     }
 
     @SuppressWarnings("StringOperationCanBeSimplified")
@@ -87,13 +87,13 @@ public class AuthControllerIntegrationTests {
         var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content("{\"email\":32435235352,\"name\":\"name\"}");
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(request).andExpect(status().isUnprocessableContent());
     }
 
     @Test
     public void testLogInWithInvalidSymbols() throws Exception {
         mockMvc.perform(buildLoginRequest("%@#$^@email.com", "%@#$^"))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableContent());
     }
 
     @ParameterizedTest
@@ -102,13 +102,13 @@ public class AuthControllerIntegrationTests {
         var request = post(LOGIN_PATH)
             .contentType("application/json")
             .content(body);
-        mockMvc.perform(request).andExpect(status().isUnprocessableEntity());
+        mockMvc.perform(request).andExpect(status().isUnprocessableContent());
     }
 
     @Test
     public void testLogInWithReallyLongName() throws Exception {
         mockMvc.perform(buildLoginRequest("name@email.com", "n".repeat(1000)))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableContent());
     }
 
     @Test

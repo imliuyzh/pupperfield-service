@@ -1,6 +1,5 @@
 package com.pupperfield.backend.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pupperfield.backend.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -43,7 +43,7 @@ public class AuthFilterTests {
     private FilterChain chain;
 
     @Spy
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Spy
     private HttpServletRequest request;

@@ -1,6 +1,5 @@
 package com.pupperfield.backend.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pupperfield.backend.model.InvalidRequestResponseDto;
 import com.pupperfield.backend.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -10,11 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.security.auth.login.CredentialException;
 import javax.security.auth.login.CredentialNotFoundException;
@@ -40,7 +38,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthFilter extends OncePerRequestFilter {
     private static final String EXCEPTION_MESSAGE_PREFIX = "Unauthorized:";
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     private TokenService tokenService;
 
     /**
@@ -54,9 +52,9 @@ public class AuthFilter extends OncePerRequestFilter {
      * @throws ServletException if the request cannot be handled
      */
     protected void doFilterInternal(
-        @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull FilterChain chain
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain
     ) throws IOException, ServletException {
         try {
             var cookies = (request.getCookies() != null) ? request.getCookies() : new Cookie[0];
@@ -71,7 +69,6 @@ public class AuthFilter extends OncePerRequestFilter {
             }
             chain.doFilter(request, response);
         } catch (CredentialException exception) {
-            log.info(ExceptionUtils.getStackTrace(exception));
             handleUnauthorizedRequest(
                 response, exception.getMessage(), request.getHeader(HttpHeaders.ORIGIN));
         }
@@ -103,7 +100,7 @@ public class AuthFilter extends OncePerRequestFilter {
         String origin
     ) throws IOException {
         try (PrintWriter writer = response.getWriter()) {
-            writer.write(objectMapper.writeValueAsString(new InvalidRequestResponseDto(
+            writer.write(jsonMapper.writeValueAsString(new InvalidRequestResponseDto(
                 UNAUTHORIZED.getReasonPhrase(),
                 List.of(message.substring(EXCEPTION_MESSAGE_PREFIX.length() + 1))
             )));

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -24,8 +23,7 @@ public interface DogRepository extends JpaRepository<Dog, String>, JpaSpecificat
      * @param pageable an object for pagination and sorting
      * @return an object containing result of the query
      */
-    @NonNull
-    Page<Dog> findAll(Specification<Dog> spec, @NonNull Pageable pageable);
+    Page<Dog> findAll(Specification<Dog> spec, Pageable pageable);
 
     /**
      * Retrieves all dog breeds in the database and sorts them alphabetically.

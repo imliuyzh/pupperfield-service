@@ -3,7 +3,6 @@ package com.pupperfield.backend.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
      *
      * @param registry an object to configure allowed origins and methods
      */
-    public void addCorsMappings(@NonNull CorsRegistry registry) {
+    public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
             .allowCredentials(true)
             .allowedMethods(

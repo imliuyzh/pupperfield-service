@@ -1,0 +1,25 @@
+logbook:
+  obfuscate:
+    headers: []
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+      springframework:
+        cache: trace
+    sql: trace
+    web: trace
+
+spring:
+  jpa:
+    show-sql: true
+  web:
+    error:
+      include-exception: true
+      include-message: always
+      include-path: always
+      include-stacktrace: always

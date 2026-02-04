@@ -98,14 +98,14 @@ public class ExceptionAdvice {
         log.info(ExceptionUtils.getStackTrace(exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
-                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                HttpStatus.UNPROCESSABLE_CONTENT.getReasonPhrase(),
                 exception.getBindingResult()
                     .getFieldErrors()
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toSet())
             ),
-            HttpStatus.UNPROCESSABLE_ENTITY
+            HttpStatus.UNPROCESSABLE_CONTENT
         );
     }
 
@@ -121,13 +121,13 @@ public class ExceptionAdvice {
         log.info(ExceptionUtils.getStackTrace((RuntimeException) exception));
         return new ResponseEntity<>(
             new InvalidRequestResponseDto(
-                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                HttpStatus.UNPROCESSABLE_CONTENT.getReasonPhrase(),
                 exception.getAllErrors()
                     .stream()
                     .map(MessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toSet())
             ),
-            HttpStatus.UNPROCESSABLE_ENTITY
+            HttpStatus.UNPROCESSABLE_CONTENT
         );
     }
 
