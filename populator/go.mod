@@ -1,6 +1,6 @@
 module pupperfield.com/populator
 
-go 1.25.0
+go 1.26
 
 require modernc.org/sqlite v1.45.0
 
