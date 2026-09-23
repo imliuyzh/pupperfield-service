@@ -3,7 +3,7 @@
 all: clean build database
 
 build: lint
-	CGO_ENABLED=0 go build -o populator -ldflags "-extldflags=-static -s -w"
+	CGO_ENABLED=0 go build -o populator -buildvcs=false -ldflags "-extldflags=-static -s -w" -trimpath
 
 clean:
 	-rm dogs.db populator
